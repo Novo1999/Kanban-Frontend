@@ -12,6 +12,8 @@
     "noEmit": true,
     "esModuleInterop": true,
     "jsx": "preserve",
+    "rootDir": "./src",
+    "outDir": "./dist",
     "incremental": true,
     "allowImportingTsExtensions": true,
     "allowJs": true,
