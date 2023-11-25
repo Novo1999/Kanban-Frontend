@@ -1,7 +1,7 @@
 import { useDrop } from 'react-dnd'
 import useGetBoard from '../hooks/useGetBoard'
 import { useState } from 'react'
-import { DraggableTask, Spinner } from '.'
+import { DraggableTask, Spinner } from './index'
 
 const Task = ({ statusType }: { statusType: string }) => {
   const { data: board, isLoading } = useGetBoard()
