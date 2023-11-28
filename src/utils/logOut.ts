@@ -3,7 +3,7 @@ import customFetch from './customFetch'
 
 export const logOut = async () => {
   try {
-    const res = await customFetch.get('/auth/logout')
+    const res = await customFetch.post('/auth/logout')
     return res
   } catch (error) {
     return toast.error('Something went wrong.Please try again')
