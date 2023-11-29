@@ -1,1 +1,1 @@
-Live URL: https://kanban-novo.netlify.app/
+Live URL: https://kanban-novo-frontend.vercel.app/
