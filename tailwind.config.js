@@ -6,6 +6,7 @@ export default {
     extend: {
       fontFamily: {
         rammetto: ['Rammetto One'],
+        poppins: ['poppins'],
       },
     },
   },

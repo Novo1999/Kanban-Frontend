@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react'
 import useGetBoard from '../hooks/useGetBoard'
 import { useParams } from 'react-router'
 import useWindowDimensions from '../hooks/useWindowDimension'
+import { IoIosArrowForward } from 'react-icons/io'
+import { motion, useAnimation } from 'framer-motion'
 
 type HeaderProp = {
   page: string
@@ -18,12 +20,23 @@ const Header = ({ page }: HeaderProp) => {
     showAddNewModal,
     setShowAddNewModal,
     showDeleteBoardModal,
+    setIsSidebarOpen,
   } = useKanban()
   const { id } = useParams()
-  const [isOptionsOpen, setIsOptionsOpen] = useState < boolean > (false)
+  const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false)
   const [isEditingBoard, setIsEditingBoard] = useState(false)
-
+  const [isSideBarButtonHovered, setIsSideBarButtonHovered] = useState(false)
+  const animation = useAnimation()
   const { data: board, isLoading } = useGetBoard()
+
+  useEffect(() => {
+    if (isSideBarButtonHovered) {
+      animation.start('visible')
+    }
+    if (!isSideBarButtonHovered) {
+      animation.start('hidden')
+    }
+  }, [animation, isSideBarButtonHovered])
 
   // clicking outside the options will close it
   useEffect(() => {
@@ -47,15 +60,49 @@ const Header = ({ page }: HeaderProp) => {
       </header>
     )
 
+  const textAnimation = {
+    hidden: {
+      opacity: 0,
+      y: `0.25em`,
+    },
+    visible: {
+      opacity: 1,
+      y: `0em`,
+      transition: {
+        duration: 1,
+        ease: [0.2, 0.65, 0.3, 0.9],
+      },
+    },
+  }
+
   return (
     <header
-      className={`fixed bg-sky-700 w-full p-10 z-10 ${isSidebarOpen && !onMobile ? 'pl-80' : 'pl-14'
-        } shadow-md text-2xl text-white left-0 font-sans top-0 flex items-center gap-12 sm:gap-0 justify-between`}
+      className={`fixed bg-sky-700 w-full p-10 z-10 ${
+        isSidebarOpen && !onMobile ? 'pl-80' : 'pl-14'
+      } shadow-md text-2xl text-white left-0 font-sans top-0 flex items-center gap-12 sm:gap-0 justify-between`}
     >
+      <button
+        onClick={() => setIsSidebarOpen(true)}
+        className='absolute left-2 top-36 hover:left-4 transition-all duration-300 flex gap-2 items-center'
+        onMouseEnter={() => setIsSideBarButtonHovered(true)}
+        onMouseLeave={() => setIsSideBarButtonHovered(false)}
+      >
+        <IoIosArrowForward />
+        <motion.span
+          initial='hidden'
+          animate={animation}
+          variants={textAnimation}
+          className='text-sm drop-shadow-2xl'
+        >
+          {isSideBarButtonHovered ? 'Show Sidebar' : ''}
+        </motion.span>
+      </button>
       {!isEditingBoard && isLoading ? (
-        <Spinner type="header" />
+        <Spinner type='header' />
       ) : !isEditingBoard ? (
-        <p className='capitalize text-sm sm:text-xl'>{board?.data?.boardName}</p>
+        <p className='capitalize font-poppins text-sm sm:text-xl'>
+          {board?.data?.boardName}
+        </p>
       ) : (
         <FormRow
           setIsOptionsOpen={setIsOptionsOpen}
@@ -70,15 +117,15 @@ const Header = ({ page }: HeaderProp) => {
         {id && board?.data?.tasks?.length === 0
           ? ''
           : id && (
-            // add new task
-            <Button
-              onClick={() => {
-                setShowAddNewModal(true)
-              }}
-              type='add'
-              buttonText='+Add New Task'
-            />
-          )}
+              // add new task
+              <Button
+                onClick={() => {
+                  setShowAddNewModal(true)
+                }}
+                type='add'
+                buttonText='+Add New Task'
+              />
+            )}
 
         {id && (
           // option button
