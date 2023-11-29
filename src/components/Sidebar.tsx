@@ -115,8 +115,8 @@ const Sidebar = () => {
                   Settings
                 </Link>
                 <button
-                  onClick={async () => {
-                    await logOut()
+                  onClick={() => {
+                    logOut()
                     toast.success('Logged out successfully')
                     navigate('/')
                   }}
