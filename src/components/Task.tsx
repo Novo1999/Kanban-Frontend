@@ -1,11 +1,5 @@
-import { useDrag, useDrop } from 'react-dnd'
-import { useKanban } from '../pages/KanbanBoard'
-import { useQueryClient } from '@tanstack/react-query'
-import { editTaskStatus } from '../utils/editTaskStatus'
-import { MdDragIndicator } from 'react-icons/md'
-import { OPTIONS } from '../constants'
-import toast from 'react-hot-toast'
-import useWindowDimensions from '../hooks/useWindowDimension'
+import { useDrop } from 'react-dnd'
+import { DraggableTask } from './index'
 import useGetBoard from '../hooks/useGetBoard'
 import { useState } from 'react'
 import { Spinner } from './index'
@@ -75,3 +69,4 @@ const Task = ({ statusType }: { statusType: string }) => {
     </div>
   )
 }
+export default Task
