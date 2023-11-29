@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import { useDrag, useDrop } from 'react-dnd'
 import useGetBoard from '../hooks/useGetBoard'
 import { useKanban } from '../pages/KanbanBoard'
@@ -10,12 +10,10 @@ import { OPTIONS } from '../constants'
 import toast from 'react-hot-toast'
 import { Spinner } from '.'
 import useWindowDimensions from '../hooks/useWindowDimension'
-=======
 import { useDrop } from 'react-dnd'
 import useGetBoard from '../hooks/useGetBoard'
 import { useState } from 'react'
 import { DraggableTask, Spinner } from './index'
->>>>>>> 81a2f3cdf29ddd1cb0e10d08bc78712db67a9ca1
 
 const Task = ({ statusType }: { statusType: string }) => {
   const { data: board, isLoading } = useGetBoard()
@@ -38,13 +36,10 @@ const Task = ({ statusType }: { statusType: string }) => {
     dragCategory !== statusType &&
     'animate-pulse animate-duration-500 bg-cyan-800 border-4'
   } ${
-<<<<<<< HEAD
     dragCategory !== statusType
       ? 'border-2 border-cyan-500 border-opacity-80 min-h-[20rem]'
       : ''
-=======
     dragCategory !== statusType ? 'border-2 border-cyan-500  min-h-[20rem]' : ''
->>>>>>> 81a2f3cdf29ddd1cb0e10d08bc78712db67a9ca1
   } rounded-xl`
 
   return isLoading ? (
@@ -83,7 +78,6 @@ const Task = ({ statusType }: { statusType: string }) => {
       )}
     </div>
   )
-<<<<<<< HEAD
 }
 
 type DraggableTaskProp = {
@@ -184,9 +178,7 @@ const DraggableTask = ({
     </div>
   )
 }
-
-=======
 }
 
->>>>>>> 81a2f3cdf29ddd1cb0e10d08bc78712db67a9ca1
+
 export default Task
