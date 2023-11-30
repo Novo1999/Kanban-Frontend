@@ -9,7 +9,6 @@ import useGetBoard from '../hooks/useGetBoard'
 import { useGetTask } from '../hooks/useGetTask.js'
 import { useState } from 'react'
 
-
 export interface IFormValues {
   title: string
   description: string
@@ -24,13 +23,12 @@ type Task = {
     data: {
       description: string
       status: string
-      subtasks: Array<{ name: string, status: string, _id: string }>
+      subtasks: Array<{ name: string; status: string; _id: string }>
       title: string
       _id: string
     }
   }
 }
-
 
 type FormRowProps = {
   labelText?: string
@@ -63,7 +61,7 @@ const FormRow = ({
   changeTaskStatus,
   defaultValue,
   page,
-  setShowPassword
+  setShowPassword,
 }: FormRowProps) => {
   const [passwordHasValues, setPasswordHasValues] = useState(false)
   const queryClient = useQueryClient()
@@ -72,14 +70,14 @@ const FormRow = ({
     handleSubmit,
     onSubmit,
     register: createBoardRegister,
-    errors, watch
+    errors,
+    watch,
   } = useCreateBoard()
 
   const createBoardInputHasValue = watch('boardName')?.length > 0
 
   const { data: board } = useGetBoard()
   const { data: task } = useGetTask() as Task
-
 
   const { register: editBoardRegister, handleSubmit: editBoardSubmit } =
     useForm()
@@ -118,7 +116,10 @@ const FormRow = ({
           Status
         </label>
 
-        <select onChange={e => changeTaskStatus?.(e)} className='p-2 rounded-md cursor-pointer'>
+        <select
+          onChange={(e) => changeTaskStatus?.(e)}
+          className='p-2 rounded-md cursor-pointer'
+        >
           <option value={task?.data?.status} defaultValue={task?.data?.status}>
             {task?.data?.status?.toUpperCase()}
           </option>
@@ -141,7 +142,7 @@ const FormRow = ({
       </div>
     )
 
-  // when not editing the board its the add task form
+  // when not editing the board show the add task form
   if (name === 'board' && !isEditingBoard)
     return (
       <div className='bg-cyan-600 p-4 shadow-lg relative bottom-8 md:bottom-12 2xl:bottom-2'>
@@ -149,8 +150,9 @@ const FormRow = ({
           <form onSubmit={handleSubmit(onSubmit)}>
             {errors.boardName?.message ? (
               <p
-                className={`text-sm text-red-600 bg-white ${errors && 'p-2'
-                  } absolute bottom-11`}
+                className={`text-sm text-red-600 bg-white ${
+                  errors && 'p-2'
+                } absolute bottom-11`}
               >
                 {errors.boardName?.message}
               </p>
@@ -159,7 +161,7 @@ const FormRow = ({
             )}
             <input
               autoFocus
-              className='rounded h-10 pl-2 w-52'
+              className='rounded h-10 pl-2 w-52 text-white'
               required={required}
               type={type}
               {...createBoardRegister('boardName', {
@@ -199,8 +201,9 @@ const FormRow = ({
         <form onSubmit={editBoardSubmit(onEditBoardNameSubmit)}>
           {errors.boardName?.message ? (
             <p
-              className={`text-sm text-red-600 bg-white ${errors && 'p-2'
-                } absolute bottom-11`}
+              className={`text-sm text-red-600 bg-white ${
+                errors && 'p-2'
+              } absolute bottom-11`}
             >
               {errors.boardName?.message}
             </p>
@@ -210,7 +213,7 @@ const FormRow = ({
           <input
             defaultValue={board?.data.boardName}
             autoFocus
-            className='rounded h-6 sm:h-10 pl-2 w-32 sm:w-96 text-black text-sm'
+            className='rounded h-6 sm:h-10 pl-2 w-32 sm:w-96 text-black text-sm text-white'
             {...editBoardRegister('boardName', {
               maxLength: {
                 value: 45,
@@ -235,18 +238,30 @@ const FormRow = ({
             {labelText}
           </label>
           {/* if password has value, show the show password checkbox */}
-          {name === 'password' && passwordHasValues && <div className='text-xs sm:text-sm flex items-center text-white gap-2'>
-            <label className='font-thin' htmlFor="checkbox">Show Password</label>
-            <input className='cursor-pointer' onChange={(e) =>
-              e.target.checked ? setShowPassword!(true) : setShowPassword!(false)
-            } type='checkbox' />
-          </div>}
+          {name === 'password' && passwordHasValues && (
+            <div className='text-xs sm:text-sm flex items-center text-white gap-2'>
+              <label className='font-thin' htmlFor='checkbox'>
+                Show Password
+              </label>
+              <input
+                className='cursor-pointer text-white'
+                onChange={(e) =>
+                  e.target.checked
+                    ? setShowPassword!(true)
+                    : setShowPassword!(false)
+                }
+                type='checkbox'
+              />
+            </div>
+          )}
         </div>
         <input
           onChange={(e) => {
-            name === 'password' && e.target.value ? setPasswordHasValues(true) : setPasswordHasValues(false)
+            name === 'password' && e.target.value
+              ? setPasswordHasValues(true)
+              : setPasswordHasValues(false)
           }}
-          autoFocus={page === 'login' ? name === "email" : name === 'name'}
+          autoFocus={page === 'login' ? name === 'email' : name === 'name'}
           className='rounded h-12 pl-2 w-full sm:w-96 m-auto'
           required={required}
           type={type}
@@ -267,15 +282,25 @@ const FormRow = ({
           defaultValue={name && defaultValue}
           {...register?.('description')}
           placeholder={placeholder}
-          className='h-32 rounded pl-2 pt-1 w-full resize-none'
+          className='h-32 rounded pl-2 pt-1 w-full resize-none text-white'
         ></textarea>
       ) : (
         <input
           defaultValue={name && defaultValue}
           autoFocus={name === 'title' && true}
-          className={`rounded h-12 pl-2 w-full ${name === 'subtask2' && 'animate-fade animate-duration-500'} `}
+          className={`rounded h-12 pl-2 w-full text-white ${
+            name === 'subtask2' && 'animate-fade animate-duration-500'
+          } `}
           required={required}
-          {...register?.(name as 'name' | 'title' | 'description' | 'subtask1' | 'subtask2' | 'status')}
+          {...register?.(
+            name as
+              | 'name'
+              | 'title'
+              | 'description'
+              | 'subtask1'
+              | 'subtask2'
+              | 'status'
+          )}
           type={type}
           name={name}
           placeholder={placeholder}

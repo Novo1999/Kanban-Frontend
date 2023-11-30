@@ -62,7 +62,7 @@ const Settings = () => {
             <div className='text-sm'>
               {/* NAME */}
               <div className='flex gap-4 mb-4 text-md sm:text-2xl'>
-                <p>Name :</p>
+                <p className='text-white'>Name :</p>
                 {isLoading ? (
                   <p>Loading...</p>
                 ) : (
@@ -73,7 +73,7 @@ const Settings = () => {
               </div>
               {/* EMAIL */}
               <div className='flex gap-4 mb-4 text-md sm:text-2xl'>
-                <p className='mr-2'>Email :</p>
+                <p className='mr-2 text-white'>Email :</p>
                 {isLoading ? (
                   <p>Loading...</p>
                 ) : (
@@ -83,7 +83,7 @@ const Settings = () => {
               </div>
               {/* PASSWORD */}
               <div className='flex gap-4 mb-4 text-md sm:text-2xl'>
-                <p>Password :</p>
+                <p className='text-white'>Password :</p>
                 <p className='break-all text-white'>*****************</p>
                 <EditButton editing='password' />
               </div>
@@ -104,7 +104,7 @@ const EditButton = ({ editing }: { editing: string }) => {
   return (
     <button
       onClick={() => setIsEditing({ editing, status: true })}
-      className='bg-cyan-300 p-2 rounded-lg cursor-pointer hover:bg-cyan-200 h-fit transition-all duration-200'
+      className='bg-cyan-300 p-2 rounded-lg cursor-pointer hover:bg-cyan-200 h-fit transition-all duration-200 text-slate-600'
     >
       <MdEdit />
     </button>
@@ -156,7 +156,7 @@ const EditInput = () => {
   return (
     status && (
       <div className='mt-20 flex justify-center flex-col items-center animate-fade-up'>
-        <h2 className='text-md sm:text-3xl capitalize'>
+        <h2 className='text-md sm:text-3xl capitalize text-white'>
           {editing === 'password' ? 'Change Password' : `Edit ${editing}`}
         </h2>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -169,7 +169,7 @@ const EditInput = () => {
             type='text'
           />
           <button
-            className='mt-10 text-2xl bg-cyan-400 p-2 rounded-lg cursor-pointer hover:bg-cyan-300 h-fit transition-all px-4 sm:px-8 sm:py-3 py-1 duration-200'
+            className='mt-10 text-2xl bg-cyan-400 p-2 rounded-lg cursor-pointer hover:bg-cyan-300 h-fit transition-all text-white px-4 sm:px-8 sm:py-3 py-1 duration-200'
             type='submit'
           >
             Edit

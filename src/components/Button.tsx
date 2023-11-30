@@ -24,7 +24,7 @@ const Button = ({
   onClick,
   isEditingBoard,
   setIsEditingTask,
-  setShowDeleteTask
+  setShowDeleteTask,
 }: ButtonProp) => {
   const { setShowDeleteBoardModal } = useKanban()
   switch (type) {
@@ -34,7 +34,7 @@ const Button = ({
           <div className='absolute w-40 h-30 flex p-2 items-center flex-col text-lg bg-cyan-500 top-20 right-14 rounded option-menu'>
             <button
               onClick={() => setIsEditingBoard!(true)}
-              className='border-b-2 w-40 flex justify-center items-center gap-1'
+              className='border-b-2 w-40 flex justify-center items-center gap-1 text-white'
             >
               <FiEdit3 />
               Edit
@@ -42,7 +42,7 @@ const Button = ({
 
             <button
               onClick={() => setShowDeleteBoardModal(true)}
-              className=' w-40 flex justify-center items-center gap-1'
+              className=' w-40 flex justify-center items-center gap-1 text-white'
             >
               <RiDeleteBin2Line />
               Delete
@@ -59,7 +59,7 @@ const Button = ({
               onClick={() => {
                 setIsEditingTask!(true)
               }}
-              className='border-b-2 w-40 flex justify-center items-center gap-1'
+              className='border-b-2 w-40 flex justify-center items-center gap-1 text-white'
             >
               <FiEdit3 />
               Edit
@@ -67,7 +67,7 @@ const Button = ({
 
             <button
               onClick={() => setShowDeleteTask!(true)}
-              className=' w-40 flex justify-center items-center gap-1'
+              className=' w-40 flex justify-center items-center gap-1 text-white'
             >
               <RiDeleteBin2Line />
               Delete
@@ -78,7 +78,11 @@ const Button = ({
 
     case 'option':
       return (
-        <button onClick={onClick} type='button' className='option-menu'>
+        <button
+          onClick={onClick}
+          type='button'
+          className='option-menu text-white'
+        >
           {buttonText} <BsThreeDotsVertical />
         </button>
       )

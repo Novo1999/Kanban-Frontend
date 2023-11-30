@@ -115,7 +115,7 @@ const TaskDetails = () => {
                 return (
                   <div
                     key={id}
-                    className='flex gap-4 bg-cyan-300 mb-4 p-4 rounded-lg '
+                    className='flex gap-4 bg-cyan-300 mb-4 p-4 rounded-lg'
                   >
                     <input
                       onChange={(e) => {
@@ -126,10 +126,11 @@ const TaskDetails = () => {
                       type='checkbox'
                       name='status'
                       value={id}
-                      className='w-6 cursor-pointer'
+                      className='checkbox checkbox-info w-6 cursor-pointer'
                     />
+
                     <p
-                      className={`font-semibold text-lg ${
+                      className={`font-semibold text-black text-lg ${
                         status === 'done' ? 'line-through' : ''
                       }`}
                     >
