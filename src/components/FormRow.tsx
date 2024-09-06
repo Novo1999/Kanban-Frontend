@@ -1,13 +1,13 @@
+import { useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
 import { UseFormRegister, useForm } from 'react-hook-form'
 import { Button } from '.'
 import { OPTIONS } from '../constants'
 import { useCreateBoard } from '../hooks/useCreateBoard'
-import { useKanban } from '../pages/KanbanBoard'
-import { editBoardName } from '../utils/editBoardName'
-import { useQueryClient } from '@tanstack/react-query'
 import useGetBoard from '../hooks/useGetBoard'
 import { useGetTask } from '../hooks/useGetTask.js'
-import { useState } from 'react'
+import { useKanban } from '../pages/KanbanBoard'
+import { editBoardName } from '../utils/editBoardName'
 
 export interface IFormValues {
   title: string
@@ -150,9 +150,8 @@ const FormRow = ({
           <form onSubmit={handleSubmit(onSubmit)}>
             {errors.boardName?.message ? (
               <p
-                className={`text-sm text-red-600 bg-white ${
-                  errors && 'p-2'
-                } absolute bottom-11`}
+                className={`text-sm text-red-600 bg-white ${errors && 'p-2'
+                  } absolute bottom-11`}
               >
                 {errors.boardName?.message}
               </p>
@@ -201,9 +200,8 @@ const FormRow = ({
         <form onSubmit={editBoardSubmit(onEditBoardNameSubmit)}>
           {errors.boardName?.message ? (
             <p
-              className={`text-sm text-red-600 bg-white ${
-                errors && 'p-2'
-              } absolute bottom-11`}
+              className={`text-sm text-red-600 bg-white ${errors && 'p-2'
+                } absolute bottom-11`}
             >
               {errors.boardName?.message}
             </p>
@@ -288,18 +286,17 @@ const FormRow = ({
         <input
           defaultValue={name && defaultValue}
           autoFocus={name === 'title' && true}
-          className={`rounded h-12 pl-2 w-full text-white ${
-            name === 'subtask2' && 'animate-fade animate-duration-500'
-          } `}
+          className={`rounded h-12 pl-2 w-full text-white ${name === 'subtask2' && 'animate-fade animate-duration-500'
+            } `}
           required={required}
           {...register?.(
             name as
-              | 'name'
-              | 'title'
-              | 'description'
-              | 'subtask1'
-              | 'subtask2'
-              | 'status'
+            | 'name'
+            | 'title'
+            | 'description'
+            | 'subtask1'
+            | 'subtask2'
+            | 'status'
           )}
           type={type}
           name={name}

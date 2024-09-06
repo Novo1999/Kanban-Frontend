@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQueryClient } from '@tanstack/react-query'
+import { Dispatch, SetStateAction } from 'react'
 import { useDrag } from 'react-dnd'
-import { MdDragIndicator } from 'react-icons/md'
-import { useKanban } from '../pages/KanbanBoard'
-import useWindowDimensions from '../hooks/useWindowDimension'
-import { editTaskStatus } from '../utils/editTaskStatus'
 import toast from 'react-hot-toast'
+import { MdDragIndicator } from 'react-icons/md'
 import { OPTIONS } from '../constants'
+import useWindowDimensions from '../hooks/useWindowDimension'
+import { useKanban } from '../pages/KanbanBoard'
+import { editTaskStatus } from '../utils/editTaskStatus'
 
 type DraggableTaskProp = {
   id: string
@@ -14,6 +16,7 @@ type DraggableTaskProp = {
   status: string
   setDragCategory: (arg: string) => string | void
   statusType: string
+  setTasks: Dispatch<SetStateAction<any>>
 }
 
 const DraggableTask = ({
@@ -22,7 +25,7 @@ const DraggableTask = ({
   subtasks,
   status,
   setDragCategory,
-  statusType,
+  statusType, setTasks
 }: DraggableTaskProp) => {
   const { setIsTaskDetailsOpen, setSelectedTask, selectedBoard } = useKanban()
   const queryClient = useQueryClient()
@@ -51,6 +54,14 @@ const DraggableTask = ({
       const { status }: { status: string } = monitor.getDropResult()!
       // if dropped on the same container, no request will happen
       if (status === statusType) return
+
+      setTasks(prev => {
+        const updatedTasks = [...prev]
+        const matchedTaskIndex = updatedTasks.findIndex(task => task._id === selectedTask)
+        if (matchedTaskIndex === -1) return
+        updatedTasks[matchedTaskIndex].status = status
+        return updatedTasks
+      })
       changeTaskStatus(selectedTask, status)
     },
   }))
@@ -90,13 +101,11 @@ const DraggableTask = ({
       <div className='break-all'>
         <h4 className='text-white font-semibold drop-shadow-lg'>{title}</h4>
         <p
-          className={`${
-            status === OPTIONS[2] ? 'text-gray-600' : 'text-gray-300'
-          } font-medium drop-shadow-lg text-sm`}
+          className={`${status === OPTIONS[2] ? 'text-gray-600' : 'text-gray-300'
+            } font-medium drop-shadow-lg text-sm`}
         >
-          {`${subtasks.length} subtasks(${
-            subtasks.filter((subtask) => subtask.status === 'done').length
-          } completed) `}
+          {`${subtasks.length} subtasks(${subtasks.filter((subtask) => subtask.status === 'done').length
+            } completed) `}
         </p>
       </div>
       {!onMobile && (

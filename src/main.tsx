@@ -1,16 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import 'tailwindcss/tailwind.css'
+import { action as loginAction } from './actions/loginAction.ts'
+import { action as registerAction } from './actions/registerAction.ts'
 import App from './App.tsx'
 import './index.css'
-import 'tailwindcss/tailwind.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Login, KanbanBoard, Error, Register, Settings } from './pages/index.ts'
-import { action as registerAction } from './actions/registerAction.ts'
-import { action as loginAction } from './actions/loginAction.ts'
 import { loader as homeLoader } from './loaders/homeLoader.ts'
+import { Error, KanbanBoard, Login, Register, Settings } from './pages/index.ts'
 import { loader as loginLoader } from './pages/Login.tsx'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import KanbanContent from './pages/KanbanContent.tsx'
 
@@ -56,7 +57,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>
 )

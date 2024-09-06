@@ -17,6 +17,7 @@
     "incremental": true,
     "allowImportingTsExtensions": true,
     "allowJs": true,
+    "noImplicitAny": false,
 
     /* Linting */
     "strict": true,
