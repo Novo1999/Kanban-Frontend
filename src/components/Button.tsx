@@ -1,16 +1,16 @@
-import { TfiLayoutMediaRightAlt } from 'react-icons/tfi'
-import { RiDeleteBin2Line } from 'react-icons/ri'
+import { SetStateAction } from 'react'
+import { BiHide } from 'react-icons/bi'
 import { BsArrowRightSquare, BsThreeDotsVertical } from 'react-icons/bs'
 import { FiEdit3 } from 'react-icons/fi'
-import { BiHide } from 'react-icons/bi'
+import { RiDeleteBin2Line } from 'react-icons/ri'
 import { RxCross2 } from 'react-icons/rx'
+import { TfiLayoutMediaRightAlt } from 'react-icons/tfi'
 import { useKanban } from '../pages/KanbanBoard'
-import { SetStateAction } from 'react'
 
 type ButtonProp = {
   type: string
   buttonText?: string
-  onClick?: () => boolean | void
+  onClick?: () => void
   setIsEditingBoard?: React.Dispatch<SetStateAction<boolean>>
   isEditingBoard?: boolean
   setIsEditingTask?: (arg: boolean) => boolean | void

@@ -1,42 +1,33 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import customFetch from '../utils/customFetch'
-
+import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { useKanban } from '../pages/KanbanBoard'
-import { useQueryClient } from '@tanstack/react-query'
-import { IFormValues } from '../components/FormRow'
+import customFetch from '../utils/customFetch'
+
+interface IFormValues {
+  title: string
+  description: string
+  status: string
+  subtasks: Array<{ name: string }>
+}
 
 export const useEditTask = () => {
   const queryClient = useQueryClient()
-  const [subtaskField, setSubtaskField] = useState<boolean>(false)
-  const { register, handleSubmit, watch, formState, reset } =
-    useForm<IFormValues>()
+  const { register, handleSubmit, watch, resetField, setValue, formState } = useForm<IFormValues>()
   const { setShowAddNewModal, selectedTask, selectedBoard } = useKanban()
+  const [subtaskField, setSubtaskField] = useState<boolean>(false)
 
-  const onSubmit: import('react-hook-form').SubmitHandler<IFormValues> = async (
-    data
-  ) => {
+  const onSubmit: SubmitHandler<IFormValues> = async (data) => {
     const formData = {
       title: data.title,
       description: data.description,
-      subtasks:
-        data.subtask1 && data.subtask2
-          ? [
-              { name: data.subtask1 ? data.subtask1 : '' },
-              { name: data.subtask2 ? data.subtask2 : '' },
-            ]
-          : data.subtask1
-          ? [{ name: data.subtask1 ? data.subtask1 : '' }]
-          : (data.subtask2 && [{ name: data.subtask2 ? data.subtask2 : '' }]) ||
-            [],
+      subtasks: data?.subtasks?.map(st => ({ name: st.name })) || [],
       status: data.status,
     }
+
     try {
-      await customFetch.patch(
-        `/kanban/boards/${selectedBoard}/${selectedTask}`,
-        formData
-      )
+      await customFetch.patch(`/kanban/boards/${selectedBoard}/${selectedTask}`, formData)
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
       setShowAddNewModal(false)
     } catch (error) {
@@ -44,6 +35,7 @@ export const useEditTask = () => {
       toast.error('Could not edit task')
     }
   }
+
   return {
     subtaskField,
     watch,
@@ -52,6 +44,7 @@ export const useEditTask = () => {
     handleSubmit,
     onSubmit,
     formState,
-    reset,
+    resetField,
+    setValue
   }
 }

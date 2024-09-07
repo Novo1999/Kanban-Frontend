@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { UseFormRegister, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Button } from '.'
 import { OPTIONS } from '../constants'
 import { useCreateBoard } from '../hooks/useCreateBoard'
@@ -17,6 +18,7 @@ export interface IFormValues {
   status: string
   name: string
 }
+
 
 type Task = {
   data: {
@@ -37,7 +39,7 @@ type FormRowProps = {
   placeholder?: string
   inputType?: string
   required?: boolean
-  register?: UseFormRegister<IFormValues>
+  register?: any
   isEditingBoard?: boolean
   setIsEditingBoard?: (arg: boolean) => void
   setIsOptionsOpen?: (arg: boolean) => void
@@ -45,6 +47,8 @@ type FormRowProps = {
   defaultValue?: string
   page?: string
   setShowPassword?: (arg: boolean) => void
+  value?: string
+  onChange?: () => void
 }
 
 const FormRow = ({
@@ -62,6 +66,8 @@ const FormRow = ({
   defaultValue,
   page,
   setShowPassword,
+  value,
+  onChange
 }: FormRowProps) => {
   const [passwordHasValues, setPasswordHasValues] = useState(false)
   const queryClient = useQueryClient()
@@ -211,7 +217,7 @@ const FormRow = ({
           <input
             defaultValue={board?.data.boardName}
             autoFocus
-            className='rounded h-6 sm:h-10 pl-2 w-32 sm:w-96 text-black text-sm text-white'
+            className='rounded h-6 sm:h-10 pl-2 w-32 sm:w-96 text-sm text-white'
             {...editBoardRegister('boardName', {
               maxLength: {
                 value: 45,
@@ -284,20 +290,16 @@ const FormRow = ({
         ></textarea>
       ) : (
         <input
+          value={value}
           defaultValue={name && defaultValue}
           autoFocus={name === 'title' && true}
           className={`rounded h-12 pl-2 w-full text-white ${name === 'subtask2' && 'animate-fade animate-duration-500'
             } `}
           required={required}
           {...register?.(
-            name as
-            | 'name'
-            | 'title'
-            | 'description'
-            | 'subtask1'
-            | 'subtask2'
-            | 'status'
+            name
           )}
+          onChange={onChange}
           type={type}
           name={name}
           placeholder={placeholder}

@@ -1,36 +1,26 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import customFetch from '../utils/customFetch'
-import { useParams } from 'react-router'
-import toast from 'react-hot-toast'
-import { useKanban } from '../pages/KanbanBoard'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQueryClient } from '@tanstack/react-query'
-import { IFormValues } from '../components/FormRow'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { useParams } from 'react-router'
+import { useKanban } from '../pages/KanbanBoard'
+import customFetch from '../utils/customFetch'
 
 export const useCreateTask = () => {
   const queryClient = useQueryClient()
-  const [subtaskField, setSubtaskField] = useState<boolean>(false)
-  const { register, handleSubmit, watch, resetField } = useForm<IFormValues>()
+  const { register, handleSubmit, watch, resetField, setValue } = useForm<any>()
   const { setShowAddNewModal } = useKanban()
 
   const { id } = useParams()
 
-  const onSubmit: import('react-hook-form').SubmitHandler<IFormValues> = async (
-    data
+  const onSubmit: SubmitHandler<any> = async (
+    data,
   ) => {
     const formData = {
       title: data.title,
       description: data.description,
-      subtasks:
-        data.subtask1 && data.subtask2
-          ? [
-              { name: data.subtask1 ? data.subtask1 : '' },
-              { name: data.subtask2 ? data.subtask2 : '' },
-            ]
-          : data.subtask1
-          ? [{ name: data.subtask1 ? data.subtask1 : '' }]
-          : (data.subtask2 && [{ name: data.subtask2 ? data.subtask2 : '' }]) ||
-            [],
+      subtasks: data?.subtasks?.map(st => ({ name: st.subtask }))
+      ,
       status: data.status,
     }
     try {
@@ -43,12 +33,11 @@ export const useCreateTask = () => {
     }
   }
   return {
-    subtaskField,
     watch,
-    setSubtaskField,
     register,
     handleSubmit,
     onSubmit,
     resetField,
+    setValue
   }
 }
