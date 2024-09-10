@@ -12,7 +12,7 @@ class SubtaskField {
 
 
 const AddTask = () => {
-  const { register, handleSubmit, onSubmit, watch, resetField, setValue } =
+  const { register, handleSubmit, onSubmit, setValue } =
     useCreateTask()
   const { setShowAddNewModal } = useKanban()
   const [subtaskFields, setSubtaskFields] = useState<SubtaskField[]>([new SubtaskField('')])
@@ -82,25 +82,12 @@ const AddTask = () => {
             }
 
           </div>
-          {subtaskFields[subtaskFields.length - 1].subtask && subtaskFields.length !== 5 ? (
+          {subtaskFields[subtaskFields.length - 1].subtask && subtaskFields.length !== 5 && (
             <Button
               onClick={addSubtaskField}
               type='subtask'
               buttonText='+add another subtask'
             />
-          ) : (
-            <div className='flex gap-2 items-center'>
-              <FormRow
-                type='text'
-                name='subtask2'
-                register={register}
-                placeholder='e.g. Make coffee'
-                required={false}
-              />
-              <Button onClick={() => {
-                resetField('subtask2')
-              }} type='cross' />
-            </div>
           )}
 
           <FormRow

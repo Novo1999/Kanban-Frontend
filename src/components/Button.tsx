@@ -30,25 +30,29 @@ const Button = ({
   switch (type) {
     case 'option-menu':
       return (
-        !isEditingBoard && (
-          <div className='absolute w-40 h-30 flex p-2 items-center flex-col text-lg bg-cyan-500 top-20 right-14 rounded option-menu'>
+        <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow absolute top-20 right-16">
+          <li>
+
             <button
               onClick={() => setIsEditingBoard!(true)}
-              className='border-b-2 w-40 flex justify-center items-center gap-1 text-white'
+              className='w-full flex justify-center items-center gap-1 text-white p-3 text-lg'
             >
               <FiEdit3 />
               Edit
             </button>
+          </li>
 
+          <li>
             <button
               onClick={() => setShowDeleteBoardModal(true)}
-              className=' w-40 flex justify-center items-center gap-1 text-white'
+              className='flex justify-center w-full items-center gap-1 text-white p-3 text-lg'
             >
               <RiDeleteBin2Line />
               Delete
             </button>
-          </div>
-        )
+          </li>
+        </ul>
+
       )
 
     case 'task-option':
@@ -78,13 +82,18 @@ const Button = ({
 
     case 'option':
       return (
-        <button
-          onClick={onClick}
-          type='button'
-          className='option-menu text-white'
-        >
-          {buttonText} <BsThreeDotsVertical />
-        </button>
+        <div className="dropdown dropdown-bottom">
+          <button
+            onClick={onClick}
+            type='button'
+            className='option-menu text-white'
+          >
+            <summary className="btn m-1 pb-0 btn-sm">
+              <BsThreeDotsVertical />
+            </summary>
+          </button>
+        </div>
+
       )
 
     case 'add':

@@ -1,12 +1,13 @@
-import { createPortal } from 'react-dom'
-import { AddTask, Button, DeleteBoard, FormRow, Spinner } from '.'
-import { useKanban } from '../pages/KanbanBoard'
-import { useState, useEffect } from 'react'
-import useGetBoard from '../hooks/useGetBoard'
-import { useParams } from 'react-router'
-import useWindowDimensions from '../hooks/useWindowDimension'
-import { IoIosArrowForward } from 'react-icons/io'
 import { motion, useAnimation } from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { FaPhoenixFramework } from 'react-icons/fa'
+import { IoIosArrowForward } from 'react-icons/io'
+import { useParams } from 'react-router'
+import { AddTask, Button, DeleteBoard, FormRow, Spinner } from '.'
+import useGetBoard from '../hooks/useGetBoard'
+import useWindowDimensions from '../hooks/useWindowDimension'
+import { useKanban } from '../pages/KanbanBoard'
 
 type HeaderProp = {
   page: string
@@ -56,7 +57,10 @@ const Header = ({ page }: HeaderProp) => {
   if (page === 'login' || page === 'register')
     return (
       <header className='absolute bg-sky-700 w-full flex justify-center p-10 shadow-md shrink-0 text-2xl sm:text-4xl transition-all duration-300 text-white font-rammetto m-auto'>
-        Kanban Board
+        <FaPhoenixFramework />
+        <p className='ml-2'>
+          FlowBoard
+        </p>
       </header>
     )
 
@@ -77,9 +81,8 @@ const Header = ({ page }: HeaderProp) => {
 
   return (
     <header
-      className={`fixed bg-sky-700 w-full p-10 z-10 ${
-        isSidebarOpen && !onMobile ? 'pl-80' : 'pl-14'
-      } shadow-md text-2xl text-white left-0 font-sans top-0 flex items-center gap-12 sm:gap-0 justify-between`}
+      className={`fixed bg-sky-700 w-full p-10 z-10 ${isSidebarOpen && !onMobile ? 'pl-80' : 'pl-14'
+        } shadow-md text-2xl text-white left-0 font-sans top-0 flex items-center gap-12 sm:gap-0 justify-between`}
     >
       <button
         onClick={() => setIsSidebarOpen(true)}
@@ -117,15 +120,15 @@ const Header = ({ page }: HeaderProp) => {
         {id && board?.data?.tasks?.length === 0
           ? ''
           : id && (
-              // add new task
-              <Button
-                onClick={() => {
-                  setShowAddNewModal(true)
-                }}
-                type='add'
-                buttonText='+Add New Task'
-              />
-            )}
+            // add new task
+            <Button
+              onClick={() => {
+                setShowAddNewModal(true)
+              }}
+              type='add'
+              buttonText='+Add New Task'
+            />
+          )}
 
         {id && (
           // option button

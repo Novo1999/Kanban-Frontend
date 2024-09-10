@@ -48,7 +48,7 @@ type FormRowProps = {
   page?: string
   setShowPassword?: (arg: boolean) => void
   value?: string
-  onChange?: () => void
+  onChange?: (e) => void
 }
 
 const FormRow = ({
@@ -266,7 +266,7 @@ const FormRow = ({
               : setPasswordHasValues(false)
           }}
           autoFocus={page === 'login' ? name === 'email' : name === 'name'}
-          className='rounded h-12 pl-2 w-full sm:w-96 m-auto'
+          className='rounded h-12 pl-2 w-full sm:w-96 m-auto input input-bordered input-primary'
           required={required}
           type={type}
           name={name}

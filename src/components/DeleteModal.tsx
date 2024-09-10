@@ -1,7 +1,7 @@
-import { useKanban } from '../pages/KanbanBoard'
 import { useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from 'react-router'
 import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router'
+import { useKanban } from '../pages/KanbanBoard'
 import customFetch from '../utils/customFetch'
 
 const deleteBoard = async (
@@ -44,7 +44,7 @@ const DeleteModal = ({ type, setShowDeleteTask }: { type: string, setShowDeleteT
   if (type === 'board')
     return (
       <div className='bg-cyan-300 rounded-lg w-80 h-60 m-auto flex flex-col justify-center items-center relative shadow-xl animate-jump-in animate-ease-in-out'>
-        <p className='font-semibold text-2xl'>Are you sure?</p>
+        <p className='font-semibold text-2xl text-gray-800'>Are you sure?</p>
         <div className='flex gap-10 mt-8'>
           <button
             onClick={() => {
@@ -72,7 +72,7 @@ const DeleteModal = ({ type, setShowDeleteTask }: { type: string, setShowDeleteT
   if (type === 'task')
     return (
       <div className='bg-cyan-300 rounded-lg w-80 h-60 m-auto flex flex-col justify-center items-center relative shadow-xl animate-jump-in animate-ease-in-out'>
-        <p className='font-semibold text-2xl'>Are you sure?</p>
+        <p className='font-semibold text-2xl text-gray-800'>Are you sure?</p>
         <div className='flex gap-10 mt-8'>
           <button
             onClick={() => {

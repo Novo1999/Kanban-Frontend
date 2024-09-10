@@ -1,16 +1,15 @@
-import { FaGripLinesVertical } from 'react-icons/fa'
-import { CgProfile } from 'react-icons/cg'
-import { useNavigate, useLoaderData } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
-import { Board, Button, FormRow } from '.'
-import { useKanban } from '../pages/KanbanBoard'
 import { motion } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { CgProfile } from 'react-icons/cg'
+import { FaPhoenixFramework } from 'react-icons/fa'
+import { Link, useLoaderData, useNavigate } from 'react-router-dom'
+import { Board, Button, FormRow } from '.'
+import { useGetAllBoards } from '../hooks/useGetAllBoards'
+import useWindowDimensions from '../hooks/useWindowDimension'
+import { useKanban } from '../pages/KanbanBoard'
 import { getBoard } from '../utils/getBoard'
 import { logOut } from '../utils/logOut'
-import toast from 'react-hot-toast'
-import useWindowDimensions from '../hooks/useWindowDimension'
-import { useGetAllBoards } from '../hooks/useGetAllBoards'
-import { Link } from 'react-router-dom'
 
 type Board = {
   boardName: string
@@ -86,8 +85,10 @@ const Sidebar = () => {
     >
       <div className='pl-4'>
         <p className='flex gap-2 font-rammetto items-center text-3xl text-white'>
-          <FaGripLinesVertical />
-          kanban
+          <FaPhoenixFramework />
+          <p className='ml-2'>
+            FlowBoard
+          </p>
         </p>
 
         <p className='text-sm pl-2 pt-6 font-mono font-bold text-slate-300'>

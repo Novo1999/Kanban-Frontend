@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { Button, FormRow, Overlay, Spinner } from '.'
 import { useEditTask } from '../hooks/useEditTask'
 import { useGetTask } from '../hooks/useGetTask'
 
 class SubtaskField {
   subtask: string
-  constructor(subtask: string) {
+  status: string
+  constructor(subtask: string, status: string) {
     this.subtask = subtask
+    this.status = status
   }
 }
 
@@ -35,15 +37,16 @@ const EditTask = ({
   useEffect(() => {
     if (data && data.data.subtasks) {
       setSubtaskFields(
-        data.data.subtasks.map((st: { name: string }) => new SubtaskField(st.name))
+        data.data.subtasks.map((st) => new SubtaskField(st.name, st.status))
       )
     }
-  }, [data])
+  }, [])
 
   // Update the form's "subtasks" field whenever subtaskFields state changes
   useEffect(() => {
-    setValue('subtasks', subtaskFields.map(st => ({ subtask: st.subtask })))
+    setValue('subtasks', subtaskFields.map(st => ({ name: st.subtask, status: st.status })))
   }, [subtaskFields, setValue])
+  console.log("🚀 ~ subtaskFields:", subtaskFields)
 
   // Close the edit modal if the form is successfully submitted
   useEffect(() => {
@@ -52,7 +55,7 @@ const EditTask = ({
 
   // Add a new empty subtask field
   const addSubtaskField = () => {
-    setSubtaskFields(prev => [...prev, new SubtaskField('')])
+    setSubtaskFields(prev => [...prev, new SubtaskField('', '')])
   }
 
   return isTaskLoading ? (
@@ -66,7 +69,7 @@ const EditTask = ({
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
           <FormRow
-            defaultValue={data.data.title}
+            defaultValue={data?.data.title}
             labelText='Title'
             type='text'
             name='title'
@@ -74,7 +77,7 @@ const EditTask = ({
             placeholder='e.g. Take coffee break'
           />
           <FormRow
-            defaultValue={data.data.description}
+            defaultValue={data?.data.description}
             labelText='Description'
             type='text'
             name='description'
@@ -86,7 +89,7 @@ const EditTask = ({
             {subtaskFields.map((field, index) => (
               <div className="flex w-full" key={`sub-${index}`}>
                 <FormRow
-                  onChange={e => {
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setSubtaskFields(prev => {
                       const updatedSubtasks = [...prev]
                       updatedSubtasks[index].subtask = e.target.value
@@ -119,7 +122,7 @@ const EditTask = ({
             />
           )}
           <FormRow
-            defaultValue={data.data.status}
+            defaultValue={data?.data.status}
             register={register}
             type=''
             name='options'

@@ -67,7 +67,7 @@ const Login = () => {
                   value="test@gmail.com"
                   readOnly
                   className="bg-transparent text-white border-none focus:outline-none"
-                  onClick={(e) => e.target.select()}
+                  onClick={(e) => (e.target as HTMLInputElement).select()}
                 />
               </div>
               <div>
@@ -77,7 +77,7 @@ const Login = () => {
                   value="Password1!"
                   readOnly
                   className="bg-transparent text-white border-none focus:outline-none"
-                  onClick={(e) => e.target.select()}
+                  onClick={(e) => (e.target as HTMLInputElement).select()}
                 />
               </div>
             </div>
