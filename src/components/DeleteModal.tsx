@@ -37,7 +37,7 @@ const deleteTask = async (boardId: string, taskId: string, client: { invalidateQ
 
 
 const DeleteModal = ({ type, setShowDeleteTask }: { type: string, setShowDeleteTask?: (isTaskDetailsOpen: boolean) => void }) => {
-  const { setIsTaskDetailsOpen } = useKanban()
+  const { setIsTaskDetailsOpen, setSelectedTask } = useKanban()
   const queryClient = useQueryClient()
   const { setShowDeleteBoardModal, selectedBoard, selectedTask } = useKanban()
   const navigate = useNavigate()
@@ -60,7 +60,9 @@ const DeleteModal = ({ type, setShowDeleteTask }: { type: string, setShowDeleteT
             Yes
           </button>
           <button
-            onClick={() => setShowDeleteBoardModal(false)}
+            onClick={() => {
+              setShowDeleteBoardModal(false)
+            }}
             className='px-6 py-4 bg-red-500 rounded-xl text-white font-thin text-lg hover:scale-105 transition-all duration-200 shadow-md'
           >
             No
@@ -82,13 +84,18 @@ const DeleteModal = ({ type, setShowDeleteTask }: { type: string, setShowDeleteT
                 queryClient,
                 setIsTaskDetailsOpen
               )
+              setSelectedTask('')
+              setShowDeleteTask?.(false)
             }}
             className='px-6 py-4 bg-green-500 rounded-xl text-white font-thin text-lg hover:scale-105 transition-all duration-200 shadow-md'
           >
             Yes
           </button>
           <button
-            onClick={() => setShowDeleteTask?.(false)}
+            onClick={() => {
+              setSelectedTask('')
+              setShowDeleteTask?.(false)
+            }}
             className='px-6 py-4 bg-red-500 rounded-xl text-white font-thin text-lg hover:scale-105 transition-all duration-200 shadow-md'
           >
             No

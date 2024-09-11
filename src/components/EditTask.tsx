@@ -21,17 +21,14 @@ const EditTask = ({
     register,
     handleSubmit,
     onSubmit,
-    watch,
     setValue,
     formState: { isSubmitted },
   } = useEditTask()
 
   const { data, isLoading: isTaskLoading } = useGetTask()
 
-  console.log(watch('subtasks'))
 
   const [subtaskFields, setSubtaskFields] = useState<SubtaskField[]>([])
-  console.log("🚀 ~ subtaskFields:", subtaskFields)
 
   // Initialize the subtask fields based on the fetched data
   useEffect(() => {
@@ -46,7 +43,6 @@ const EditTask = ({
   useEffect(() => {
     setValue('subtasks', subtaskFields.map(st => ({ name: st.subtask, status: st.status })))
   }, [subtaskFields, setValue])
-  console.log("🚀 ~ subtaskFields:", subtaskFields)
 
   // Close the edit modal if the form is successfully submitted
   useEffect(() => {

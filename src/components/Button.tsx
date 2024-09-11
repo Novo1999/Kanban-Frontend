@@ -22,7 +22,6 @@ const Button = ({
   buttonText,
   setIsEditingBoard,
   onClick,
-  isEditingBoard,
   setIsEditingTask,
   setShowDeleteTask,
 }: ButtonProp) => {
@@ -57,28 +56,34 @@ const Button = ({
 
     case 'task-option':
       return (
-        !isEditingBoard && (
-          <div className='absolute w-40 h-30 flex p-2 items-center flex-col text-lg bg-cyan-400 shadow-lg top-16 right-14 rounded option-menu'>
+        <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow absolute top-20 right-16">
+
+          <li>
             <button
               onClick={() => {
                 setIsEditingTask!(true)
               }}
-              className='border-b-2 w-40 flex justify-center items-center gap-1 text-white'
+              className='flex justify-center items-center gap-1 text-white'
             >
               <FiEdit3 />
               Edit
             </button>
+          </li>
+
+          <li>
 
             <button
               onClick={() => setShowDeleteTask!(true)}
-              className=' w-40 flex justify-center items-center gap-1 text-white'
+              className=' flex justify-center items-center gap-1 text-white'
             >
               <RiDeleteBin2Line />
               Delete
             </button>
-          </div>
-        )
+          </li>
+
+        </ul>
       )
+
 
     case 'option':
       return (

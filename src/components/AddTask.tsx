@@ -59,7 +59,7 @@ const AddTask = () => {
           <div className='flex gap-2 items-center flex-col'>
             {
               subtaskFields.map((_, index) => {
-                return <div className="flex w-full">
+                return <div key={index} className="flex w-full">
                   <FormRow
                     onChange={e => setSubtaskFields(prev => {
                       const updatedSubtasks = [...prev]

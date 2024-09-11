@@ -1,8 +1,8 @@
+import { useQuery } from '@tanstack/react-query'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { Outlet, useParams } from 'react-router'
-import { createContext, useState, useContext, useEffect } from 'react'
 import { Header, Sidebar } from '../components'
 import useWindowDimensions from '../hooks/useWindowDimension'
-import { useQuery } from '@tanstack/react-query'
 import customFetch from '../utils/customFetch'
 
 type KanbanContextProp = {
@@ -20,27 +20,31 @@ type KanbanContextProp = {
   setIsTaskDetailsOpen: (isTaskDetailsOpen: boolean) => void
   selectedTask: string
   setSelectedTask: (id: string) => void
+  showDeleteTaskModal: boolean
+  setShowDeleteTaskModal: (showDeleteTaskModal: boolean) => void
 }
 
 const KanbanContext = createContext<KanbanContextProp>({
   isSidebarOpen: true,
-  setIsSidebarOpen: () => {},
+  setIsSidebarOpen: () => { },
   showAddNewModal: false,
-  setShowAddNewModal: () => {},
+  setShowAddNewModal: () => { },
   createNewBoard: false,
-  setCreateNewBoard: () => {},
+  setCreateNewBoard: () => { },
   selectedBoard: '',
   setSelectedBoard: (id) => {
     id
   },
   showDeleteBoardModal: false,
-  setShowDeleteBoardModal: () => {},
+  setShowDeleteBoardModal: () => { },
   isTaskDetailsOpen: false,
-  setIsTaskDetailsOpen: () => {},
+  setIsTaskDetailsOpen: () => { },
   selectedTask: '',
   setSelectedTask: (id) => {
     id
   },
+  showDeleteTaskModal: false,
+  setShowDeleteTaskModal: () => { }
 })
 
 export const useKanban = () => useContext(KanbanContext)
@@ -58,6 +62,7 @@ function KanbanBoard() {
   const [selectedBoard, setSelectedBoard] = useState<string>('')
   const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState<boolean>(false)
   const [selectedTask, setSelectedTask] = useState<string>('')
+  const [showDeleteTaskModal, setShowDeleteTaskModal] = useState<boolean>(false)
 
   useQuery({
     queryKey: ['current-user'],
@@ -92,7 +97,8 @@ function KanbanBoard() {
         isTaskDetailsOpen,
         setIsTaskDetailsOpen,
         selectedTask,
-        setSelectedTask,
+        setSelectedTask, showDeleteTaskModal,
+        setShowDeleteTaskModal
       }}
     >
       <div className='p-10 bg-gradient-to-t from-cyan-900 via-sky-900 to-cyan-900 w-full min-h-screen overflow-hidden'>

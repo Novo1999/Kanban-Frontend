@@ -2,12 +2,16 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { Dispatch, SetStateAction } from 'react'
 import { useDrag } from 'react-dnd'
+import { createPortal } from 'react-dom'
 import toast from 'react-hot-toast'
+import { FaTrash } from 'react-icons/fa'
 import { MdDragIndicator } from 'react-icons/md'
 import { OPTIONS } from '../constants'
 import useWindowDimensions from '../hooks/useWindowDimension'
 import { useKanban } from '../pages/KanbanBoard'
 import { editTaskStatus } from '../utils/editTaskStatus'
+import DeleteTask from './DeleteTask'
+import Overlay from './Overlay'
 
 type DraggableTaskProp = {
   id: string
@@ -27,7 +31,9 @@ const DraggableTask = ({
   setDragCategory,
   statusType, setTasks
 }: DraggableTaskProp) => {
-  const { setIsTaskDetailsOpen, setSelectedTask, selectedBoard } = useKanban()
+
+  const { setIsTaskDetailsOpen, setShowDeleteTaskModal, showDeleteTaskModal, setSelectedTask, selectedBoard } = useKanban()
+  console.log("🚀 ~ showDeleteTaskModal:", showDeleteTaskModal)
   const queryClient = useQueryClient()
   const windowDimensions = useWindowDimensions()
   const onMobile = windowDimensions.width < 450
@@ -83,37 +89,60 @@ const DraggableTask = ({
   }
 
   return (
-    <div
-      ref={drag}
-      onClick={() => {
-        setIsTaskDetailsOpen(true)
-        setSelectedTask(id)
-      }}
-      onDragStart={() => {
-        setSelectedTask(id)
-        setDragCategory(status)
-      }}
-      onDragEnd={() => {
-        setDragCategory('')
-      }}
-      className={`mb-10 ${setTaskColor()} p-4 rounded-lg cursor-pointer flex items-center justify-between`}
-    >
-      <div className='break-all'>
-        <h4 className='text-white font-semibold drop-shadow-lg'>{title}</h4>
-        <p
-          className={`${status === OPTIONS[2] ? 'text-gray-600' : 'text-gray-300'
-            } font-medium drop-shadow-lg text-sm`}
-        >
-          {`${subtasks.length} subtasks(${subtasks.filter((subtask) => subtask.status === 'done').length
-            } completed) `}
-        </p>
-      </div>
-      {!onMobile && (
-        <div className='cursor-grab'>
-          <MdDragIndicator />
+    <>
+      <div
+        ref={drag}
+        onClick={() => {
+          setIsTaskDetailsOpen(true)
+          setSelectedTask(id)
+        }}
+        onDragStart={() => {
+          setSelectedTask(id)
+          setDragCategory(status)
+        }}
+        onDragEnd={() => {
+          setDragCategory('')
+        }}
+        className={`mb-10 ${setTaskColor()} p-4 rounded-lg cursor-pointer flex items-center justify-between`}
+      >
+
+        <div className='break-all'>
+          <h4 className='text-white font-semibold drop-shadow-lg'>{title}</h4>
+          <p
+            className={`${status === OPTIONS[2] ? 'text-gray-600' : 'text-gray-300'
+              } font-medium drop-shadow-lg text-sm`}
+          >
+            {`${subtasks.length} subtasks(${subtasks.filter((subtask) => subtask.status === 'done').length
+              } completed) `}
+          </p>
         </div>
-      )}
-    </div>
+        <div className='flex items-center'>
+          <div onClick={e => {
+            e.stopPropagation()
+          }} className="tooltip tooltip-error" data-tip="Delete Task">
+            <button onClick={() => {
+              setSelectedTask(id)
+              setShowDeleteTaskModal(true)
+            }} className='btn btn-error text-white btn-sm mr-2'>
+              <FaTrash />
+            </button>
+          </div>
+          {!onMobile && (
+            <div className='cursor-grab text-white'>
+              <MdDragIndicator />
+            </div>
+          )}
+        </div>
+
+      </div>
+      {
+        showDeleteTaskModal && createPortal(
+          <Overlay>
+            <DeleteTask setShowDeleteTask={setShowDeleteTaskModal} />
+          </Overlay>
+          , document.body)
+      }
+    </>
   )
 }
 export default DraggableTask

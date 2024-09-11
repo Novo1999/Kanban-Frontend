@@ -84,12 +84,12 @@ const Sidebar = () => {
       className='w-96 sm:w-72 h-screen shadow-xl top-0 pt-8 z-20 bg-cyan-700 left-0 animate-once animate-ease-in-out fixed'
     >
       <div className='pl-4'>
-        <p className='flex gap-2 font-rammetto items-center text-3xl text-white'>
+        <div className='flex gap-2 font-rammetto items-center text-3xl text-white'>
           <FaPhoenixFramework />
           <p className='ml-2'>
             FlowBoard
           </p>
-        </p>
+        </div>
 
         <p className='text-sm pl-2 pt-6 font-mono font-bold text-slate-300'>
           ALL BOARDS ({boards?.data?.length})
