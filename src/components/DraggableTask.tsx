@@ -33,7 +33,6 @@ const DraggableTask = ({
 }: DraggableTaskProp) => {
 
   const { setIsTaskDetailsOpen, setShowDeleteTaskModal, showDeleteTaskModal, setSelectedTask, selectedBoard } = useKanban()
-  console.log("🚀 ~ showDeleteTaskModal:", showDeleteTaskModal)
   const queryClient = useQueryClient()
   const windowDimensions = useWindowDimensions()
   const onMobile = windowDimensions.width < 450

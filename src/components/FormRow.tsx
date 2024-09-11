@@ -124,7 +124,7 @@ const FormRow = ({
 
         <select
           onChange={(e) => changeTaskStatus?.(e)}
-          className='p-2 rounded-md cursor-pointer'
+          className='p-2 rounded-md cursor-pointer select select-bordered select-accent w-full'
         >
           <option value={task?.data?.status} defaultValue={task?.data?.status}>
             {task?.data?.status?.toUpperCase()}

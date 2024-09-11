@@ -16,7 +16,6 @@ const AddTask = () => {
     useCreateTask()
   const { setShowAddNewModal } = useKanban()
   const [subtaskFields, setSubtaskFields] = useState<SubtaskField[]>([new SubtaskField('')])
-  console.log("🚀 ~ AddTask ~ subtaskFields:", subtaskFields)
 
   const addSubtaskField = () =>
     setSubtaskFields(prev => [...prev, new SubtaskField('')])

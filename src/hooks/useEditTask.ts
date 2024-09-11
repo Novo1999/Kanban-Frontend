@@ -10,6 +10,7 @@ interface IFormValues {
   description: string
   status: string
   subtasks: Array<{ name: string, status: string }>
+  timeTracked: number
 }
 
 export const useEditTask = () => {
@@ -24,6 +25,7 @@ export const useEditTask = () => {
       description: data.description,
       subtasks: data?.subtasks?.map(st => ({ name: st.name, status: st.status })) || [],
       status: data.status,
+      timeTracked: data.timeTracked,
     }
 
     try {
