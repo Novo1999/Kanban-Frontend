@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction } from 'react'
 import { useDrag } from 'react-dnd'
 import { createPortal } from 'react-dom'
 import toast from 'react-hot-toast'
-import { FaTrash } from 'react-icons/fa'
+import { FaClock, FaTrash } from 'react-icons/fa'
 import { MdDragIndicator } from 'react-icons/md'
 import { OPTIONS } from '../constants'
 import useWindowDimensions from '../hooks/useWindowDimension'
@@ -12,6 +12,7 @@ import { useKanban } from '../pages/KanbanBoard'
 import { editTaskStatus } from '../utils/editTaskStatus'
 import DeleteTask from './DeleteTask'
 import Overlay from './Overlay'
+import { getFinalTime } from './TaskDetails'
 
 type DraggableTaskProp = {
   id: string
@@ -21,6 +22,7 @@ type DraggableTaskProp = {
   setDragCategory: (arg: string) => string | void
   statusType: string
   setTasks: Dispatch<SetStateAction<any>>
+  timeTracked: number
 }
 
 const DraggableTask = ({
@@ -29,7 +31,7 @@ const DraggableTask = ({
   subtasks,
   status,
   setDragCategory,
-  statusType, setTasks
+  statusType, setTasks, timeTracked
 }: DraggableTaskProp) => {
 
   const { setIsTaskDetailsOpen, setShowDeleteTaskModal, showDeleteTaskModal, setSelectedTask, selectedBoard } = useKanban()
@@ -115,22 +117,28 @@ const DraggableTask = ({
               } completed) `}
           </p>
         </div>
-        <div className='flex items-center'>
-          <div onClick={e => {
-            e.stopPropagation()
-          }} className="tooltip tooltip-error" data-tip="Delete Task">
-            <button onClick={() => {
-              setSelectedTask(id)
-              setShowDeleteTaskModal(true)
-            }} className='btn btn-error text-white btn-sm mr-2'>
-              <FaTrash />
-            </button>
-          </div>
-          {!onMobile && (
-            <div className='cursor-grab text-white'>
-              <MdDragIndicator />
+        <div className='flex flex-col'>
+          <div className='flex items-center'>
+            <div onClick={e => {
+              e.stopPropagation()
+            }} className="tooltip tooltip-error" data-tip="Delete Task">
+              <button onClick={() => {
+                setSelectedTask(id)
+                setShowDeleteTaskModal(true)
+              }} className='btn btn-error text-white btn-sm mr-2'>
+                <FaTrash />
+              </button>
             </div>
-          )}
+            {!onMobile && (
+              <div className='cursor-grab text-white'>
+                <MdDragIndicator />
+              </div>
+            )}
+          </div>
+          <div className='text-black mr-2 text-xs gap-2 justify-between flex items-center mt-2'>
+            <FaClock />
+            {getFinalTime(timeTracked)}
+          </div>
         </div>
 
       </div>

@@ -181,7 +181,7 @@ const EditInput = () => {
             className='input input-bordered w-full max-w-xs'
             type={editing === 'password' ? 'password' : 'text'}
           />
-          <button className='btn btn-primary mt-4'>Save</button>
+          <button className='btn btn-primary ml-4 btn-info'>Save</button>
         </form>
       </div>
     )

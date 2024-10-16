@@ -6,9 +6,11 @@ import { useGetTask } from '../hooks/useGetTask'
 class SubtaskField {
   subtask: string
   status: string
-  constructor(subtask: string, status: string) {
+  id: string
+  constructor(id: string, subtask: string, status: string) {
     this.subtask = subtask
     this.status = status
+    this.id = id
   }
 }
 
@@ -34,7 +36,7 @@ const EditTask = ({
   useEffect(() => {
     if (data && data.data.subtasks) {
       setSubtaskFields(
-        data.data.subtasks.map((st) => new SubtaskField(st.name, st.status))
+        data.data.subtasks.map((st) => new SubtaskField(st._id, st.name, st.status))
       )
     }
   }, [])
@@ -51,14 +53,14 @@ const EditTask = ({
 
   // Add a new empty subtask field
   const addSubtaskField = () => {
-    setSubtaskFields(prev => [...prev, new SubtaskField('', '')])
+    setSubtaskFields(prev => [...prev, new SubtaskField('','', '')])
   }
 
   return isTaskLoading ? (
     <Spinner />
   ) : (
     <Overlay>
-      <section className='fixed w-80 z-20 m-auto top-0 left-0 bottom-0 right-0 rounded-lg sm:w-[29rem] p-10 h-fit bg-sky-600 shadow-xl animate-flip-down animate-once animate-duration-500'>
+      <section className='fixed w-80 m-auto top-0 left-0 bottom-0 right-0 rounded-lg sm:w-[29rem] h-fit max-h-[50rem] p-10 bg-sky-600 shadow-xl animate-flip-down animate-once overflow-y-scroll animate-duration-500'>
         <div className='flex justify-between items-center sm:mb-10'>
           <h3 className='text-xl text-white font-semibold'>Edit Task</h3>
           <Button type='cross' onClick={() => setIsEditingTask(false)} />
@@ -94,7 +96,7 @@ const EditTask = ({
                   }}
                   type='text'
                   name={`subtask-${index}`}
-                  defaultValue={field.subtask}
+                  value={subtaskFields.find(f => f.id === field.id)?.subtask}
                   register={register}
                   placeholder='e.g. Make coffee'
                   required={false}
@@ -103,7 +105,7 @@ const EditTask = ({
                   <Button
                     type='cross'
                     onClick={() => {
-                      setSubtaskFields(prev => prev.filter((_, i) => i !== index))
+                      setSubtaskFields(prev => prev.filter(st => st.id !== field.id))
                     }}
                   />
                 )}

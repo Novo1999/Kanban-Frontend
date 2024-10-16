@@ -19,9 +19,9 @@ export const useCreateTask = () => {
     const formData = {
       title: data.title,
       description: data.description,
-      subtasks: data?.subtasks?.map(st => ({ name: st.subtask }))
-      ,
+      subtasks: data?.subtasks?.map(st => ({ name: st.subtask })),
       status: data.status,
+      timeTracked: 0
     }
     try {
       await customFetch.patch(`/kanban/boards/${id}/create-task`, formData)

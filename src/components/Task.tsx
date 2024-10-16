@@ -52,11 +52,13 @@ const Task = ({ statusType }: { statusType: string }) => {
           subtasks,
           _id: id,
           status,
+          timeTracked
         }: {
           title: string
           subtasks: [{ name: string; status: string; _id: string }]
           _id: string
           status: string
+          timeTracked: number
         }) => {
           if (status === statusType) {
             return (
@@ -69,6 +71,7 @@ const Task = ({ statusType }: { statusType: string }) => {
                 status={status}
                 setDragCategory={setDragCategory}
                 statusType={statusType}
+                timeTracked={timeTracked}
               />
             )
           }
