@@ -35,7 +35,6 @@ const TaskDetails = () => {
   const [isTaskOptionsOpen, setIsTaskOptionsOpen] = useState<boolean>(false)
   const [isEditingTask, setIsEditingTask] = useState<boolean>(false)
   const [subtaskEditLoading, setSubtaskEditLoading] = useState('')
-  console.log("🚀 ~ TaskDetails ~ subtaskEditLoading:", subtaskEditLoading)
   const [showDeleteTask, setShowDeleteTask] = useState<boolean>(false)
   const queryClient = useQueryClient()
   const { onSubmit } = useEditTask()
