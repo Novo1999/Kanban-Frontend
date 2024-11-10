@@ -92,9 +92,10 @@ const TaskDetails = () => {
   }
 
   // Change tasks status
-  const changeTaskStatus = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const changeTaskStatus = async (newStatus: string) => {
+    console.log(newStatus)
     // getting the updated status from the dropdown
-    const updatedStatus = { status: e.target.value }
+    const updatedStatus = { status: newStatus }
     await editTaskStatus(selectedBoard, selectedTask, updatedStatus)
     queryClient.invalidateQueries({ queryKey: ['selected-board'] })
   }
@@ -119,7 +120,7 @@ const TaskDetails = () => {
         <div
           ref={taskContainerRef}
           onClick={handleContainerClick}
-          className='bg-cyan-500 w-[35rem] mx-6 sm:mx-0 h-[50rem] max-h-[50rem] animate-fade-down animate-once animate-duration-[400ms] animate-normal rounded-lg p-10 overflow-y-scroll my-10'
+          className='bg-secondary w-[35rem] mx-6 sm:mx-0 h-[50rem] max-h-[50rem] animate-fade-down animate-once animate-duration-[400ms] animate-normal rounded-lg p-10 overflow-y-scroll my-10'
         >
           {/* Shows the delete modal inside the task details */}
           {showDeleteTask ? (
@@ -152,7 +153,7 @@ const TaskDetails = () => {
                   />
                 )}
               </div>
-              <p className='mb-4 w-fit text-slate-600'>
+              <p className='mb-4 w-fit text-white'>
                 {data?.data?.description}
               </p>
               <p className='mb-2 w-fit text-white'>Subtasks</p>
@@ -203,9 +204,9 @@ const TaskDetails = () => {
           <p className='text-black mt-6 font-semibold'>Track Time</p>
           <button onClick={() => {
             setShowTimeTracker(!showTimeTracker)
-              setTimeout(() => {
-                taskContainerRef.current?.scrollTo(0, taskContainerRef.current.scrollHeight);
-              }, 0);
+            setTimeout(() => {
+              taskContainerRef.current?.scrollTo(0, taskContainerRef.current.scrollHeight);
+            }, 0);
           }} className='btn btn-sm tooltip tooltip-bottom' data-tip="Start Counter">
             <FaClock />
           </button>

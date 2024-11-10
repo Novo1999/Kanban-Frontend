@@ -56,7 +56,7 @@ const Header = ({ page }: HeaderProp) => {
   // login and register page header
   if (page === 'login' || page === 'register')
     return (
-      <header className='absolute bg-sky-700 w-full flex justify-center p-10 shadow-md shrink-0 text-2xl sm:text-4xl transition-all duration-300 text-white font-rammetto m-auto'>
+      <header className='absolute bg-primary w-full flex justify-center p-10 shadow-md shrink-0 text-2xl sm:text-4xl transition-all duration-300 text-white font-rammetto m-auto'>
         <FaPhoenixFramework />
         <p className='ml-2'>
           FlowBoard
@@ -81,12 +81,12 @@ const Header = ({ page }: HeaderProp) => {
 
   return (
     <header
-      className={`fixed bg-sky-700 w-full p-10 z-10 ${isSidebarOpen && !onMobile ? 'pl-80' : 'pl-14'
-        } shadow-md text-2xl text-white left-0 font-sans top-0 flex items-center gap-12 sm:gap-0 justify-between`}
+      className={`fixed bg-primary w-full p-10 z-10 ${isSidebarOpen && !onMobile ? 'pl-80' : 'pl-14'
+        } shadow-xl text-2xl text-white left-0 font-sans top-0 flex items-center gap-12 sm:gap-0 justify-between`}
     >
       <button
         onClick={() => setIsSidebarOpen(true)}
-        className='absolute left-2 top-36 hover:left-4 transition-all duration-300 flex gap-2 items-center'
+        className='absolute left-0 top-36 bg-accent rounded-r-full px-1 py-2 flex justify-center transition-all duration-300 gap-2 items-center'
         onMouseEnter={() => setIsSideBarButtonHovered(true)}
         onMouseLeave={() => setIsSideBarButtonHovered(false)}
       >

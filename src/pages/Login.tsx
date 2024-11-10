@@ -46,9 +46,9 @@ const Login = () => {
     !data?.data?.email && (
       <>
         <Header page="login" />
-        <div className="bg-gradient-to-t w-full from-cyan-900 via-sky-900 to-cyan-900 overflow-hidden h-screen flex justify-center items-center">
-          <Form method="post" className="flex flex-col gap-2 rounded-lg w-screen transition-all duration-300 sm:w-fit mx-4 bg-sky-700 p-14 sm:p-20 sm:mt-14">
-            <h4 className="text-center text-3xl font-thin text-white">Log in</h4>
+        <div className="bg-neutral overflow-hidden h-screen flex justify-center items-center">
+          <Form method="post" className="flex flex-col gap-2 rounded-lg w-screen transition-all duration-300 sm:w-fit mx-4 bg-primary p-14 sm:p-20 sm:mt-14">
+            <h4 className="text-center text-3xl text-white font-bold">Log in</h4>
             <FormRow page="login" labelText="Email" type="text" name="email" />
             <FormRow setShowPassword={setShowPassword} labelText="Password" type={showPassword ? 'text' : 'password'} name="password" />
             <Button type="submit" buttonText={isSubmitting ? 'Submitting' : 'Login'} />

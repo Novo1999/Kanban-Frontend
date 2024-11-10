@@ -77,11 +77,11 @@ const DraggableTask = ({
   const setTaskColor = () => {
     switch (status) {
       case OPTIONS[0]:
-        return 'bg-sky-500'
+        return 'bg-blue-500 border border-accent shadow'
       case OPTIONS[1]:
-        return 'bg-purple-500'
+        return 'bg-purple-500 border border-accent shadow'
       case OPTIONS[2]:
-        return 'bg-teal-400'
+        return 'bg-teal-400 border border-accent shadow'
     }
   }
 

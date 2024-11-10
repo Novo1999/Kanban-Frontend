@@ -101,7 +101,7 @@ function KanbanBoard() {
         setShowDeleteTaskModal
       }}
     >
-      <div className='p-10 bg-gradient-to-t from-cyan-900 via-sky-900 to-cyan-900 w-full min-h-screen overflow-hidden'>
+      <div className='p-10 bg-primary w-full min-h-screen overflow-hidden'>
         <Header page='home' />
         <Sidebar />
         <Outlet />

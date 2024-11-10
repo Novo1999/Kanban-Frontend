@@ -81,17 +81,17 @@ const Sidebar = () => {
         width: isSidebarOpen ? 300 : 0,
         opacity: isSidebarOpen ? 1 : 0,
       }}
-      className='w-96 sm:w-72 h-screen shadow-xl top-0 pt-8 z-20 bg-cyan-700 left-0 animate-once animate-ease-in-out fixed'
+      className='w-96 sm:w-72 h-screen shadow-xl top-0 pt-8 z-20 bg-secondary left-0 animate-once animate-ease-in-out fixed'
     >
       <div className='pl-4'>
-        <div className='flex gap-2 font-rammetto items-center text-3xl text-white'>
+        <div className='flex gap-2 font-rammetto items-center text-3xl text-dark-neutral'>
           <FaPhoenixFramework />
           <p className='ml-2'>
             FlowBoard
           </p>
         </div>
 
-        <p className='text-sm pl-2 pt-6 font-mono font-bold text-slate-300'>
+        <p className='text-sm pl-2 pt-6 font-mono font-bold text-dark-neutral'>
           ALL BOARDS ({boards?.data?.length})
         </p>
       </div>
@@ -99,7 +99,7 @@ const Sidebar = () => {
         initial='closed'
         animate='open'
         variants={sideVariants}
-        className='overflow-y-auto pl-4 h-[70vh]'
+        className='overflow-y-auto pl-4 h-[70vh] text-dark-neutral'
       >
         {boards?.data?.map((board: Board) => {
           const { boardName, _id: id } = board
@@ -135,10 +135,10 @@ const Sidebar = () => {
           <span className='text-white text-5xl relative cursor-pointer'>
             {/* profile options when click */}
             {isProfileOptionsOpen && (
-              <div className='animate-fade-up animate-duration-300 animate-once animate-ease-out absolute text-sm bg-cyan-800 rounded-md w-24 h-20 flex flex-col justify-center left-4 bottom-12'>
+              <div className='animate-fade-up animate-duration-300 animate-once animate-ease-out absolute text-sm bg-neutral rounded-md w-24 h-20 flex flex-col justify-center left-4 bottom-12'>
                 <Link
                   to='/settings'
-                  className='p-2 hover:bg-cyan-600 transition-all duration-300 rounded-sm text-center'
+                  className='p-2 hover:bg-secondary bg-opacity-80 hover:text-dark-neutral transition-all duration-300 rounded-sm text-center'
                 >
                   Settings
                 </Link>
@@ -148,7 +148,7 @@ const Sidebar = () => {
                     toast.success('Logged out successfully')
                     navigate('/')
                   }}
-                  className='p-2 hover:bg-cyan-600 transition-all duration-300 rounded-sm'
+                  className='p-2 hover:bg-secondary bg-opacity-80 hover:text-dark-neutral transition-all duration-300 rounded-sm'
                 >
                   Log out
                 </button>

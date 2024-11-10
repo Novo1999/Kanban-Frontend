@@ -25,22 +25,20 @@ const Button = ({
   setIsEditingTask,
   setShowDeleteTask,
 }: ButtonProp) => {
-  const { setShowDeleteBoardModal } = useKanban()
+  const { setShowDeleteBoardModal, isSidebarOpen } = useKanban()
   switch (type) {
     case 'option-menu':
       return (
-        <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow absolute top-20 right-16">
+        <ul className="menu dropdown-content rounded-box z-[1] w-52 p-2 shadow absolute top-20 right-16 bg-accent">
           <li>
-
             <button
-              onClick={() => setIsEditingBoard!(true)}
+              onClick={() => setIsEditingBoard?.(true)}
               className='w-full flex justify-center items-center gap-1 text-white p-3 text-lg'
             >
               <FiEdit3 />
               Edit
             </button>
           </li>
-
           <li>
             <button
               onClick={() => setShowDeleteBoardModal(true)}
@@ -93,7 +91,7 @@ const Button = ({
             type='button'
             className='option-menu text-white'
           >
-            <summary className="btn m-1 pb-0 btn-sm">
+            <summary className="btn m-1 pb-0 btn-sm bg-accent border-0 text-white hover:scale-105 hover:bg-accent">
               <BsThreeDotsVertical />
             </summary>
           </button>
@@ -105,7 +103,7 @@ const Button = ({
       return (
         <button
           onClick={onClick}
-          className='text-blue-100 bg-cyan-600 hover:bg-blue-400 hover:text-white font-bold px-2 py-2 sm:py-2 sm:px-4 rounded-full text-xs sm:text-lg transition-all duration-300'
+          className='text-blue-100 bg-accent hover:scale-105 hover:text-white font-bold px-2 py-2 sm:py-2 sm:px-4 rounded-full text-xs sm:text-lg transition-all duration-300'
           type='submit'
         >
           {buttonText}
@@ -123,10 +121,10 @@ const Button = ({
       )
 
     case 'hide':
-      return (
+      return (isSidebarOpen &&
         <button
           onClick={onClick}
-          className='text-slate-300 top-2 relative hover:text-slate-400 font-bold py-2 w-fit h-fit px-4 rounded-full transition-all duration-300 flex gap-2 items-center'
+          className='text-white bg-accent top-2 relative hover:scale-105 font-bold py-2 w-fit h-fit px-4 rounded-full transition-all duration-300 flex gap-2 items-center'
           type='button'
         >
           <BiHide />
@@ -135,10 +133,10 @@ const Button = ({
       )
 
     case 'createBoard':
-      return (
+      return (isSidebarOpen &&
         <button
           onClick={onClick}
-          className={`text-blue-300 hover:text-blue-400 bg-cyan-700 w-fit font-bold py-2 mt-6 ml-2 px-4 rounded-full mx-auto transition-all duration-300 flex gap-2 items-center board-input`}
+          className={`text-white hover:scale-105 bg-accent w-fit font-bold py-2 mt-6 ml-2 px-4 rounded-full mx-auto transition-all duration-300 flex gap-2 items-center board-input`}
           type='submit'
         >
           <TfiLayoutMediaRightAlt />

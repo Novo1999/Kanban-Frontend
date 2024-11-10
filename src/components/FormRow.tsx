@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button } from '.'
 import { OPTIONS } from '../constants'
@@ -10,46 +10,6 @@ import { useGetTask } from '../hooks/useGetTask.js'
 import { useKanban } from '../pages/KanbanBoard'
 import { editBoardName } from '../utils/editBoardName'
 
-export interface IFormValues {
-  title: string
-  description: string
-  subtask1: string
-  subtask2: string
-  status: string
-  name: string
-}
-
-
-type Task = {
-  data: {
-    data: {
-      description: string
-      status: string
-      subtasks: Array<{ name: string; status: string; _id: string }>
-      title: string
-      _id: string
-    }
-  }
-}
-
-type FormRowProps = {
-  labelText?: string
-  type: string
-  name: string
-  placeholder?: string
-  inputType?: string
-  required?: boolean
-  register?: any
-  isEditingBoard?: boolean
-  setIsEditingBoard?: (arg: boolean) => void
-  setIsOptionsOpen?: (arg: boolean) => void
-  changeTaskStatus?: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  defaultValue?: string
-  page?: string
-  setShowPassword?: (arg: boolean) => void
-  value?: string
-  onChange?: (e) => void
-}
 
 const FormRow = ({
   labelText,
@@ -84,9 +44,16 @@ const FormRow = ({
 
   const { data: board } = useGetBoard()
   const { data: task } = useGetTask() as Task
+  const [taskStatus, setTaskStatus] = useState("")
+  const [isOpen, setIsOpen] = useState(false)
 
-  const { register: editBoardRegister, handleSubmit: editBoardSubmit } =
-    useForm()
+  useEffect(() => {
+    if (!task) return
+    if (task?.data?.status) setTaskStatus(task?.data?.status)
+  }, [task?.data?.status, task])
+
+
+  const { register: editBoardRegister, handleSubmit: editBoardSubmit } = useForm()
 
   // editing the boardName
   const onEditBoardNameSubmit = (data: object) => {
@@ -114,44 +81,44 @@ const FormRow = ({
         </select>
       </>
     )
-  // this is for when someone views the task and may want to edit
+  console.log(task?.data?.status)
   if (inputType === 'edit-options')
     return (
-      <div className='flex flex-col gap-2'>
-        <label className=' text-white font-semibold' htmlFor={labelText}>
+      <div className={`flex flex-col gap-2 ${isOpen ? "mb-36": "mb-0" }`}>
+        <label className="text-white font-semibold" htmlFor={labelText}>
           Status
         </label>
 
-        <select
-          onChange={(e) => changeTaskStatus?.(e)}
-          className='p-2 rounded-md cursor-pointer select select-bordered select-accent w-full'
-        >
-          <option value={task?.data?.status} defaultValue={task?.data?.status}>
-            {task?.data?.status?.toUpperCase()}
-          </option>
-          {/* if the task status is not in the options, those are rendered so they can be selected later */}
-          <option
-            value={OPTIONS.filter((opt) => opt !== task?.data?.status)[0]}
+        <div className="dropdown w-full">
+          <label onClick={() => setIsOpen(!isOpen)} tabIndex={0} className="btn w-full p-2 rounded-md cursor-pointer bg-accent hover:bg-opacity-70 hover:bg-accent text-white">
+            {taskStatus.toUpperCase()}
+          </label>
+
+          {isOpen && <ul
+            tabIndex={0}
+            className="dropdown-content menu p-2 shadow rounded-box w-full bg-accent text-white"
           >
-            {OPTIONS.filter(
-              (opt) => opt !== task?.data?.status
-            )[0].toUpperCase()}
-          </option>
-          <option
-            value={OPTIONS.filter((opt) => opt !== task?.data?.status)[1]}
-          >
-            {OPTIONS.filter(
-              (opt) => opt !== task?.data?.status
-            )[1].toUpperCase()}
-          </option>
-        </select>
+            {OPTIONS.map((opt) => (
+              <li
+                key={opt}
+                onClick={() => {
+                  changeTaskStatus?.(opt)  
+                  setTaskStatus(opt)
+                  setIsOpen(false)      
+                }}
+              >
+                <a className="capitalize">{opt.toUpperCase()}</a>
+              </li>
+            ))}
+          </ul>}
+        </div>
       </div>
     )
 
   // when not editing the board show the add task form
   if (name === 'board' && !isEditingBoard)
     return (
-      <div className='bg-cyan-600 p-4 shadow-lg relative bottom-8 md:bottom-12 2xl:bottom-2'>
+      <div className='bg-accent p-4 shadow-lg relative bottom-8 md:bottom-12 2xl:bottom-2'>
         <div className={`flex items-center gap-2 pl-6 board-input relative`}>
           <form onSubmit={handleSubmit(onSubmit)}>
             {errors.boardName?.message ? (
@@ -166,7 +133,7 @@ const FormRow = ({
             )}
             <input
               autoFocus
-              className='rounded h-10 pl-2 w-52 text-white'
+              className='rounded h-10 pl-2 w-52 text-dark-neutral bg-white'
               required={required}
               type={type}
               {...createBoardRegister('boardName', {
@@ -188,7 +155,7 @@ const FormRow = ({
         {createBoardInputHasValue && (
           <button
             onClick={handleSubmit(onSubmit)}
-            className='font-thin text-white bg-cyan-400 p-2 rounded-3xl relative left-6 top-2'
+            className='font-thin text-white bg-secondary p-2 rounded-3xl relative left-6 top-2 '
           >
             Create
           </button>
@@ -217,7 +184,7 @@ const FormRow = ({
           <input
             defaultValue={board?.data.boardName}
             autoFocus
-            className='rounded h-6 sm:h-10 pl-2 w-32 sm:w-96 text-sm text-white'
+            className='rounded h-6 sm:h-10 pl-2 w-32 sm:w-96 text-sm text-dark-neutral bg-white outline-none'
             {...editBoardRegister('boardName', {
               maxLength: {
                 value: 45,
@@ -266,7 +233,7 @@ const FormRow = ({
               : setPasswordHasValues(false)
           }}
           autoFocus={page === 'login' ? name === 'email' : name === 'name'}
-          className='rounded h-12 pl-2 w-full sm:w-96 m-auto input input-bordered input-primary'
+          className='rounded h-12 pl-2 w-full sm:w-96 m-auto input input-bordered bg-white text-black'
           required={required}
           type={type}
           name={name}
@@ -309,3 +276,45 @@ const FormRow = ({
   )
 }
 export default FormRow
+
+
+export interface IFormValues {
+  title: string
+  description: string
+  subtask1: string
+  subtask2: string
+  status: string
+  name: string
+}
+
+
+type Task = {
+  data: {
+    data: {
+      description: string
+      status: string
+      subtasks: Array<{ name: string; status: string; _id: string }>
+      title: string
+      _id: string
+    }
+  }
+}
+
+type FormRowProps = {
+  labelText?: string
+  type: string
+  name: string
+  placeholder?: string
+  inputType?: string
+  required?: boolean
+  register?: any
+  isEditingBoard?: boolean
+  setIsEditingBoard?: (arg: boolean) => void
+  setIsOptionsOpen?: (arg: boolean) => void
+  changeTaskStatus?: (newStatus: string) => void
+  defaultValue?: string
+  page?: string
+  setShowPassword?: (arg: boolean) => void
+  value?: string
+  onChange?: (e) => void
+}

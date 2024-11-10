@@ -10,7 +10,7 @@ type status = Array<{
 const status: status = [
   {
     name: 'TASK',
-    color: 'bg-blue-400',
+    color: 'bg-blue-500',
     count: 0,
   },
   {
@@ -65,7 +65,7 @@ const Status = ({ type }: { type?: string }) => {
   if (type === 'task') return (
     <div key={status[0].name} className='flex gap-2 items-center'>
       <div className={`w-4 h-4 rounded-2xl ${status[0].color}`}></div>
-      <p className='font-semibold text-slate-400'>
+      <p className='font-semibold text-white'>
         {status[0].name} ({status[0].count})
       </p>
     </div>
@@ -74,7 +74,7 @@ const Status = ({ type }: { type?: string }) => {
   if (type === 'in progress') return (
     <div key={status[1].name} className='flex gap-2 items-center'>
       <div className={`w-4 h-4 rounded-2xl ${status[1].color}`}></div>
-      <p className='font-semibold text-slate-400'>
+      <p className='font-semibold text-white'>
         {status[1].name} ({status[1].count})
       </p>
     </div>
@@ -83,7 +83,7 @@ const Status = ({ type }: { type?: string }) => {
   if (type === 'completed') return (
     <div key={status[2].name} className='flex gap-2 items-center'>
       <div className={`w-4 h-4 rounded-2xl ${status[2].color}`}></div>
-      <p className='font-semibold text-slate-400'>
+      <p className='font-semibold text-white'>
         {status[2].name} ({status[2].count})
       </p>
     </div>
@@ -95,8 +95,8 @@ const Status = ({ type }: { type?: string }) => {
       <div className='grid gap-4 sm:grid-cols-3 text-sm'>
         {status.map((status) => (
           <div key={status.name} className='flex gap-2 items-center'>
-            <div className={`w-4 h-4 rounded-2xl ${status.color}`}></div>
-            <p className='font-semibold text-slate-400'>
+            <div className={`w-4 h-4 rounded-2xl ${status.color} shadow-md border border-dark-neutral`}></div>
+            <p className='font-semibold text-white'>
               {status.name} ({status.count})
             </p>
           </div>
