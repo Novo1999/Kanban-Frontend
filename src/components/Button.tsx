@@ -181,7 +181,7 @@ const Button = ({
       return (
         <button
           type='submit'
-          className='relative text-white font-semibold transition-all capitalize text-md w-full bg-cyan-500 p-3 rounded-3xl hover:bg-white duration-300 hover:text-cyan-500'
+          className='relative text-white font-semibold transition-all capitalize text-md w-full bg-accent p-3 rounded-3xl hover:scale-[1.02] duration-300'
         >
           {buttonText}
         </button>

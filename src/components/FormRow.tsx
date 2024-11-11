@@ -10,7 +10,6 @@ import { useGetTask } from '../hooks/useGetTask.js'
 import { useKanban } from '../pages/KanbanBoard'
 import { editBoardName } from '../utils/editBoardName'
 
-
 const FormRow = ({
   labelText,
   type,
@@ -81,10 +80,9 @@ const FormRow = ({
         </select>
       </>
     )
-  console.log(task?.data?.status)
   if (inputType === 'edit-options')
     return (
-      <div className={`flex flex-col gap-2 ${isOpen ? "mb-36": "mb-0" }`}>
+      <div className={`flex flex-col gap-2 ${isOpen ? "mb-36" : "mb-0"}`}>
         <label className="text-white font-semibold" htmlFor={labelText}>
           Status
         </label>
@@ -102,9 +100,9 @@ const FormRow = ({
               <li
                 key={opt}
                 onClick={() => {
-                  changeTaskStatus?.(opt)  
+                  changeTaskStatus?.(opt)
                   setTaskStatus(opt)
-                  setIsOpen(false)      
+                  setIsOpen(false)
                 }}
               >
                 <a className="capitalize">{opt.toUpperCase()}</a>
@@ -262,9 +260,8 @@ const FormRow = ({
           autoFocus={name === 'title' && true}
           className={`rounded h-12 pl-2 w-full text-white ${name === 'subtask2' && 'animate-fade animate-duration-500'
             } `}
-          required={required}
           {...register?.(
-            name
+            name, { required: name === 'title' && `${name} is required` }
           )}
           onChange={onChange}
           type={type}
@@ -272,6 +269,8 @@ const FormRow = ({
           placeholder={placeholder}
         />
       )}
+
+      
     </div>
   )
 }

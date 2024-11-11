@@ -1,3 +1,4 @@
+import { ErrorMessage } from '@hookform/error-message'
 import { useEffect, useState } from 'react'
 import { Button, FormRow, Overlay } from '.'
 import { useCreateTask } from '../hooks/useCreateTask'
@@ -12,7 +13,7 @@ class SubtaskField {
 
 
 const AddTask = () => {
-  const { register, handleSubmit, onSubmit, setValue } =
+  const { register, handleSubmit, onSubmit, setValue, errors } =
     useCreateTask()
   const { setShowAddNewModal } = useKanban()
   const [subtaskFields, setSubtaskFields] = useState<SubtaskField[]>([new SubtaskField('')])
@@ -20,13 +21,14 @@ const AddTask = () => {
   const addSubtaskField = () =>
     setSubtaskFields(prev => [...prev, new SubtaskField('')])
 
+
   useEffect(() => {
     setValue('subtasks', subtaskFields.map(st => ({ subtask: st.subtask })))
   }, [subtaskFields, setValue])
 
   return (
     <Overlay>
-      <section className='relative z-20 m-auto top-0 left-0 bottom-0 right-0 rounded-lg w-screen mx-4 sm:w-[29rem] p-10 h-fit bg-cyan-600 animate-jump-in animate-ease-in-out'>
+      <section className='relative z-20 m-auto top-0 left-0 bottom-0 right-0 rounded-lg w-screen mx-4 sm:w-[29rem] p-10 h-fit bg-secondary animate-jump-in animate-ease-in-out'>
         <div className='flex justify-between items-center mb-10'>
           <h3 className='text-xl text-white font-semibold'>Add New Task</h3>
           <Button
@@ -40,13 +42,22 @@ const AddTask = () => {
           onSubmit={handleSubmit(onSubmit)}
           className='flex flex-col gap-6'
         >
-          <FormRow
-            labelText='Title'
-            type='text'
-            name='title'
-            register={register}
-            placeholder='e.g. Take coffee break'
-          />
+          <div className='relative'>
+            <FormRow
+              required
+              labelText='Title'
+              type='text'
+              name='title'
+              register={register}
+              placeholder='e.g. Take coffee break'
+            />
+            <ErrorMessage
+              errors={errors}
+              name="title"
+              render={({ message }) => <p className='absolute text-neutral capitalize font-bold'>{message}</p>}
+            />
+          </div>
+
           <FormRow
             labelText='Description'
             type='text'
@@ -95,6 +106,7 @@ const AddTask = () => {
             name='options'
             inputType='options'
           />
+
           <Button type='createNew' buttonText='create new task' />
         </form>
       </section>

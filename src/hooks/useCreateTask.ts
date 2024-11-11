@@ -8,7 +8,7 @@ import customFetch from '../utils/customFetch'
 
 export const useCreateTask = () => {
   const queryClient = useQueryClient()
-  const { register, handleSubmit, watch, resetField, setValue } = useForm<any>()
+  const { register, handleSubmit, watch, resetField, setValue, setError, formState: { errors } } = useForm<any>()
   const { setShowAddNewModal } = useKanban()
 
   const { id } = useParams()
@@ -16,13 +16,15 @@ export const useCreateTask = () => {
   const onSubmit: SubmitHandler<any> = async (
     data,
   ) => {
+    console.log(data)
     const formData = {
       title: data.title,
       description: data.description,
-      subtasks: data?.subtasks?.map(st => ({ name: st.subtask })),
+      subtasks: data?.subtasks?.find(st => !!st.subtask) ? data?.subtasks?.map(st => ({ name: st.subtask })) : [],
       status: data.status,
       timeTracked: 0
     }
+    
     try {
       await customFetch.patch(`/kanban/boards/${id}/create-task`, formData)
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
@@ -38,6 +40,6 @@ export const useCreateTask = () => {
     handleSubmit,
     onSubmit,
     resetField,
-    setValue
+    setValue, errors, setError
   }
 }
