@@ -1,7 +1,7 @@
-import { useKanban } from '../pages/KanbanBoard'
 import { useQueryClient } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { useKanban } from '../pages/KanbanBoard'
 import customFetch from '../utils/customFetch'
 
 type Input = {
@@ -22,16 +22,16 @@ export const useCreateBoard = () => {
     try {
       await customFetch.post('/kanban/boards/create', data)
       toast.success('Board added successfully')
-      queryClient.invalidateQueries({ queryKey: ['boards'] })
     } catch (error) {
       toast.error('An error occurred')
       return error
     }
   }
-
+  
   const { setCreateNewBoard } = useKanban()
   const onSubmit = async (data: object) => {
     await createBoard(data)
+    queryClient.invalidateQueries({ queryKey: ['boards'] })
     reset()
     setCreateNewBoard(false)
   }
