@@ -1,5 +1,5 @@
-import customFetch from '../utils/customFetch'
 import { useQuery } from '@tanstack/react-query'
+import customFetch from '../utils/customFetch'
 
 const fetchBoards = async () => await customFetch.get('/kanban/boards')
 
