@@ -28,8 +28,6 @@ const EditTask = ({
   } = useEditTask()
 
   const { data, isLoading: isTaskLoading } = useGetTask()
-
-
   const [subtaskFields, setSubtaskFields] = useState<SubtaskField[]>([])
 
   // Initialize the subtask fields based on the fetched data
@@ -53,14 +51,14 @@ const EditTask = ({
 
   // Add a new empty subtask field
   const addSubtaskField = () => {
-    setSubtaskFields(prev => [...prev, new SubtaskField('','', '')])
+    setSubtaskFields(prev => [...prev, new SubtaskField(crypto.randomUUID(),'', '')])
   }
 
   return isTaskLoading ? (
     <Spinner />
   ) : (
     <Overlay>
-      <section className='fixed w-80 m-auto top-0 left-0 bottom-0 right-0 rounded-lg sm:w-[29rem] h-fit max-h-[50rem] p-10 bg-sky-600 shadow-xl animate-flip-down animate-once overflow-y-scroll animate-duration-500'>
+      <section className='fixed w-80 m-auto top-0 left-0 bottom-0 right-0 rounded-lg sm:w-[29rem] h-fit max-h-[50rem] p-10 bg-secondary shadow-xl animate-flip-down animate-once overflow-y-scroll animate-duration-500'>
         <div className='flex justify-between items-center sm:mb-10'>
           <h3 className='text-xl text-white font-semibold'>Edit Task</h3>
           <Button type='cross' onClick={() => setIsEditingTask(false)} />

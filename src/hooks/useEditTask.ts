@@ -6,11 +6,11 @@ import { useKanban } from '../pages/KanbanBoard'
 import customFetch from '../utils/customFetch'
 
 interface IFormValues {
-  title: string
-  description: string
-  status: string
+  title?: string
+  description?: string
+  status?: string
   subtasks: Array<{ name: string, status: string }>
-  timeTracked: number
+  timeTracked?: number
 }
 
 export const useEditTask = () => {
