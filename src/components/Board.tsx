@@ -24,10 +24,10 @@ const Board = ({ boardName, boardId, selectedBoard, onClick }: BoardProp) => {
       <Link
         to={`/kanban/kanban-board/${boardId}`}
         onClick={onClick}
-        className={`flex items-center gap-4 cursor-pointer pl-2 capitalize hover:bg-accent transition-all break-all duration-200 ${selectedBoard === boardId ? 'bg-secondary translate-x-[-15px]' : ''
+        className={`flex items-center gap-4 cursor-pointer pl-2 capitalize hover:bg-accent transition-all break-all duration-200 ${selectedBoard === boardId ? 'bg-neutral translate-x-[-15px]' : ''
           } hover:translate-x-[-15px]`}
       >
-        <TfiLayoutMediaRightAlt />
+        <TfiLayoutMediaRightAlt className='text-white' />
         <p className='text-gray-200 py-4 font-semibold'>{boardName}</p>
       </Link>
     </motion.div>
