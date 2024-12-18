@@ -95,7 +95,7 @@ const Settings = () => {
               <label className="label">
                 <span className="label-text">Image</span>
               </label>
-              <img className="h-24 w-24 object-contain p-1" src={data?.data?.avatarUrl} />
+              {data?.data?.avatarUrl && <img className="h-24 w-24 object-contain p-1" src={data?.data?.avatarUrl} />}
               <div className="flex items-center gap-4 border w-fit px-4 rounded-lg">
                 <ImageUploader />
               </div>
