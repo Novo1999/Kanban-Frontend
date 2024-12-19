@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion'
-import React, { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { CgProfile } from 'react-icons/cg'
-import { FaClock, FaPhoenixFramework } from 'react-icons/fa'
+import { FaClock, FaPhoenixFramework, FaTrash } from 'react-icons/fa'
+import { RxCross1 } from 'react-icons/rx'
 import { Link, useLoaderData, useNavigate } from 'react-router-dom'
 import { Board, Button, FormRow } from '.'
+import useDebounce from '../hooks/useDebounce'
 import { useGetAllBoards } from '../hooks/useGetAllBoards'
 import useWindowDimensions from '../hooks/useWindowDimension'
 import { useKanban } from '../pages/KanbanBoard'
@@ -14,10 +16,7 @@ import Clock from './Clock'
 
 type Board = {
   boardName: string
-  createdAt: string
-  createdBy: string
   tasks: []
-  updatedAt: string
   _id: string
 }
 
@@ -26,26 +25,34 @@ const Sidebar = () => {
   const navigate = useNavigate()
   const windowDimensions = useWindowDimensions()
   const onMobile = windowDimensions.width < 450
-  const { isSidebarOpen, setIsSidebarOpen, createNewBoard, setCreateNewBoard, selectedBoard, setSelectedBoard } = useKanban()
+  const { isSidebarOpen, setIsSidebarOpen, createNewBoard, setCreateNewBoard, selectedBoard, setSelectedBoard, setShowDeleteBoardModal } = useKanban()
   const [search, setSearch] = useState('')
-  // fetching all boards when sidebar opens
-  const boards = useGetAllBoards(search)
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  const debounceSetSearch = useDebounce((val: string) => {
+    setDebouncedSearch(val)
+  }, 300)
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSearch(value)
+    debounceSetSearch(value)
+  }
+
+  const boards = useGetAllBoards(debouncedSearch)
 
   const [isProfileOptionsOpen, setIsProfileOptionsOpen] = useState(false)
 
-  // closing profile option and board input field on click outside
   useEffect(() => {
-    const closeOpenfields = (e: MouseEvent) => {
+    const closeOpenFields = (e: MouseEvent) => {
       const target = e.target as Element
-      // board input
       if (createNewBoard && !target.closest('.board-input')) setCreateNewBoard(false)
-      // profile options
       if (isProfileOptionsOpen && !target.closest('.profile-options')) setIsProfileOptionsOpen(false)
     }
-    document.addEventListener('click', closeOpenfields)
 
-    return () => document.removeEventListener('click', closeOpenfields)
-  }, [createNewBoard, setCreateNewBoard, isProfileOptionsOpen])
+    document.addEventListener('click', closeOpenFields)
+    return () => document.removeEventListener('click', closeOpenFields)
+  }, [createNewBoard, isProfileOptionsOpen])
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
@@ -75,58 +82,79 @@ const Sidebar = () => {
       }}
       className="w-96 sm:w-72 h-screen shadow-xl top-0 pt-8 z-20 bg-secondary left-0 animate-once animate-ease-in-out fixed flex flex-col"
     >
-      {/* Sidebar content split into two flex sections */}
       <div className="flex flex-col flex-grow overflow-y-auto">
         <div className="pl-4">
-          {/* Logo Section */}
           <div className="flex gap-2 font-rammetto items-center text-3xl text-dark-neutral">
             <FaPhoenixFramework />
             <p className="ml-2">FlowBoard</p>
           </div>
 
-          {/* Clock Section */}
           <div className="flex gap-2 items-center badge-neutral text-white w-fit px-4 rounded-full">
             <FaClock />
             <Clock />
           </div>
 
-          {/* Search */}
           <div className="mt-4">
             <label htmlFor="search" className="text-white">
-              Search Board
+              Search Board or Task
             </label>
-            <input onChange={(e) => setSearch(e.target.value)} type="search" name="search" id="search" value={search} className="input input-primary" />
+            <input onChange={handleChange} type="search" name="search" id="search" value={search} className="input input-primary bg-white text-black" />
+            {search && (
+              <button
+                onClick={() => {
+                  setSearch('')
+                  setDebouncedSearch('')
+                }}
+                className="btn ml-1 btn-sm"
+              >
+                <RxCross1 />
+              </button>
+            )}
           </div>
 
-          {/* Boards Count */}
           <p className="text-sm pl-2 pt-6 font-mono font-bold text-dark-neutral">ALL BOARDS ({boards?.data?.length})</p>
         </div>
 
-        {/* Boards List */}
         <motion.div initial="closed" animate="open" variants={sideVariants} className="overflow-y-auto pl-4 text-dark-neutral flex-grow">
           {boards?.data?.map((board: Board) => {
             const { boardName, _id: id } = board
             return (
-              <Board
-                onClick={() => {
-                  getBoard(id)
-                  setSelectedBoard(id)
-                  onMobile && setIsSidebarOpen(false)
-                }}
-                key={id}
-                boardName={boardName}
-                boardId={id}
-                selectedBoard={selectedBoard}
-              />
+              <div className="relative">
+                <Board
+                  onClick={() => {
+                    getBoard(id)
+                    setSelectedBoard(id)
+                    onMobile && setIsSidebarOpen(false)
+                  }}
+                  key={id}
+                  boardName={boardName}
+                  boardId={id}
+                  selectedBoard={selectedBoard}
+                />
+                <button
+                  onClick={() => {
+                    setSelectedBoard(id)
+                    setShowDeleteBoardModal(true)
+                  }}
+                  title="Delete"
+                  className="absolute btn right-6 z-50 top-3 bg-transparent border-0 outline-none shadow-none hover:bg-red-600 btn-sm"
+                >
+                  <FaTrash className="text-white" />
+                </button>
+              </div>
             )
           })}
+
+          {boards?.data?.length === 0 && (
+            <p className="text-white">
+              No Result for <span className="font-bold">{search}</span>
+            </p>
+          )}
         </motion.div>
       </div>
 
-      {/* Footer Section */}
       <div className="flex-shrink-0 p-4">
         <div className="relative">{createNewBoard ? <FormRow type="text" name="board" /> : <Button onClick={() => setCreateNewBoard(true)} type="createBoard" buttonText="+ Create New Board" />}</div>
-        {/* Profile */}
         <div className="flex justify-between items-center mt-4">
           <div className="flex flex-col gap-2 items-center profile-options">
             <span className="text-white text-5xl relative cursor-pointer">
@@ -161,4 +189,5 @@ const Sidebar = () => {
     </motion.aside>
   )
 }
+
 export default Sidebar
