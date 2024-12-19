@@ -37,34 +37,33 @@ const TaskDetails = () => {
   const [subtaskEditLoading, setSubtaskEditLoading] = useState('')
   const [showDeleteTask, setShowDeleteTask] = useState<boolean>(false)
   const queryClient = useQueryClient()
-  const [timer, setTimer] = useState(0)
+  const [timer, setTimer] = useState<number | null>(null)
   const [timerRunning, setTimerRunning] = useState(false)
   const [showTimeTracker, setShowTimeTracker] = useState(false)
   const [isAddingSubtask, setIsAddingSubtask] = useState(false)
   const [subtaskInput, setSubtaskInput] = useState('')
   const intervalId = useRef<number | null>(null)
 
-  
   const { onSubmit } = useEditTask()
 
   useEffect(() => {
     if (!data?.data) return
     if (!data?.data?._id) return
 
-    setTimer(data?.data?.timeTracked || 0)
+    if (timer === null) setTimer(data?.data?.timeTracked || 0)
   }, [data])
 
   const startTimer = () => {
     setTimerRunning(true)
     intervalId.current = setInterval(() => {
-      setTimer((prev) => prev + 1)
+      setTimer((prev) => (prev || 0) + 1)
     }, 1000)
   }
   const stopTimer = () => {
     setTimerRunning(false)
     setTimer(timer)
     if (intervalId.current) clearInterval(intervalId.current)
-    onSubmit({ ...data?.data, timeTracked: timer })
+    if (timerRunning) onSubmit({ ...data?.data, timeTracked: timer || 0 })
   }
 
   const resetTimer = () => {
@@ -80,10 +79,12 @@ const TaskDetails = () => {
     const updatedStatus = e.target.checked ? { status: 'done' } : { status: 'undone' }
     // await is necessary so the query client works
     setSubtaskEditLoading(id)
-    await editSubtaskStatus(selectedBoard, selectedTask, id, updatedStatus)
+    const res = await editSubtaskStatus(selectedBoard, selectedTask, id, updatedStatus)
+    if (res?.data?.msg) {
+      // updating the board and tasks remote state after changing subtask status
+      queryClient.invalidateQueries({ queryKey: ['selected-task'] })
+    }
     setSubtaskEditLoading('')
-    // updating the board and tasks remote state after changing subtask status
-    queryClient.invalidateQueries({ queryKey: ['selected-task'] })
     queryClient.invalidateQueries({ queryKey: ['selected-board'] })
   }
 
@@ -212,7 +213,7 @@ const TaskDetails = () => {
           </button>
           {showTimeTracker && (
             <div className="h-36 flex justify-center items-center text-black rounded-lg mt-4 flex-col gap-2">
-              <p className="text-xl">{getFinalTime(timer)}</p>
+              <p className="text-xl">{getFinalTime(timer || 0)}</p>
               <div className="flex gap-2 text-3xl">
                 <motion.button {...(timerRunning && { whileTap: { scale: 1.2 } })} disabled={!timerRunning} onClick={stopTimer} className="tooltip tooltip-bottom" data-tip="Pause">
                   <FaPauseCircle />

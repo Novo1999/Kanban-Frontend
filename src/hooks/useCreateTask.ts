@@ -16,7 +16,6 @@ export const useCreateTask = () => {
   const onSubmit: SubmitHandler<any> = async (
     data,
   ) => {
-    console.log(data)
     const formData = {
       title: data.title,
       description: data.description,

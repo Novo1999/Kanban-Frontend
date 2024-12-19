@@ -35,75 +35,45 @@ const deleteTask = async (boardId: string, taskId: string, client: { invalidateQ
   }
 }
 
-
-const DeleteModal = ({ type, setShowDeleteTask }: { type: string, setShowDeleteTask?: (isTaskDetailsOpen: boolean) => void }) => {
+const DeleteModal = ({ type, setShowDeleteTask }: { type: string; setShowDeleteTask?: (isTaskDetailsOpen: boolean) => void }) => {
   const { setIsTaskDetailsOpen, setSelectedTask } = useKanban()
   const queryClient = useQueryClient()
   const { setShowDeleteBoardModal, selectedBoard, selectedTask } = useKanban()
   const navigate = useNavigate()
-  if (type === 'board')
-    return (
-      <div className='bg-cyan-300 rounded-lg w-80 h-60 m-auto flex flex-col justify-center items-center relative shadow-xl animate-jump-in animate-ease-in-out'>
-        <p className='font-semibold text-2xl text-gray-800'>Are you sure?</p>
-        <div className='flex gap-10 mt-8'>
-          <button
-            onClick={() => {
-              deleteBoard(
-                selectedBoard,
-                queryClient,
-                navigate,
-                setShowDeleteBoardModal
-              )
-            }}
-            className='px-6 py-4 bg-green-500 rounded-xl text-white font-thin text-lg hover:scale-105 transition-all duration-200 shadow-md'
-          >
+
+  const handleClose = () => {
+    if (type === 'board') setShowDeleteBoardModal(false)
+    if (type === 'task') {
+      setSelectedTask('')
+      setShowDeleteTask?.(false)
+    }
+  }
+
+  const handleConfirm = () => {
+    if (type === 'board') {
+      deleteBoard(selectedBoard, queryClient, navigate, setShowDeleteBoardModal)
+    } else if (type === 'task') {
+      deleteTask(selectedBoard, selectedTask, queryClient, setIsTaskDetailsOpen)
+      setSelectedTask('')
+      setShowDeleteTask?.(false)
+    }
+  }
+
+  return (
+    <div className="modal modal-open">
+      <div className="modal-box bg-accent">
+        <h3 className="font-bold text-lg text-center text-white">Are you sure?</h3>
+        <p className="py-4 text-center text-white">{type === 'board' ? 'This action will delete the board and all its tasks.' : 'This action will delete the task permanently.'}</p>
+        <div className="modal-action justify-center gap-4">
+          <button onClick={handleConfirm} className="btn btn-success hover:scale-105 transition-transform">
             Yes
           </button>
-          <button
-            onClick={() => {
-              setShowDeleteBoardModal(false)
-            }}
-            className='px-6 py-4 bg-red-500 rounded-xl text-white font-thin text-lg hover:scale-105 transition-all duration-200 shadow-md'
-          >
+          <button onClick={handleClose} className="btn btn-error hover:scale-105 transition-transform">
             No
           </button>
         </div>
       </div>
-    )
-
-  if (type === 'task')
-    return (
-      <div className='bg-cyan-300 rounded-lg w-80 h-60 m-auto flex flex-col justify-center items-center relative shadow-xl animate-jump-in animate-ease-in-out'>
-        <p className='font-semibold text-2xl text-gray-800'>Are you sure?</p>
-        <div className='flex gap-10 mt-8'>
-          <button
-            onClick={() => {
-              deleteTask(
-                selectedBoard,
-                selectedTask,
-                queryClient,
-                setIsTaskDetailsOpen
-              )
-              setSelectedTask('')
-              setShowDeleteTask?.(false)
-            }}
-            className='px-6 py-4 bg-green-500 rounded-xl text-white font-thin text-lg hover:scale-105 transition-all duration-200 shadow-md'
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => {
-              setSelectedTask('')
-              setShowDeleteTask?.(false)
-            }}
-            className='px-6 py-4 bg-red-500 rounded-xl text-white font-thin text-lg hover:scale-105 transition-all duration-200 shadow-md'
-          >
-            No
-          </button>
-        </div>
-      </div>
-    )
-
-
+    </div>
+  )
 }
 export default DeleteModal
