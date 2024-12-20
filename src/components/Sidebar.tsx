@@ -29,6 +29,7 @@ const Sidebar = () => {
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
 
+  
   const debounceSetSearch = useDebounce((val: string) => {
     setDebouncedSearch(val)
   }, 300)
@@ -119,14 +120,13 @@ const Sidebar = () => {
           {boards?.data?.map((board: Board) => {
             const { boardName, _id: id } = board
             return (
-              <div className="relative">
+              <div key={id} className="relative">
                 <Board
                   onClick={() => {
                     getBoard(id)
                     setSelectedBoard(id)
                     onMobile && setIsSidebarOpen(false)
                   }}
-                  key={id}
                   boardName={boardName}
                   boardId={id}
                   selectedBoard={selectedBoard}

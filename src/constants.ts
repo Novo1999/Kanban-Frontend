@@ -1,1 +1,1 @@
-export const OPTIONS: string[] = ['task', 'in progress', 'completed']
+export const STATUS: string[] = ['task', 'in progress', 'completed']

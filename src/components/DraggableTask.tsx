@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom'
 import toast from 'react-hot-toast'
 import { FaClock, FaTrash } from 'react-icons/fa'
 import { MdDragIndicator } from 'react-icons/md'
-import { OPTIONS } from '../constants'
+import { STATUS } from '../constants'
 import useWindowDimensions from '../hooks/useWindowDimension'
 import { useKanban } from '../pages/KanbanBoard'
 import { editTaskStatus } from '../utils/editTaskStatus'
@@ -76,11 +76,11 @@ const DraggableTask = ({
   // setting different task color
   const setTaskColor = () => {
     switch (status) {
-      case OPTIONS[0]:
+      case STATUS[0]:
         return 'bg-blue-500 border border-accent shadow'
-      case OPTIONS[1]:
+      case STATUS[1]:
         return 'bg-purple-500 border border-accent shadow'
-      case OPTIONS[2]:
+      case STATUS[2]:
         return 'bg-teal-400 border border-accent shadow'
     }
   }
@@ -110,7 +110,7 @@ const DraggableTask = ({
         <div className='break-all'>
           <h4 className='text-white font-semibold drop-shadow-lg'>{title}</h4>
           <p
-            className={`${status === OPTIONS[2] ? 'text-gray-600' : 'text-gray-300'
+            className={`${status === STATUS[2] ? 'text-gray-600' : 'text-gray-300'
               } font-medium drop-shadow-lg text-sm`}
           >
             {`${subtasks.length} subtasks(${subtasks.filter((subtask) => subtask.status === 'done').length

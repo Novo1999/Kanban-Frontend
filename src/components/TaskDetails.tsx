@@ -24,6 +24,7 @@ export type UseGetTask = {
       description: string
       status: string
       timeTracked: number
+      deadline: string | null
     }
   }
   isLoading: boolean
@@ -198,6 +199,14 @@ const TaskDetails = () => {
               <FormRow changeTaskStatus={changeTaskStatus} type="" name="options" inputType="edit-options" />
             </>
           )}
+
+          {data?.data?.deadline && (
+            <div className="badge mt-2">
+              <label className="label text-white">Deadline: </label>
+              {data?.data?.deadline?.split('T')[0]}
+            </div>
+          )}
+
           <p className="text-black mt-6 font-semibold">Track Time</p>
           <button
             onClick={() => {

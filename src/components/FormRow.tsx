@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button } from '.'
-import { OPTIONS } from '../constants'
+import { STATUS } from '../constants'
 import { useCreateBoard } from '../hooks/useCreateBoard'
 import useGetBoard from '../hooks/useGetBoard'
 import { useGetTask } from '../hooks/useGetTask.js'
@@ -61,7 +61,7 @@ const FormRow = ({
           Status
         </label>
         <select defaultValue={name && defaultValue} {...register?.('status')} className="p-2 rounded-md cursor-pointer">
-          {OPTIONS.map((opt) => (
+          {STATUS.map((opt) => (
             <option value={opt} className="capitalize" key={opt}>
               {opt.toUpperCase()}
             </option>
@@ -83,7 +83,7 @@ const FormRow = ({
 
           {isOpen && (
             <ul tabIndex={0} className="dropdown-content menu p-2 shadow rounded-box w-full bg-accent text-white">
-              {OPTIONS.map((opt) => (
+              {STATUS.map((opt) => (
                 <li
                   key={opt}
                   onClick={() => {
