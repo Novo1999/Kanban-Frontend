@@ -116,7 +116,7 @@ const TaskDetails = () => {
   }
 
   return (
-    <Overlay>
+    <Overlay operationsWhenOverlayClicked={[stopTimer]}>
       {isTaskLoading ? (
         <Spinner />
       ) : (
@@ -151,7 +151,10 @@ const TaskDetails = () => {
               <label htmlFor="desc" className="text-neutral font-bold mb-2">
                 Description
               </label>
-              <p className="mb-4 w-full text-white border rounded-md p-4">{data?.data?.description}</p>
+              {
+                data?.data?.description ? <p className="mb-4 w-full text-white border rounded-md p-4">{data?.data?.description}</p> : <p className='text-white'>No Description</p>
+              }
+              
               <div className="flex justify-between mb-4 items-center">
                 <p className="mb-2 w-fit text-white text-lg font-bold">Subtasks</p>
                 <button onClick={() => setIsAddingSubtask(!isAddingSubtask)} title="Add Subtask" className="btn btn-neutral">
@@ -161,7 +164,7 @@ const TaskDetails = () => {
               {data?.data?.subtasks.map((task) => {
                 const { _id: id, status, name } = task ?? {}
                 return (
-                  <div key={id} className={`flex gap-4 mb-4 p-4 rounded-lg justify-between items-center ${subtaskEditLoading === id ? 'bg-cyan-400' : 'bg-cyan-300'}`}>
+                  <div key={id} className={`flex gap-4 mb-4 p-4 rounded-lg justify-between items-center ${subtaskEditLoading === id ? 'bg-accent/50' : 'bg-accent'}`}>
                     <div className="flex gap-4">
                       <input
                         onChange={(e) => {

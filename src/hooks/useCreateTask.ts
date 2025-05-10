@@ -20,13 +20,13 @@ export const useCreateTask = () => {
       title: data.title,
       description: data.description,
       subtasks: data?.subtasks?.find(st => !!st.subtask) ? data?.subtasks?.map(st => ({ name: st.subtask })) : [],
-      status: data.status,
+      status: data.status || "task",
       timeTracked: 0,
       deadline: data.deadline || null
     }
     
     try {
-      await customFetch.patch(`/kanban/boards/${id}/create-task`, formData)
+      await customFetch.post(`/kanban/boards/${id}/create-task`, formData)
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
       setShowAddNewModal(false)
     } catch (error) {
