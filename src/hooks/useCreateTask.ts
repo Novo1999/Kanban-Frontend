@@ -26,7 +26,7 @@ export const useCreateTask = () => {
     }
     
     try {
-      await customFetch.patch(`/kanban/boards/${id}/create-task`, formData)
+      await customFetch.post(`/kanban/boards/${id}/create-task`, formData)
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
       setShowAddNewModal(false)
     } catch (error) {

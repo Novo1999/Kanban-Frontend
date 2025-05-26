@@ -8,9 +8,6 @@ export const useGetTask = () => {
   const { data, isLoading } = useQuery({
     queryKey: ['selected-task', selectedTask],
     queryFn: ({ queryKey }) => getBoardTask(selectedBoard, queryKey[1]),
-    enabled(query) {
-      return !!query.queryKey[1]
-    },
   })
   return { data, isLoading }
 }

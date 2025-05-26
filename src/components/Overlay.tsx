@@ -3,9 +3,10 @@ import { useKanban } from '../pages/KanbanBoard'
 
 type Props = {
   children: ReactNode
+  operationsWhenOverlayClicked?: (() => void)[]
 }
 
-const Overlay = ({ children }: Props) => {
+const Overlay = ({ children, operationsWhenOverlayClicked }: Props) => {
   const { setShowAddNewModal, setShowDeleteBoardModal, setIsTaskDetailsOpen } =
     useKanban()
 
@@ -18,6 +19,7 @@ const Overlay = ({ children }: Props) => {
       setShowAddNewModal(false)
       setShowDeleteBoardModal(false)
       setIsTaskDetailsOpen(false)
+      operationsWhenOverlayClicked?.forEach(op => op())
     }
   }
 
