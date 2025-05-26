@@ -111,13 +111,13 @@ const DraggableTask = ({
           <h4 className='text-white font-semibold drop-shadow-lg'>{title}</h4>
           <p
             className={`${status === STATUS[2] ? 'text-gray-600' : 'text-gray-300'
-              } font-medium drop-shadow-lg text-sm`}
+              } font-medium drop-shadow-lg text-xs sm:text-sm`}
           >
             {`${subtasks.length} subtasks(${subtasks.filter((subtask) => subtask.status === 'done').length
               } completed) `}
           </p>
         </div>
-        <div className='flex flex-col'>
+        <div className='flex flex-col items-end'>
           <div className='flex items-center'>
             <div onClick={e => {
               e.stopPropagation()

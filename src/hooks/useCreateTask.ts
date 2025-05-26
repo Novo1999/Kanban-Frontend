@@ -20,7 +20,7 @@ export const useCreateTask = () => {
       title: data.title,
       description: data.description,
       subtasks: data?.subtasks?.find(st => !!st.subtask) ? data?.subtasks?.map(st => ({ name: st.subtask })) : [],
-      status: data.status,
+      status: data.status || 'task',
       timeTracked: 0,
       deadline: data.deadline || null
     }

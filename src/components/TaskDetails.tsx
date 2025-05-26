@@ -123,7 +123,7 @@ const TaskDetails = () => {
         <div
           ref={taskContainerRef}
           onClick={handleContainerClick}
-          className="bg-secondary w-[35rem] mx-6 sm:mx-0 h-[50rem] max-h-[50rem] animate-fade-down animate-once animate-duration-[400ms] animate-normal rounded-lg p-10 overflow-y-scroll my-10"
+          className="bg-secondary w-[35rem] max-h-[70vh] mx-6 sm:mx-0 h-[50rem] animate-fade-down animate-once animate-duration-[400ms] animate-normal rounded-lg p-10 overflow-y-scroll my-10"
         >
           {/* Shows the delete modal inside the task details */}
           {showDeleteTask ? (

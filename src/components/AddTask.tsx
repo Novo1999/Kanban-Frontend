@@ -28,7 +28,7 @@ const AddTask = () => {
 
   return (
     <Overlay>
-      <section className="relative z-20 m-auto top-0 left-0 bottom-0 right-0 rounded-lg w-screen mx-4 sm:w-[29rem] p-10 h-full xl:h-fit overflow-x-auto bg-secondary animate-jump-in animate-ease-in-out">
+      <section className="relative z-20 m-auto top-0 left-0 bottom-0 right-0 rounded-lg w-screen mx-4 sm:w-[29rem] p-10 max-h-[70vh] h-full xl:h-fit overflow-x-auto bg-secondary animate-jump-in animate-ease-in-out">
         <div className="flex justify-between items-center mb-10">
           <h3 className="text-xl text-white font-semibold">Add New Task</h3>
           <Button

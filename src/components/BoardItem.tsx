@@ -33,7 +33,7 @@ const BoardItem = () => {
 
   return board?.data?.tasks?.length === 0 ? (
     <section className='flex justify-center h-96 items-center text-white text-4xl'>
-      <div className='flex gap-12 items-center'>
+      <div className='flex gap-12 items-center flex-col sm:flex-row'>
         <p className='text-lg mt-3 sm:mt-0 sm:text-2xl'>No tasks in this board</p>
         <span>
           <Button

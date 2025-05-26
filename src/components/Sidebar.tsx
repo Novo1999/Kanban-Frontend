@@ -29,7 +29,6 @@ const Sidebar = () => {
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
 
-  
   const debounceSetSearch = useDebounce((val: string) => {
     setDebouncedSearch(val)
   }, 300)
@@ -116,7 +115,10 @@ const Sidebar = () => {
           <p className="text-sm pl-2 pt-6 font-mono font-bold text-dark-neutral">ALL BOARDS ({boards?.data?.length})</p>
         </div>
 
-        <motion.div initial="closed" animate="open" variants={sideVariants} className="overflow-y-auto pl-4 text-dark-neutral flex-grow">
+        <motion.div initial="closed" animate="open" variants={sideVariants} className="overflow-y-auto pl-4 text-dark-neutral flex-grow relative">
+          {
+            boards?.data?.length === 0 && <p className='font-bold text-white left-16 top-60 bottom-2 right-0 absolute'>No Board, Create One</p>
+          }
           {boards?.data?.map((board: Board) => {
             const { boardName, _id: id } = board
             return (
@@ -145,7 +147,7 @@ const Sidebar = () => {
             )
           })}
 
-          {boards?.data?.length === 0 && (
+          {search && boards?.data?.length === 0 && (
             <p className="text-white">
               No Result for <span className="font-bold">{search}</span>
             </p>
