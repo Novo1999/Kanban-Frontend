@@ -11,7 +11,6 @@ import { Error, KanbanBoard, Login, Register, Settings } from './pages/index.ts'
 import { loader as loginLoader } from './pages/Login.tsx'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import KanbanContent from './pages/KanbanContent.tsx'
 
