@@ -17,7 +17,27 @@ const AddTask = () => {
   const { setShowAddNewModal } = useKanban()
   const [subtaskFields, setSubtaskFields] = useState<SubtaskField[]>([new SubtaskField('')])
 
+  // Get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date()
+    return today.toISOString().split('T')[0]
+  }
+
   const addSubtaskField = () => setSubtaskFields((prev) => [...prev, new SubtaskField('')])
+
+  const handleDeadlineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = e.target.value
+    const todayDate = getTodayDate()
+
+    // If selected date is less than today, set it to today
+    if (selectedDate < todayDate) {
+      setValue('deadline', todayDate)
+      // Also update the input field visually
+      e.target.value = todayDate
+    } else {
+      setValue('deadline', selectedDate)
+    }
+  }
 
   useEffect(() => {
     setValue(
@@ -98,7 +118,27 @@ const AddTask = () => {
           </label>
           <label htmlFor="deadline" className="label flex flex-col items-start text-white gap-2">
             Deadline
-            <input onChange={(e) => setValue('deadline', e.target.value)} type="date" className="input input-primary w-full" />
+            <input
+              onChange={handleDeadlineChange}
+              type="date"
+              className="input input-primary w-full"
+              min={getTodayDate()} // This prevents selecting past dates in the date picker
+            />
+          </label>
+
+          <label htmlFor="priority" className="label flex flex-col items-start text-white gap-2">
+            Priority
+            <select onChange={(e) => setValue('priority', e.target.value)} className="select select-bordered w-full" defaultValue="medium">
+              <option value="high" className="text-red-500 font-semibold">
+                🔴 High Priority
+              </option>
+              <option value="medium" className="text-yellow-500 font-semibold">
+                🟡 Medium Priority
+              </option>
+              <option value="low" className="text-green-500 font-semibold">
+                🟢 Low Priority
+              </option>
+            </select>
           </label>
 
           <Button type="createNew" buttonText="create new task" />

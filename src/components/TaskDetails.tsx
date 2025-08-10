@@ -3,19 +3,14 @@ import { motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { BiReset } from 'react-icons/bi'
-import {
-  FaCheckCircle,
-  FaClock,
-  FaPauseCircle,
-  FaPlayCircle,
-  FaPlusCircle,
-} from 'react-icons/fa'
+import { FaCheckCircle, FaClock, FaPauseCircle, FaPlayCircle, FaPlusCircle } from 'react-icons/fa'
 import { Button, DeleteTask, EditTask, FormRow, Overlay, Spinner } from '.'
 import { useEditTask } from '../hooks/useEditTask.js'
 import { useGetTask } from '../hooks/useGetTask.js'
 import { useKanban } from '../pages/KanbanBoard'
 import { editSubtaskStatus } from '../utils/editSubtaskStatus'
 import { editTaskStatus } from '../utils/editTaskStatus'
+import { getPriorityConfig } from './CustomDragLayer.jsx'
 
 export type UseGetTask = {
   data: {
@@ -29,6 +24,7 @@ export type UseGetTask = {
       }>
       description: string
       status: string
+      priority?: string // Add priority to type
       timeTracked: number
       deadline: string | null
     }
@@ -41,6 +37,8 @@ const TaskDetails = () => {
   const { selectedBoard, selectedTask, setIsTaskDetailsOpen } = useKanban()
   const [isTaskOptionsOpen, setIsTaskOptionsOpen] = useState<boolean>(false)
   const [isEditingTask, setIsEditingTask] = useState<boolean>(false)
+  const [isEditingPriority, setIsEditingPriority] = useState<boolean>(false)
+  const [isPriorityChanging, setIsPriorityChanging] = useState<boolean>(false)
   const [subtaskEditLoading, setSubtaskEditLoading] = useState('')
   const [showDeleteTask, setShowDeleteTask] = useState<boolean>(false)
   const queryClient = useQueryClient()
@@ -58,52 +56,57 @@ const TaskDetails = () => {
       setTimer(data.data.timeTracked || 0)
     }
   }, [data, timer])
-  
+
+  // Handle priority change
+  const changePriority = async (newPriority: string) => {
+    setIsPriorityChanging(true)
+    try {
+      await onSubmit({ ...data?.data, priority: newPriority })
+      queryClient.invalidateQueries({ queryKey: ['selected-task'] })
+      queryClient.invalidateQueries({ queryKey: ['selected-board'] })
+      setIsEditingPriority(false)
+    } catch (error) {
+      console.error('Error changing priority:', error)
+    } finally {
+      setIsPriorityChanging(false)
+    }
+  }
 
   const startTimer = () => {
-    if(intervalId.current) return
+    if (intervalId.current) return
     setTimerRunning(true)
     intervalId.current = setInterval(() => {
       setTimer((prev) => (prev || 0) + 1)
     }, 1000)
   }
+
   useEffect(() => {
     return () => {
       if (intervalId.current) clearInterval(intervalId.current)
     }
   }, [])
-  
-  const stopTimer =  () => {
+
+  const stopTimer = () => {
     setTimerRunning(false)
     if (intervalId.current) clearInterval(intervalId.current)
     if (timerRunning) {
       onSubmit({ ...data?.data, timeTracked: timer || 0 })
     }
   }
+
   const resetTimer = async () => {
     setTimerRunning(false)
     if (intervalId.current) clearInterval(intervalId.current)
     await onSubmit({ ...data?.data, timeTracked: 0 })
   }
-  
 
   // Change subtasks status
-  const changeSubtaskStatus = async (
-    id: string,
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const changeSubtaskStatus = async (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     // if the checkbox is checked, status will become done or else it will become undone
-    const updatedStatus = e.target.checked
-      ? { status: 'done' }
-      : { status: 'undone' }
+    const updatedStatus = e.target.checked ? { status: 'done' } : { status: 'undone' }
     // await is necessary so the query client works
     setSubtaskEditLoading(id)
-    const res = await editSubtaskStatus(
-      selectedBoard,
-      selectedTask,
-      id,
-      updatedStatus
-    )
+    const res = await editSubtaskStatus(selectedBoard, selectedTask, id, updatedStatus)
     if (res?.data?.msg) {
       // updating the board and tasks remote state after changing subtask status
       queryClient.invalidateQueries({ queryKey: ['selected-task'] })
@@ -123,29 +126,28 @@ const TaskDetails = () => {
   const taskContainerRef = useRef<HTMLDivElement | null>(null)
 
   // clicking on taskContainerRef will disable the option menu
-
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === taskContainerRef.current) {
       setIsTaskOptionsOpen(false)
       setIsEditingTask(false)
+      setIsEditingPriority(false)
     }
   }
 
   const handleAddSubtask = async () => {
-  if (!subtaskInput.trim()) return
-  setSubtaskEditLoading('new')
-  await onSubmit({
-    subtasks: [
-      ...data.data.subtasks,
-      { name: subtaskInput.trim(), status: 'undone' },
-    ],
-  })
-  queryClient.invalidateQueries({ queryKey: ['selected-task'] })
-  setSubtaskInput('')
-  setIsAddingSubtask(false)
-  setSubtaskEditLoading('')
-}
+    if (!subtaskInput.trim()) return
+    setSubtaskEditLoading('new')
+    await onSubmit({
+      subtasks: [...data.data.subtasks, { name: subtaskInput.trim(), status: 'undone' }],
+    })
+    queryClient.invalidateQueries({ queryKey: ['selected-task'] })
+    setSubtaskInput('')
+    setIsAddingSubtask(false)
+    setSubtaskEditLoading('')
+  }
 
+  const currentPriority = data?.data?.priority || 'medium'
+  const priorityConfig = getPriorityConfig(currentPriority)
 
   return (
     <Overlay operationsWhenOverlayClicked={[stopTimer]}>
@@ -164,175 +166,161 @@ const TaskDetails = () => {
             <EditTask setIsEditingTask={setIsEditingTask} />
           ) : (
             <>
-              <div className='flex justify-between mb-10'>
-                <h4 className='text-sm sm:text-2xl text-white font-semibold w-fit break-all'>
-                  {data?.data?.title}
-                </h4>
+              <div className="flex justify-between mb-10">
+                <h4 className="text-sm sm:text-2xl text-white font-semibold w-fit break-all">{data?.data?.title}</h4>
                 {/* Three dot option button */}
-                <div className='flex items-center gap-2'>
-                  <Button
-                    onClick={() => setIsTaskOptionsOpen(!isTaskOptionsOpen)}
-                    type='option'
-                  />
+                <div className="flex items-center gap-2">
+                  <Button onClick={() => setIsTaskOptionsOpen(!isTaskOptionsOpen)} type="option" />
                   <Button
                     onClick={() => {
                       stopTimer()
                       setIsTaskDetailsOpen(false)
                     }}
-                    type='cross'
+                    type="cross"
                   />
                 </div>
                 {/* Option menu that contains edit and delete */}
-                {isTaskOptionsOpen && (
-                  <Button
-                    setIsEditingTask={setIsEditingTask}
-                    setShowDeleteTask={setShowDeleteTask}
-                    type='task-option'
-                  />
+                {isTaskOptionsOpen && <Button setIsEditingTask={setIsEditingTask} setShowDeleteTask={setShowDeleteTask} type="task-option" />}
+              </div>
+
+              {/* Priority Section */}
+              <div className="mb-6">
+                <label className="text-neutral font-bold mb-3 block">Priority</label>
+
+                {isEditingPriority ? (
+                  <div className="flex gap-2 flex-wrap items-center">
+                    {isPriorityChanging ? (
+                      <div className="flex items-center gap-2">
+                        <Spinner type="header" />
+                        <span className="text-white text-sm">Updating priority...</span>
+                      </div>
+                    ) : (
+                      ['high', 'medium', 'low'].map((priority) => {
+                        const config = getPriorityConfig(priority)
+                        return (
+                          <button
+                            key={priority}
+                            onClick={() => changePriority(priority)}
+                            className={`btn btn-sm ${currentPriority === priority ? 'btn-primary' : 'btn-accent btn-neutral'}`}
+                            disabled={isPriorityChanging}
+                          >
+                            {config.emoji} {config.label}
+                          </button>
+                        )
+                      })
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setIsEditingPriority(true)}
+                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold ${priorityConfig.color} text-white hover:opacity-80 transition-opacity cursor-pointer`}
+                    title="Click to change priority"
+                    disabled={isPriorityChanging}
+                  >
+                    {isPriorityChanging ? (
+                      <>
+                        <Spinner type="header" />
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        {priorityConfig.emoji} {priorityConfig.label}
+                      </>
+                    )}
+                  </button>
                 )}
               </div>
-              <label htmlFor='desc' className='text-neutral font-bold mb-2'>
+
+              <label htmlFor="desc" className="text-neutral font-bold mb-2">
                 Description
               </label>
-              {data?.data?.description ? (
-                <p className='mb-4 w-full text-white border rounded-md p-4'>
-                  {data?.data?.description || 'No Description'}
-                </p>
-              ) : (
-                <p className='text-white'>No Description</p>
-              )}
+              {data?.data?.description ? <p className="mb-4 w-full text-white border rounded-md p-4">{data?.data?.description || 'No Description'}</p> : <p className="text-white">No Description</p>}
 
-              <div className='flex justify-between mb-4 items-center'>
-                <p className='mb-2 w-fit text-white text-lg font-bold'>
-                  Subtasks
-                </p>
-                <button
-                  onClick={() => setIsAddingSubtask(!isAddingSubtask)}
-                  title='Add Subtask'
-                  className='btn btn-neutral'
-                >
+              <div className="flex justify-between mb-4 items-center">
+                <p className="mb-2 w-fit text-white text-lg font-bold">Subtasks</p>
+                <button onClick={() => setIsAddingSubtask(!isAddingSubtask)} title="Add Subtask" className="btn btn-neutral">
                   <FaPlusCircle />
                 </button>
               </div>
               {data?.data?.subtasks.map((task) => {
                 const { _id: id, status, name } = task ?? {}
                 return (
-                  <div
-                    key={id}
-                    className={`flex gap-4 mb-4 p-4 rounded-lg justify-between items-center ${
-                      subtaskEditLoading === id ? 'bg-accent/50' : 'bg-accent'
-                    }`}
-                  >
-                    <div className='flex gap-4'>
+                  <div key={id} className={`flex gap-4 mb-4 p-4 rounded-lg justify-between items-center ${subtaskEditLoading === id ? 'bg-accent/50' : 'bg-accent'}`}>
+                    <div className="flex gap-4">
                       <input
                         onChange={(e) => {
                           changeSubtaskStatus(id, e)
                         }}
                         // if status is done then put a check
                         defaultChecked={status === 'done'}
-                        type='checkbox'
-                        name='status'
+                        type="checkbox"
+                        name="status"
                         value={id}
                         disabled={subtaskEditLoading === id}
-                        className='checkbox checkbox-info w-6 cursor-pointer'
+                        className="checkbox checkbox-info w-6 cursor-pointer"
                       />
 
-                      <p
-                        className={`font-semibold text-black text-lg ${
-                          status === 'done' ? 'line-through' : ''
-                        }`}
-                      >
-                        {name}
-                      </p>
+                      <p className={`font-semibold text-black text-lg ${status === 'done' ? 'line-through' : ''}`}>{name}</p>
                     </div>
                     {subtaskEditLoading === id && (
                       <div>
-                        <AiOutlineLoading3Quarters className='animate-spin text-black' />
+                        <AiOutlineLoading3Quarters className="animate-spin text-black" />
                       </div>
                     )}
                   </div>
                 )
               })}
               {isAddingSubtask && (
-                <div className='flex my-4 gap-4 items-center'>
-                  <input
-                    onChange={(e) => setSubtaskInput(e.target.value)}
-                    autoFocus
-                    type='text'
-                    placeholder='Type here'
-                    className='input input-bordered w-full max-w-xs input-primary'
-                  />
+                <div className="flex my-4 gap-4 items-center">
+                  <input onChange={(e) => setSubtaskInput(e.target.value)} autoFocus type="text" placeholder="Type here" className="input input-bordered w-full max-w-xs input-primary" />
                   {subtaskInput && (
-                    <button
-                      onClick={handleAddSubtask}
-                      className='btn btn-neutral'
-                      disabled={subtaskEditLoading === 'new'}
-                    >
+                    <button onClick={handleAddSubtask} className="btn btn-neutral" disabled={subtaskEditLoading === 'new'}>
                       <FaCheckCircle />
                     </button>
                   )}
                 </div>
               )}
-              <FormRow
-                changeTaskStatus={changeTaskStatus}
-                type=''
-                name='options'
-                inputType='edit-options'
-              />
+              <FormRow changeTaskStatus={changeTaskStatus} type="" name="options" inputType="edit-options" />
             </>
           )}
 
           {data?.data?.deadline && (
-            <div className='badge mt-2'>
-              <label className='label text-white'>Deadline: </label>
+            <div className="badge mt-2">
+              <label className="label text-white">Deadline: </label>
               {data?.data?.deadline?.split('T')[0]}
             </div>
           )}
 
-          <p className='text-black mt-6 font-semibold'>Track Time</p>
+          <p className="text-black mt-6 font-semibold">Track Time</p>
           <button
             onClick={() => {
               setShowTimeTracker(!showTimeTracker)
               setTimeout(() => {
-                taskContainerRef.current?.scrollTo(
-                  0,
-                  taskContainerRef.current.scrollHeight
-                )
+                taskContainerRef.current?.scrollTo(0, taskContainerRef.current.scrollHeight)
               }, 0)
             }}
-            className='btn btn-sm tooltip tooltip-bottom'
-            data-tip='Start Counter'
+            className="btn btn-sm tooltip tooltip-bottom"
+            data-tip="Start Counter"
           >
             <FaClock />
           </button>
           {showTimeTracker && (
-            <div className='h-36 flex justify-center items-center text-black rounded-lg mt-4 flex-col gap-2'>
-              <p className='text-xl'>{getFinalTime(timer || 0)}</p>
-              <div className='flex gap-2 text-3xl'>
-                <motion.button
-                  {...(timerRunning && { whileTap: { scale: 1.2 } })}
-                  disabled={!timerRunning}
-                  onClick={stopTimer}
-                  className='tooltip tooltip-bottom'
-                  data-tip='Pause'
-                >
+            <div className="h-36 flex justify-center items-center text-black rounded-lg mt-4 flex-col gap-2">
+              <p className="text-xl">{getFinalTime(timer || 0)}</p>
+              <div className="flex gap-2 text-3xl">
+                <motion.button {...(timerRunning && { whileTap: { scale: 1.2 } })} disabled={!timerRunning} onClick={stopTimer} className="tooltip tooltip-bottom" data-tip="Pause">
                   <FaPauseCircle />
                 </motion.button>
                 <motion.button
                   whileTap={{ scale: !timerRunning ? 1.2 : 1 }}
                   disabled={timerRunning}
                   onClick={startTimer}
-                  className='tooltip tooltip-bottom'
+                  className="tooltip tooltip-bottom"
                   data-tip={!timerRunning ? 'Play' : 'Timer running'}
                 >
                   <FaPlayCircle />
                 </motion.button>
-                <motion.button
-                  whileTap={{ scale: 1.2 }}
-                  onClick={resetTimer}
-                  className='tooltip tooltip-bottom'
-                  data-tip='Reset'
-                >
+                <motion.button whileTap={{ scale: 1.2 }} onClick={resetTimer} className="tooltip tooltip-bottom" data-tip="Reset">
                   <BiReset />
                 </motion.button>
               </div>
@@ -354,11 +342,6 @@ export const getFinalTime = (timer: number) => {
   const seconds = timer - minutes * 60
   const hours = Math.floor(timer / 3600)
 
-  const finalTime =
-    strPadLeft(hours, '0', 2) +
-    ':' +
-    strPadLeft(minutes, '0', 2) +
-    ':' +
-    strPadLeft(seconds, '0', 2)
+  const finalTime = strPadLeft(hours, '0', 2) + ':' + strPadLeft(minutes, '0', 2) + ':' + strPadLeft(seconds, '0', 2)
   return finalTime
 }

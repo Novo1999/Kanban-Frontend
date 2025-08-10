@@ -9,14 +9,14 @@ interface IFormValues {
   title?: string
   description?: string
   status?: string
+  priority?: string // Add priority field
   subtasks: Array<{ name: string; status: string }>
   timeTracked?: number
 }
 
 export const useEditTask = () => {
   const queryClient = useQueryClient()
-  const { register, handleSubmit, watch, resetField, setValue, formState } =
-    useForm<IFormValues>()
+  const { register, handleSubmit, watch, resetField, setValue, formState } = useForm<IFormValues>()
   const { setShowAddNewModal, selectedTask, selectedBoard } = useKanban()
   const [subtaskField, setSubtaskField] = useState<boolean>(false)
 
@@ -24,22 +24,19 @@ export const useEditTask = () => {
     const formData = {
       title: data.title,
       description: data.description,
-      subtasks:
-        data?.subtasks?.map((st) => ({ name: st.name, status: st.status })) ||
-        [],
+      priority: data.priority || 'medium', // Include priority with default fallback
+      subtasks: data?.subtasks?.map((st) => ({ name: st.name, status: st.status })) || [],
       status: data.status,
       timeTracked: data.timeTracked,
     }
 
     try {
-      const data = await customFetch.patch(
-        `/kanban/boards/${selectedBoard}/${selectedTask}`,
-        formData
-      )
+      const response = await customFetch.patch(`/kanban/boards/${selectedBoard}/${selectedTask}`, formData)
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
       queryClient.invalidateQueries({ queryKey: ['selected-task', selectedTask] })
       setShowAddNewModal(false)
-      return data
+      toast.success('Task updated successfully!')
+      return response
     } catch (error) {
       console.log(error)
       toast.error('Could not edit task')

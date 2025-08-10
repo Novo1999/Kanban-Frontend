@@ -8,7 +8,6 @@ const Task = ({ statusType }: { statusType: string }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [tasks, setTasks] = useState<any>()
 
-
   useEffect(() => {
     if (!board) return
     if (!board?.data?.tasks) return
@@ -29,18 +28,12 @@ const Task = ({ statusType }: { statusType: string }) => {
   }))
 
   // container style
-  const taskContainerStyle = `p-4 transition-colors duration-300 ${isOver && dragCategory === statusType &&
-    'animate-pulse animate-duration-500 bg-accent border-4'
-    } ${dragCategory === statusType
-      ? 'border-2 border-neutral border-opacity-80 min-h-[20rem]'
-      : dragCategory !== statusType
-        ? 'border-2 border-neutral min-h-[20rem]'
-        : ''
-    } rounded-xl`
-
+  const taskContainerStyle = `p-4 transition-colors duration-300 ${isOver && dragCategory === statusType && 'animate-pulse animate-duration-500 bg-accent border-4'} ${
+    dragCategory === statusType ? 'border-2 border-neutral border-opacity-80 min-h-[20rem]' : dragCategory !== statusType ? 'border-2 border-neutral min-h-[20rem]' : ''
+  } rounded-xl`
 
   return isLoading ? (
-    <div className='flex justify-center items-center min-h-[35rem]'>
+    <div className="flex justify-center items-center min-h-[35rem]">
       <Spinner />
     </div>
   ) : (
@@ -52,13 +45,15 @@ const Task = ({ statusType }: { statusType: string }) => {
           subtasks,
           _id: id,
           status,
-          timeTracked
+          timeTracked,
+          priority,
         }: {
           title: string
           subtasks: [{ name: string; status: string; _id: string }]
           _id: string
           status: string
           timeTracked: number
+          priority: string
         }) => {
           if (status === statusType) {
             return (
@@ -67,6 +62,7 @@ const Task = ({ statusType }: { statusType: string }) => {
                 key={id}
                 id={id}
                 title={title}
+                priority={priority}
                 subtasks={subtasks}
                 status={status}
                 setDragCategory={setDragCategory}

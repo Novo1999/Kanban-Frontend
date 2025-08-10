@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { Outlet, useParams } from 'react-router'
 import { Header, Sidebar } from '../components'
+import CustomDragLayer from '../components/CustomDragLayer'
 import useWindowDimensions from '../hooks/useWindowDimension'
 import customFetch from '../utils/customFetch'
 
@@ -26,25 +27,25 @@ type KanbanContextProp = {
 
 const KanbanContext = createContext<KanbanContextProp>({
   isSidebarOpen: true,
-  setIsSidebarOpen: () => { },
+  setIsSidebarOpen: () => {},
   showAddNewModal: false,
-  setShowAddNewModal: () => { },
+  setShowAddNewModal: () => {},
   createNewBoard: false,
-  setCreateNewBoard: () => { },
+  setCreateNewBoard: () => {},
   selectedBoard: '',
   setSelectedBoard: (id) => {
     id
   },
   showDeleteBoardModal: false,
-  setShowDeleteBoardModal: () => { },
+  setShowDeleteBoardModal: () => {},
   isTaskDetailsOpen: false,
-  setIsTaskDetailsOpen: () => { },
+  setIsTaskDetailsOpen: () => {},
   selectedTask: '',
   setSelectedTask: (id) => {
     id
   },
   showDeleteTaskModal: false,
-  setShowDeleteTaskModal: () => { }
+  setShowDeleteTaskModal: () => {},
 })
 
 export const useKanban = () => useContext(KanbanContext)
@@ -52,12 +53,9 @@ export const useKanban = () => useContext(KanbanContext)
 function KanbanBoard() {
   const windowDimensions = useWindowDimensions()
   const onMobile = windowDimensions.width < 450
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(
-    onMobile ? false : true
-  )
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(onMobile ? false : true)
   const [showAddNewModal, setShowAddNewModal] = useState<boolean>(false)
-  const [showDeleteBoardModal, setShowDeleteBoardModal] =
-    useState<boolean>(false)
+  const [showDeleteBoardModal, setShowDeleteBoardModal] = useState<boolean>(false)
   const [createNewBoard, setCreateNewBoard] = useState<boolean>(false)
   const [selectedBoard, setSelectedBoard] = useState<string>('')
   const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState<boolean>(false)
@@ -97,12 +95,14 @@ function KanbanBoard() {
         isTaskDetailsOpen,
         setIsTaskDetailsOpen,
         selectedTask,
-        setSelectedTask, showDeleteTaskModal,
-        setShowDeleteTaskModal
+        setSelectedTask,
+        showDeleteTaskModal,
+        setShowDeleteTaskModal,
       }}
     >
-      <div className='p-10 bg-primary w-full min-h-screen overflow-hidden'>
-        <Header page='home' />
+      <div className="p-10 bg-primary w-full min-h-screen overflow-hidden">
+        <CustomDragLayer />
+        <Header page="home" />
         <Sidebar />
         <Outlet />
       </div>
