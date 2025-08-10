@@ -260,7 +260,7 @@ const TaskDetails = () => {
                         className="checkbox checkbox-info w-6 cursor-pointer"
                       />
 
-                      <p className={`font-semibold text-black text-lg ${status === 'done' ? 'line-through' : ''}`}>{name}</p>
+                      <p className={`font-semibold text-white text-lg ${status === 'done' ? 'line-through' : ''}`}>{name}</p>
                     </div>
                     {subtaskEditLoading === id && (
                       <div>

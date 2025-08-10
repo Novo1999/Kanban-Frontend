@@ -54,15 +54,6 @@ const Settings = () => {
     return () => clearTimeout(timeoutId)
   }, [email, navigate])
 
-  const handleImageSelect = (file: File) => {
-    setSelectedFile(file)
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      setPreviewImage(reader.result as string)
-    }
-    reader.readAsDataURL(file)
-  }
-
   const handleImageRemove = () => {
     setPreviewImage(null)
     setSelectedFile(null)
@@ -106,25 +97,6 @@ const Settings = () => {
                     />
                   </div>
                 </div>
-
-                {/* Image Upload Overlay - Only show if not previewing */}
-                {!previewImage && (
-                  <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer group">
-                    <label htmlFor="image-upload" className="cursor-pointer">
-                      <MdCameraAlt className="text-white text-2xl group-hover:scale-110 transition-transform" />
-                    </label>
-                    <input
-                      id="image-upload"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0]
-                        if (file) handleImageSelect(file)
-                      }}
-                    />
-                  </div>
-                )}
 
                 {/* Remove Image Button */}
                 {previewImage && (

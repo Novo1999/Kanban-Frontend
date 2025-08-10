@@ -105,7 +105,7 @@ const EditTask = ({ setIsEditingTask }: { setIsEditingTask: (arg: boolean) => bo
             {/* Current Priority Display */}
             {data?.data.priority && (
               <div className="mt-2 flex items-center gap-2">
-                <span className="text-sm text-base-content/70">Current:</span>
+                <span className="text-sm text-base-content/70 text-white">Current:</span>
                 <span className={`font-semibold ${getPriorityConfig(data.data.priority).color}`}>
                   {getPriorityConfig(data.data.priority).emoji} {getPriorityConfig(data.data.priority).label}
                 </span>
