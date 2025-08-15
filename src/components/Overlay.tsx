@@ -27,7 +27,7 @@ const Overlay = ({ children, operationsWhenOverlayClicked }: Props) => {
     <div
       ref={overlayRef}
       onClick={handleOverlayClick}
-      className='h-full fixed top-0 bottom-0 right-0 left-0 z-20 w-full flex justify-center items-center bg-blue-900 bg-opacity-40 overlay'
+      className='h-full fixed top-0 bottom-0 right-0 left-0 z-20 w-full flex justify-center items-center bg-black bg-opacity-40 overlay'
     >
       {children}
     </div>

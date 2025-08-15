@@ -48,9 +48,9 @@ const AddTask = () => {
 
   return (
     <Overlay>
-      <section className="relative z-20 m-auto top-0 left-0 bottom-0 right-0 rounded-lg w-screen mx-4 sm:w-[29rem] p-10 max-h-[70vh] h-full xl:h-fit overflow-x-auto bg-secondary animate-jump-in animate-ease-in-out">
+      <section className="relative z-20 m-auto top-0 left-0 bottom-0 right-0 rounded-lg w-screen mx-4 sm:w-[29rem] p-10 max-h-[70vh] h-full xl:h-fit overflow-x-auto bg-white border border-gray-300 shadow-lg animate-jump-in animate-ease-in-out">
         <div className="flex justify-between items-center mb-10">
-          <h3 className="text-xl text-white font-semibold">Add New Task</h3>
+          <h3 className="text-xl text-black font-semibold">Add New Task</h3>
           <Button
             type="cross"
             onClick={() => {
@@ -61,7 +61,7 @@ const AddTask = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <div className="relative">
             <FormRow required labelText="Title" type="text" name="title" register={register} placeholder="e.g. Take coffee break" />
-            <ErrorMessage errors={errors} name="title" render={({ message }) => <p className="absolute text-neutral capitalize font-bold">{message}</p>} />
+            <ErrorMessage errors={errors} name="title" render={({ message }) => <p className="absolute text-red-500 capitalize font-bold">{message}</p>} />
           </div>
 
           <FormRow
@@ -71,7 +71,7 @@ const AddTask = () => {
             register={register}
             placeholder="e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little."
           />
-          <p className="font-thin text-white relative top-2">SubTasks</p>
+          <p className="font-thin text-black relative top-2">SubTasks</p>
           <div className="flex gap-2 items-center flex-col">
             {subtaskFields.map((_, index) => {
               return (
@@ -105,30 +105,30 @@ const AddTask = () => {
               )
             })}
           </div>
-          {subtaskFields[subtaskFields.length - 1].subtask && subtaskFields.length !== 5 && <Button onClick={addSubtaskField} type="subtask" buttonText="+add another subtask" />}
-          <label htmlFor="status" className="label flex flex-col items-start text-white gap-2">
+          {subtaskFields[subtaskFields.length - 1].subtask && <Button onClick={addSubtaskField} type="subtask" buttonText="+add another subtask" />}
+          <label htmlFor="status" className="label flex flex-col items-start text-black gap-2">
             Status
-            <select onChange={(e) => setValue('status', e.target.value)} className="select select-bordered w-full capitalize">
+            <select onChange={(e) => setValue('status', e.target.value)} className="select select-bordered w-full capitalize bg-white text-black border-gray-300">
               {STATUS.map((st) => (
-                <option key={st} className="capitalize">
+                <option key={st} className="capitalize text-black">
                   {st}
                 </option>
               ))}
             </select>
           </label>
-          <label htmlFor="deadline" className="label flex flex-col items-start text-white gap-2">
+          <label htmlFor="deadline" className="label flex flex-col items-start text-black gap-2">
             Deadline
             <input
               onChange={handleDeadlineChange}
               type="date"
-              className="input input-primary w-full"
+              className="input input-primary w-full bg-white text-black border-gray-300"
               min={getTodayDate()} // This prevents selecting past dates in the date picker
             />
           </label>
 
-          <label htmlFor="priority" className="label flex flex-col items-start text-white gap-2">
+          <label htmlFor="priority" className="label flex flex-col items-start text-black gap-2">
             Priority
-            <select onChange={(e) => setValue('priority', e.target.value)} className="select select-bordered w-full" defaultValue="medium">
+            <select onChange={(e) => setValue('priority', e.target.value)} className="select select-bordered w-full bg-white text-black border-gray-300" defaultValue="medium">
               <option value="high" className="text-red-500 font-semibold">
                 🔴 High Priority
               </option>

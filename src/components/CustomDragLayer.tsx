@@ -67,12 +67,12 @@ const TaskDragPreview = ({
       <div className="break-all flex-1">
         {/* Priority Badge in drag preview */}
         <div className="flex items-center gap-2 mb-2">
-          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${priorityConfig.color} text-white`}>
+          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${priorityConfig.color} text-black`}>
             {priorityConfig.emoji} {priorityConfig.label}
           </span>
         </div>
 
-        <h4 className="text-white font-semibold drop-shadow-lg">{title}</h4>
+        <h4 className="text-black font-semibold drop-shadow-lg">{title}</h4>
         <p className={`${status === STATUS[2] ? 'text-gray-600' : 'text-gray-300'} font-medium drop-shadow-lg text-xs sm:text-sm`}>
           {`${subtasks.length} subtasks(${subtasks.filter((subtask) => subtask.status === 'done').length} completed)`}
         </p>

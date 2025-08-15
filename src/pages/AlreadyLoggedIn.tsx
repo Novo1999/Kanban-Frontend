@@ -28,14 +28,14 @@
 //      You are already logged in
 //     </p>
 //     <Link
-//      className='bg-sky-500 p-6 rounded-3xl text-2xl text-white hover:text-black hover:bg-sky-300 transition-all duration-300'
+//      className='bg-sky-500 p-6 rounded-3xl text-2xl text-black hover:text-black hover:bg-sky-300 transition-all duration-300'
 //      to='/kanban'
 //     >
 //      Click here to check your boards
 //     </Link>
 //     <button
 //      onClick={handleLogOut}
-//      className='bg-sky-500 p-6 rounded-3xl text-2xl text-white hover:text-black hover:bg-sky-300 transition-all duration-300'
+//      className='bg-sky-500 p-6 rounded-3xl text-2xl text-black hover:text-black hover:bg-sky-300 transition-all duration-300'
 //     >
 //      Log out
 //     </button>

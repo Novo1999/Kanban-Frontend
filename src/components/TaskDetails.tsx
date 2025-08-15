@@ -97,9 +97,10 @@ const TaskDetails = () => {
   const resetTimer = async () => {
     setTimerRunning(false)
     if (intervalId.current) clearInterval(intervalId.current)
+    setTimer(0)
     await onSubmit({ ...data?.data, timeTracked: 0 })
+    queryClient.invalidateQueries({ queryKey: ['selected-task'] })
   }
-
   // Change subtasks status
   const changeSubtaskStatus = async (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     // if the checkbox is checked, status will become done or else it will become undone
@@ -167,7 +168,7 @@ const TaskDetails = () => {
           ) : (
             <>
               <div className="flex justify-between mb-10">
-                <h4 className="text-sm sm:text-2xl text-white font-semibold w-fit break-all">{data?.data?.title}</h4>
+                <h4 className="text-sm sm:text-2xl text-black font-semibold w-fit">{data?.data?.title}</h4>
                 {/* Three dot option button */}
                 <div className="flex items-center gap-2">
                   <Button onClick={() => setIsTaskOptionsOpen(!isTaskOptionsOpen)} type="option" />
@@ -185,14 +186,14 @@ const TaskDetails = () => {
 
               {/* Priority Section */}
               <div className="mb-6">
-                <label className="text-neutral font-bold mb-3 block">Priority</label>
+                <label className="text-black font-bold mb-3 block">Priority</label>
 
                 {isEditingPriority ? (
                   <div className="flex gap-2 flex-wrap items-center">
                     {isPriorityChanging ? (
                       <div className="flex items-center gap-2">
                         <Spinner type="header" />
-                        <span className="text-white text-sm">Updating priority...</span>
+                        <span className="text-black text-sm">Updating priority...</span>
                       </div>
                     ) : (
                       ['high', 'medium', 'low'].map((priority) => {
@@ -213,7 +214,7 @@ const TaskDetails = () => {
                 ) : (
                   <button
                     onClick={() => setIsEditingPriority(true)}
-                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold ${priorityConfig.color} text-white hover:opacity-80 transition-opacity cursor-pointer`}
+                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg font-semibold ${priorityConfig.color} text-black hover:opacity-80 transition-opacity cursor-pointer`}
                     title="Click to change priority"
                     disabled={isPriorityChanging}
                   >
@@ -231,13 +232,13 @@ const TaskDetails = () => {
                 )}
               </div>
 
-              <label htmlFor="desc" className="text-neutral font-bold mb-2">
+              <label htmlFor="desc" className="text-black font-bold mb-2">
                 Description
               </label>
-              {data?.data?.description ? <p className="mb-4 w-full text-white border rounded-md p-4">{data?.data?.description || 'No Description'}</p> : <p className="text-white">No Description</p>}
+              {data?.data?.description ? <p className="mb-4 w-full text-black border rounded-md p-4">{data?.data?.description || 'No Description'}</p> : <p className="text-black">No Description</p>}
 
               <div className="flex justify-between mb-4 items-center">
-                <p className="mb-2 w-fit text-white text-lg font-bold">Subtasks</p>
+                <p className="mb-2 w-fit text-black text-lg font-bold">Subtasks</p>
                 <button onClick={() => setIsAddingSubtask(!isAddingSubtask)} title="Add Subtask" className="btn btn-neutral">
                   <FaPlusCircle />
                 </button>
@@ -245,7 +246,7 @@ const TaskDetails = () => {
               {data?.data?.subtasks.map((task) => {
                 const { _id: id, status, name } = task ?? {}
                 return (
-                  <div key={id} className={`flex gap-4 mb-4 p-4 rounded-lg justify-between items-center ${subtaskEditLoading === id ? 'bg-accent/50' : 'bg-accent'}`}>
+                  <div key={id} className={`flex gap-4 mb-4 p-4 rounded-lg justify-between items-center border ${subtaskEditLoading === id ? 'bg-accent/50' : 'bg-accent'}`}>
                     <div className="flex gap-4">
                       <input
                         onChange={(e) => {
@@ -260,7 +261,7 @@ const TaskDetails = () => {
                         className="checkbox checkbox-info w-6 cursor-pointer"
                       />
 
-                      <p className={`font-semibold text-white text-lg ${status === 'done' ? 'line-through' : ''}`}>{name}</p>
+                      <p className={`font-semibold text-black text-lg ${status === 'done' ? 'line-through' : ''}`}>{name}</p>
                     </div>
                     {subtaskEditLoading === id && (
                       <div>
@@ -299,7 +300,7 @@ const TaskDetails = () => {
                 taskContainerRef.current?.scrollTo(0, taskContainerRef.current.scrollHeight)
               }, 0)
             }}
-            className="btn btn-sm tooltip tooltip-bottom"
+            className="btn btn-sm tooltip btn-color tooltip-bottom"
             data-tip="Start Counter"
           >
             <FaClock />
@@ -308,19 +309,19 @@ const TaskDetails = () => {
             <div className="h-36 flex justify-center items-center text-black rounded-lg mt-4 flex-col gap-2">
               <p className="text-xl">{getFinalTime(timer || 0)}</p>
               <div className="flex gap-2 text-3xl">
-                <motion.button {...(timerRunning && { whileTap: { scale: 1.2 } })} disabled={!timerRunning} onClick={stopTimer} className="tooltip tooltip-bottom" data-tip="Pause">
+                <motion.button {...(timerRunning && { whileTap: { scale: 1.2 } })} disabled={!timerRunning} onClick={stopTimer} className="tooltip tooltip-bottom text-blue-500" data-tip="Pause">
                   <FaPauseCircle />
                 </motion.button>
                 <motion.button
                   whileTap={{ scale: !timerRunning ? 1.2 : 1 }}
                   disabled={timerRunning}
                   onClick={startTimer}
-                  className="tooltip tooltip-bottom"
+                  className="tooltip tooltip-bottom text-blue-500"
                   data-tip={!timerRunning ? 'Play' : 'Timer running'}
                 >
                   <FaPlayCircle />
                 </motion.button>
-                <motion.button whileTap={{ scale: 1.2 }} onClick={resetTimer} className="tooltip tooltip-bottom" data-tip="Reset">
+                <motion.button whileTap={{ scale: 1.2 }} onClick={resetTimer} className="tooltip tooltip-bottom text-blue-500" data-tip="Reset">
                   <BiReset />
                 </motion.button>
               </div>

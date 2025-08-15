@@ -57,7 +57,7 @@ const FormRow = ({
   if (inputType === 'options')
     return (
       <>
-        <label className="font-thin text-white" htmlFor={labelText}>
+        <label className="font-thin text-black" htmlFor={labelText}>
           Status
         </label>
         <select defaultValue={name && defaultValue} {...register?.('status')} className="p-2 rounded-md cursor-pointer">
@@ -72,17 +72,17 @@ const FormRow = ({
   if (inputType === 'edit-options')
     return (
       <div className={`flex flex-col gap-2 ${isOpen ? 'mb-36' : 'mb-0'}`}>
-        <label className="text-white font-semibold" htmlFor={labelText}>
+        <label className="text-black font-semibold" htmlFor={labelText}>
           Status
         </label>
 
         <div className="dropdown w-full">
-          <label onClick={() => setIsOpen(!isOpen)} tabIndex={0} className="btn w-full p-2 rounded-md cursor-pointer bg-accent hover:bg-opacity-70 hover:bg-accent text-white">
+          <label onClick={() => setIsOpen(!isOpen)} tabIndex={0} className="btn w-full p-2 rounded-md cursor-pointer bg-accent hover:bg-opacity-70 hover:bg-accent text-black">
             {taskStatus.toUpperCase()}
           </label>
 
           {isOpen && (
-            <ul tabIndex={0} className="dropdown-content menu p-2 shadow rounded-box w-full bg-accent text-white">
+            <ul tabIndex={0} className="dropdown-content menu p-2 shadow rounded-box w-full bg-accent text-black">
               {STATUS.map((opt) => (
                 <li
                   key={opt}
@@ -104,13 +104,13 @@ const FormRow = ({
   // when not editing the board show the add task form
   if (name === 'board' && !isEditingBoard)
     return (
-      <div className="bg-accent w-max right-4 p-4 shadow-lg relative bottom-8 md:bottom-12 2xl:bottom-2">
+      <div className="bg-white w-max right-4 p-4 shadow-lg relative bottom-8 md:bottom-12 2xl:bottom-2">
         <div className={`flex items-center gap-2 pl-6 board-input relative`}>
           <form onSubmit={handleSubmit(onSubmit)}>
             {errors.boardName?.message ? <p className={`text-sm text-red-600 bg-white ${errors && 'p-2'} absolute bottom-11`}>{errors.boardName?.message}</p> : ''}
             <input
               autoFocus
-              className="rounded h-10 pl-2 w-52 text-dark-neutral bg-white"
+              className="rounded h-10 pl-2 w-52 border border-black bg-white text-black"
               required={required}
               type={type}
               {...createBoardRegister('boardName', {
@@ -130,7 +130,7 @@ const FormRow = ({
           />
         </div>
         {createBoardInputHasValue && (
-          <button onClick={handleSubmit(onSubmit)} className="font-thin text-white bg-secondary p-2 rounded-3xl relative left-6 top-2 ">
+          <button onClick={handleSubmit(onSubmit)} className="font-thin btn-color p-2 rounded-3xl relative left-6 top-2 ">
             Create
           </button>
         )}
@@ -170,16 +170,16 @@ const FormRow = ({
     return (
       <>
         <div className="flex justify-between">
-          <label className="font-thin text-white" htmlFor={labelText}>
+          <label className="font-thin text-black" htmlFor={labelText}>
             {labelText}
           </label>
           {/* if password has value, show the show password checkbox */}
           {name === 'password' && passwordHasValues && (
-            <div className="text-xs sm:text-sm flex items-center text-white gap-2">
+            <div className="text-xs sm:text-sm flex items-center text-black gap-2">
               <label className="font-thin" htmlFor="checkbox">
                 Show Password
               </label>
-              <input className="cursor-pointer text-white" onChange={(e) => (e.target.checked ? setShowPassword!(true) : setShowPassword!(false))} type="checkbox" />
+              <input className="cursor-pointer text-black" onChange={(e) => (e.target.checked ? setShowPassword!(true) : setShowPassword!(false))} type="checkbox" />
             </div>
           )}
         </div>
@@ -188,7 +188,7 @@ const FormRow = ({
             name === 'password' && e.target.value ? setPasswordHasValues(true) : setPasswordHasValues(false)
           }}
           autoFocus={page === 'login' ? name === 'email' : name === 'name'}
-          className="rounded h-12 pl-2 w-full sm:w-96 m-auto input input-bordered bg-white text-black"
+          className="rounded h-12 pl-2 w-full sm:w-96 m-auto input input-bordered bg-white text-black outline-1 outline"
           required={required}
           type={type}
           name={name}
@@ -199,7 +199,7 @@ const FormRow = ({
 
   return (
     <div className="flex flex-col w-full">
-      <label className="font-thin text-white" htmlFor={labelText}>
+      <label className="font-thin text-black" htmlFor={labelText}>
         {labelText}
       </label>
 

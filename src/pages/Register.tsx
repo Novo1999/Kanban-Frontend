@@ -22,9 +22,9 @@ const Register = () => {
       <div className='bg-neutral overflow-hidden h-screen flex justify-center items-center'>
         <Form
           method='post'
-          className='flex flex-col gap-2 rounded-lg w-screen transition-all duration-300 sm:w-fit mx-4 bg-primary p-14 sm:p-20 sm:mt-20'
+          className='flex flex-col gap-2 rounded-lg w-screen transition-all duration-300 sm:w-fit mx-4 border border-black bg-primary p-14 sm:p-20 sm:mt-20'
         >
-          <h4 className='text-center text-3xl font-thin text-white'>
+          <h4 className='text-center text-3xl font-bold text-black'>
             Register
           </h4>
           <FormRow page='register' labelText='Name' type='text' name='name' />
@@ -34,12 +34,12 @@ const Register = () => {
             type='submit'
             buttonText={isSubmitting ? 'Submitting' : 'Register'}
           />
-          <div className='text-white text-sm items-center sm:text-lg flex mt-4 justify-around w-full'>
+          <div className='text-black text-sm items-center sm:text-lg flex mt-4 justify-around w-full'>
             <p >
               Already have an account?
             </p>
             <Link
-              className='underline underline-offset-4 sm:text-lg text-green-300 text-xs w-fit'
+              className='underline underline-offset-4 sm:text-lg text-black text-xs w-fit'
               to="/"
             >
               Login now

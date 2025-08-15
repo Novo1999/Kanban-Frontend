@@ -5,11 +5,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        primaryx: '#97DFFC',
-        secondary: '#858AE3',
-        accent: '#613DC1',
-        neutral: '#4E148C',
-        'dark-neutral': '#2C0735',
+        primary: '#fff',
+        secondary: '#fff',
+        accent: '#fff',
+        neutral: '#fff',
+        'dark-neutral': '#fff',
       },
       fontFamily: {
         rammetto: ['Rammetto One'],

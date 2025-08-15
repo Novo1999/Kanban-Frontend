@@ -124,21 +124,21 @@ const DraggableTask = ({
         }}
         className={`mb-10 ${setTaskColor()} p-4 rounded-lg cursor-pointer flex items-center justify-between transition-opacity duration-200 ${isDragging ? 'opacity-30' : 'opacity-100'}`}
       >
-        <div className="break-all flex-1">
+        <div className="flex-1">
           {/* Priority Badge */}
           <div className="flex items-center gap-2 mb-2">
-            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${priorityConfig.color} text-white`}>
+            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${priorityConfig.color} text-black`}>
               {priorityConfig.emoji} {priorityConfig.label}
             </span>
           </div>
 
-          <h4 className="text-white font-semibold drop-shadow-lg">{title}</h4>
+          <h4 className="text-black font-semibold drop-shadow-lg">{title}</h4>
           <p className={`${status === STATUS[2] ? 'text-gray-600' : 'text-gray-300'} font-medium drop-shadow-lg text-xs sm:text-sm`}>
             {`${subtasks.length} subtasks(${subtasks.filter((subtask) => subtask.status === 'done').length} completed) `}
           </p>
         </div>
-        <div className="flex flex-col items-end">
-          <div className="flex items-center">
+        <div className="flex flex-col items-end flex-wrap">
+          <div className="flex items-center flex-wrap">
             <div
               onClick={(e) => {
                 e.stopPropagation()
@@ -151,13 +151,13 @@ const DraggableTask = ({
                   setSelectedTask(id)
                   setShowDeleteTaskModal(true)
                 }}
-                className="btn btn-error text-white btn-sm mr-2"
+                className="btn btn-error text-black btn-sm mr-2"
               >
                 <FaTrash />
               </button>
             </div>
             {!onMobile && (
-              <div className="cursor-grab text-white">
+              <div className="cursor-grab text-black">
                 <MdDragIndicator />
               </div>
             )}

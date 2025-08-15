@@ -50,7 +50,7 @@ const Header = ({ page }: HeaderProp) => {
   // login and register page header
   if (page === 'login' || page === 'register')
     return (
-      <header className="absolute bg-primary w-full flex justify-center p-10 shadow-md shrink-0 text-2xl sm:text-4xl transition-all duration-300 text-white font-rammetto m-auto">
+      <header className="absolute bg-primary w-full flex justify-center p-10 shadow-md shrink-0 text-2xl sm:text-4xl transition-all duration-300 text-black font-rammetto m-auto">
         <FaPhoenixFramework />
         <p className="ml-2">FlowBoard</p>
       </header>
@@ -75,7 +75,7 @@ const Header = ({ page }: HeaderProp) => {
     <header
       className={`fixed bg-primary w-full p-4 lg:p-10 z-10 ${
         isSidebarOpen && !onMobile ? 'pl-80' : 'pl-4'
-      } shadow-xl text-2xl text-white left-0 font-sans top-0 flex flex-col sm:flex-row items-center gap-2 lg:gap-12 sm:gap-0 justify-between`}
+      } shadow-xl text-2xl text-black left-0 font-sans top-0 flex flex-col sm:flex-row items-center gap-2 lg:gap-12 sm:gap-0 justify-between`}
     >
       <button
         onClick={() => setIsSidebarOpen(true)}

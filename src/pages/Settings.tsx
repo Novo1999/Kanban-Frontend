@@ -100,7 +100,7 @@ const Settings = () => {
 
                 {/* Remove Image Button */}
                 {previewImage && (
-                  <button onClick={handleImageRemove} className="absolute -top-2 -right-2 btn btn-sm btn-circle btn-error text-white">
+                  <button onClick={handleImageRemove} className="absolute -top-2 -right-2 btn btn-sm btn-circle btn-error text-black">
                     <MdDelete className="text-sm" />
                   </button>
                 )}

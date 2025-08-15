@@ -29,7 +29,7 @@ const Task = ({ statusType }: { statusType: string }) => {
 
   // container style
   const taskContainerStyle = `p-4 transition-colors duration-300 ${isOver && dragCategory === statusType && 'animate-pulse animate-duration-500 bg-accent border-4'} ${
-    dragCategory === statusType ? 'border-2 border-neutral border-opacity-80 min-h-[20rem]' : dragCategory !== statusType ? 'border-2 border-neutral min-h-[20rem]' : ''
+    dragCategory === statusType ? 'border border-black border-opacity-80 min-h-[20rem]' : dragCategory !== statusType ? 'border-2 border-black min-h-[20rem]' : ''
   } rounded-xl`
 
   return isLoading ? (

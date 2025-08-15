@@ -62,8 +62,8 @@ const DeleteModal = ({ type, setShowDeleteTask }: { type: string; setShowDeleteT
   return (
     <div className="modal modal-open">
       <div className="modal-box bg-accent">
-        <h3 className="font-bold text-lg text-center text-white">Are you sure?</h3>
-        <p className="py-4 text-center text-white">{type === 'board' ? 'This action will delete the board and all its tasks.' : 'This action will delete the task permanently.'}</p>
+        <h3 className="font-bold text-lg text-center text-black">Are you sure?</h3>
+        <p className="py-4 text-center text-black">{type === 'board' ? 'This action will delete the board and all its tasks.' : 'This action will delete the task permanently.'}</p>
         <div className="modal-action justify-center gap-4">
           <button onClick={handleConfirm} className="btn btn-success hover:scale-105 transition-transform">
             Yes

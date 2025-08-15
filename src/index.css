@@ -25,3 +25,13 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #97DFFC;
 }
+
+@layer utilities {
+  .btn-color {
+    @apply bg-blue-500 text-white;
+  }
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0) saturate(100%) invert(54%) sepia(98%) saturate(1000%) hue-rotate(201deg) brightness(97%) contrast(103%);
+}

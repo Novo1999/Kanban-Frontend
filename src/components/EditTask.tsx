@@ -69,9 +69,9 @@ const EditTask = ({ setIsEditingTask }: { setIsEditingTask: (arg: boolean) => bo
     <Spinner />
   ) : (
     <Overlay>
-      <section className="fixed w-80 m-auto top-0 left-0 bottom-0 right-0 rounded-lg sm:w-[29rem] h-fit max-h-[50rem] p-10 bg-secondary shadow-xl animate-flip-down animate-once overflow-y-scroll animate-duration-500">
+      <section className="fixed w-80 m-auto top-0 left-0 bottom-0 right-0 rounded-lg sm:w-[29rem] h-fit max-h-[30rem] p-10 bg-secondary shadow-xl animate-flip-down animate-once overflow-y-scroll animate-duration-500">
         <div className="flex justify-between items-center sm:mb-10">
-          <h3 className="text-xl text-white font-semibold">Edit Task</h3>
+          <h3 className="text-xl text-black font-semibold">Edit Task</h3>
           <Button type="cross" onClick={() => setIsEditingTask(false)} />
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -87,8 +87,8 @@ const EditTask = ({ setIsEditingTask }: { setIsEditingTask: (arg: boolean) => bo
 
           {/* Priority Selection */}
           <div className="form-control">
-            <label htmlFor="priority" className="label flex flex-col items-start text-white gap-2">
-              <span className="label-text text-white font-medium">Priority</span>
+            <label htmlFor="priority" className="label flex flex-col items-start text-black gap-2">
+              <span className="label-text text-black font-medium">Priority</span>
               <select {...register('priority')} defaultValue={data?.data.priority || 'medium'} className="select select-bordered w-full bg-base-100 text-base-content">
                 <option value="high" className="text-red-500 font-semibold">
                   🔴 High Priority
@@ -105,7 +105,7 @@ const EditTask = ({ setIsEditingTask }: { setIsEditingTask: (arg: boolean) => bo
             {/* Current Priority Display */}
             {data?.data.priority && (
               <div className="mt-2 flex items-center gap-2">
-                <span className="text-sm text-base-content/70 text-white">Current:</span>
+                <span className="text-sm text-base-content/70 text-black">Current:</span>
                 <span className={`font-semibold ${getPriorityConfig(data.data.priority).color}`}>
                   {getPriorityConfig(data.data.priority).emoji} {getPriorityConfig(data.data.priority).label}
                 </span>
@@ -113,7 +113,7 @@ const EditTask = ({ setIsEditingTask }: { setIsEditingTask: (arg: boolean) => bo
             )}
           </div>
 
-          <p className="font-thin text-white relative top-2">SubTasks</p>
+          <p className="font-thin text-black relative top-2">SubTasks</p>
           <div className="flex gap-2 items-center flex-col">
             {subtaskFields.map((field, index) => (
               <div className="flex w-full" key={`sub-${index}`}>
@@ -143,7 +143,7 @@ const EditTask = ({ setIsEditingTask }: { setIsEditingTask: (arg: boolean) => bo
               </div>
             ))}
           </div>
-          {subtaskFields.length < 5 && <Button onClick={addSubtaskField} type="subtask" buttonText="+add another subtask" />}
+          {<Button onClick={addSubtaskField} type="subtask" buttonText="+add another subtask" />}
           <FormRow defaultValue={data?.data.status} register={register} type="" name="options" inputType="options" />
           <Button type="createNew" buttonText="Done" />
         </form>

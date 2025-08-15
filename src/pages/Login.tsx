@@ -47,18 +47,19 @@ const Login = () => {
       <>
         <Header page="login" />
         <div className="bg-neutral overflow-hidden h-screen flex justify-center items-center">
-          <Form method="post" className="flex flex-col gap-2 rounded-lg w-screen transition-all duration-300 sm:w-fit mx-4 bg-primary p-14 sm:p-20 sm:mt-14">
-            <h4 className="text-center text-3xl text-white font-bold">Log in</h4>
+          <Form method="post" className="flex flex-col gap-2 rounded-lg w-screen transition-all border border-black shadow-sm duration-300 sm:w-fit mx-4 bg-primary p-14 sm:p-20 sm:mt-14">
+            <h4 className="text-center text-3xl text-black font-bold">Log in</h4>
             <FormRow page="login" labelText="Email" type="text" name="email" />
             <FormRow setShowPassword={setShowPassword} labelText="Password" type={showPassword ? 'text' : 'password'} name="password" />
             <Button type="submit" buttonText={isSubmitting ? 'Submitting' : 'Login'} />
-            <div className="text-white flex gap-4 m-auto mt-4 justify-center w-max">
+            <div className="text-black flex gap-4 m-auto mt-4 justify-center w-max">
               <p>No account?</p>
-              <Link className="underline underline-offset-4 text-green-300" to="/register">
+              <Link className="underline underline-offset-4 text-black" to="/register">
                 Register now
               </Link>
             </div>
-            <div className="text-white font-thin">
+            {/* for copy */}
+            <div className="text-black font-thin">
               <h2>Test User</h2>
               <div>
                 <label>Email:</label>
@@ -66,7 +67,7 @@ const Login = () => {
                   type="text"
                   value="test@gmail.com"
                   readOnly
-                  className="bg-transparent text-white border-none focus:outline-none"
+                  className="bg-transparent text-black border-none focus:outline-none"
                   onClick={(e) => (e.target as HTMLInputElement).select()}
                 />
               </div>
@@ -76,7 +77,7 @@ const Login = () => {
                   type="text"
                   value="Password1!"
                   readOnly
-                  className="bg-transparent text-white border-none focus:outline-none"
+                  className="bg-transparent text-black border-none focus:outline-none"
                   onClick={(e) => (e.target as HTMLInputElement).select()}
                 />
               </div>
