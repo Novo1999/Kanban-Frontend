@@ -12,6 +12,7 @@ import { loader as loginLoader } from './pages/Login.tsx'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+import InvitePage from './pages/InvitePage.tsx'
 import KanbanContent from './pages/KanbanContent.tsx'
 
 const queryClient = new QueryClient()
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
             element: <KanbanContent />,
           },
         ],
+      },
+      {
+        path: '/invite/:boardId',
+        element: <InvitePage />,
+        loader: homeLoader,
       },
     ],
   },
