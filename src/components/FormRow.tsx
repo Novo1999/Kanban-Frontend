@@ -30,7 +30,7 @@ const FormRow = ({
 }: FormRowProps) => {
   const [passwordHasValues, setPasswordHasValues] = useState(false)
   const queryClient = useQueryClient()
-  const { setCreateNewBoard, selectedBoard } = useKanban()
+  const { setCreateNewBoard, selectedBoard, isSidebarOpen } = useKanban()
   const { handleSubmit, onSubmit, register: createBoardRegister, errors, watch } = useCreateBoard()
 
   const createBoardInputHasValue = watch('boardName')?.length > 0
@@ -142,14 +142,14 @@ const FormRow = ({
       <div
         className={`flex items-center gap-2 
          mt-0
-         pl-6 board-input relative`}
+         left-96 board-input relative`}
       >
         <form onSubmit={editBoardSubmit(onEditBoardNameSubmit)}>
           {errors.boardName?.message ? <p className={`text-sm text-red-600 bg-white ${errors && 'p-2'} absolute bottom-11`}>{errors.boardName?.message}</p> : ''}
           <input
             defaultValue={board?.data.boardName}
             autoFocus
-            className="rounded h-6 sm:h-10 pl-2 w-32 sm:w-96 text-sm text-dark-neutral bg-white outline-none"
+            className="rounded h-6 sm:h-10 pl-2 w-32 sm:w-96 text-sm text-black bg-white outline-none"
             {...editBoardRegister('boardName', {
               maxLength: {
                 value: 45,
