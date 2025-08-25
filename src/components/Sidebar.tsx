@@ -21,7 +21,7 @@ type Board = {
 }
 
 const Sidebar = () => {
-  const user = useLoaderData() as { name: string; email: string; avatarUrl: string }
+  const user = useLoaderData() as { name: string; email: string; avatarUrl: string; _id: string }
   const navigate = useNavigate()
   const windowDimensions = useWindowDimensions()
   const onMobile = windowDimensions.width < 450
@@ -117,11 +117,12 @@ const Sidebar = () => {
 
         <motion.div initial="closed" animate="open" variants={sideVariants} className="overflow-y-auto pl-4 text-black flex-grow relative">
           {boards?.data?.length === 0 && <p className="font-bold text-gray-500 left-16 top-60 bottom-2 right-0 absolute">No Board, Create One</p>}
-          {boards?.data?.map((board: Board) => {
-            const { boardName, _id: id } = board
+          {boards?.data?.map((board) => {
+            const { boardName, _id: id, createdBy } = board
             return (
               <div key={id} className="relative">
                 <Board
+                  createdBy={user?._id !== createdBy?._id ? createdBy : undefined}
                   onClick={() => {
                     getBoard(id)
                     setSelectedBoard(id)
@@ -131,16 +132,19 @@ const Sidebar = () => {
                   boardId={id}
                   selectedBoard={selectedBoard}
                 />
-                <button
-                  onClick={() => {
-                    setSelectedBoard(id)
-                    setShowDeleteBoardModal(true)
-                  }}
-                  title="Delete"
-                  className="absolute btn right-6 z-50 top-3 bg-transparent border-0 outline-none shadow-none hover:bg-red-100 hover:text-red-600 btn-sm"
-                >
-                  <FaTrash className="text-gray-600 hover:text-red-600" />
-                </button>
+                {/* dont show delete if its someone elses board */}
+                {user?._id === createdBy?._id && (
+                  <button
+                    onClick={() => {
+                      setSelectedBoard(id)
+                      setShowDeleteBoardModal(true)
+                    }}
+                    title="Delete"
+                    className="absolute btn right-6 z-50 top-3 bg-transparent border-0 outline-none shadow-none hover:bg-red-100 hover:text-red-600 btn-sm"
+                  >
+                    <FaTrash className="text-gray-600 hover:text-red-600" />
+                  </button>
+                )}
               </div>
             )
           })}
@@ -178,7 +182,7 @@ const Sidebar = () => {
               {user.avatarUrl ? (
                 <img onClick={() => setIsProfileOptionsOpen(!isProfileOptionsOpen)} className="h-12 rounded-full border p-1 object-contain border-gray-300 w-12" src={user.avatarUrl} />
               ) : (
-                <CgProfile className='text-blue-500' onClick={() => setIsProfileOptionsOpen(!isProfileOptionsOpen)} />
+                <CgProfile className="text-blue-500" onClick={() => setIsProfileOptionsOpen(!isProfileOptionsOpen)} />
               )}
             </span>
             <p className="capitalize text-blue-500 font-semibold text-xs">{user?.name?.split(' ').at(0)}</p>

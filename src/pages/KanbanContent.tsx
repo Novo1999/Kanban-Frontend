@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
-import { BoardItem, Status, TaskDetails } from '../components/index'
+import { useEffect } from 'react';
+import { BoardItem, Status, TaskDetails } from '../components/index';
 import InviteUser from '../components/InviteUser'; // Import the new component
-import useWindowDimensions from '../hooks/useWindowDimension'
-import { useKanban } from '../pages/KanbanBoard'
+import useWindowDimensions from '../hooks/useWindowDimension';
+import { useKanban } from '../pages/KanbanBoard';
 
 const KanbanContent = () => {
   const { showAddNewModal, showDeleteBoardModal, isTaskDetailsOpen, isSidebarOpen } = useKanban()

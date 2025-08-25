@@ -19,7 +19,7 @@ const Register = () => {
   return (
     <>
       <Header page='register' />
-      <div className='bg-neutral overflow-hidden h-screen flex justify-center items-center'>
+      <div className='bg-blue-200 overflow-hidden h-screen flex justify-center items-center'>
         <Form
           method='post'
           className='flex flex-col gap-2 rounded-lg w-screen transition-all duration-300 sm:w-fit mx-4 border border-black bg-primary p-14 sm:p-20 sm:mt-20'

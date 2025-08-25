@@ -7,9 +7,11 @@ type BoardProp = {
   boardId: string
   selectedBoard: string
   onClick: () => void
+  createdBy: { avatarUrl: string } | undefined
 }
 
-const Board = ({ boardName, boardId, selectedBoard, onClick }: BoardProp) => {
+const Board = ({ boardName, boardId, selectedBoard, onClick, createdBy }: BoardProp) => {
+  console.log('🚀 ~ Board ~ createdBy:', createdBy)
   const itemVariants = {
     closed: {
       opacity: 0,
@@ -30,6 +32,13 @@ const Board = ({ boardName, boardId, selectedBoard, onClick }: BoardProp) => {
       >
         <TfiLayoutMediaRightAlt className="text-black" />
         <p className="py-4 font-semibold">{boardName}</p>
+        {createdBy ? (
+          <div className="avatar">
+            <div className="w-6 rounded-full">
+              <img src={createdBy?.avatarUrl} />
+            </div>
+          </div>
+        ) : null}
       </Link>
     </motion.div>
   )

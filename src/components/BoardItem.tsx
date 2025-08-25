@@ -20,6 +20,7 @@ export type Board = {
 
 const BoardItem = () => {
   const { data: board } = useGetBoard() as Board
+  console.log("🚀 ~ BoardItem ~ board:", board)
   const { setShowAddNewModal } = useKanban()
   const windowDimensions = useWindowDimensions()
   const onMobile = windowDimensions.width < 450

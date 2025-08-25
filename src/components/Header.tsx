@@ -1,6 +1,7 @@
 import { motion, useAnimation } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { BiUserCheck, BiUserPlus } from 'react-icons/bi'
 import { FaPhoenixFramework } from 'react-icons/fa'
 import { IoIosArrowForward } from 'react-icons/io'
 import { useParams } from 'react-router'
@@ -24,6 +25,63 @@ const Header = ({ page }: HeaderProp) => {
   const animation = useAnimation()
   const { data: board, isLoading } = useGetBoard()
 
+  // Helper function to get initials from name
+  const getInitials = (name) => {
+    if (!name) return '?'
+    const nameParts = name.split(' ')
+    const firstInitial = nameParts[0]?.[0]?.toUpperCase() || ''
+    const lastInitial = nameParts[1]?.[0]?.toUpperCase() || ''
+    return firstInitial + lastInitial
+  }
+
+  // Helper function to render avatar group with counter
+  const renderAvatarGroup = (users, title, icon, badgeColor) => {
+    if (users.length === 0) return null
+
+    const displayUsers = users.slice(0, 2) // Show max 2 avatars in header
+    const remainingCount = users.length - 2
+
+    return (
+      <div className="flex items-center space-x-2">
+        {/* Icon */}
+        <div className="flex items-center space-x-1">
+          {icon}
+          <span className="text-xs font-medium hidden sm:block">{title}</span>
+        </div>
+
+        {/* DaisyUI Avatar Group */}
+        <div className="avatar-group -space-x-4 rtl:space-x-reverse">
+          {displayUsers.map((user) => (
+            <div key={user._id} className="tooltip tooltip-bottom tooltip-open tooltip-primary z-50" data-tip={user.name || 'Unknown User'}>
+              <div className="avatar cursor-pointer">
+                <div className="w-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
+                  {user.avatarUrl ? (
+                    <img src={user.avatarUrl} alt={user.name} />
+                  ) : (
+                    <div className="bg-gradient-to-br from-purple-500 to-pink-500 w-full h-full flex items-center justify-center text-white text-xs font-semibold">{getInitials(user.name)}</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Counter for remaining users - DaisyUI placeholder avatar */}
+          {remainingCount > 0 && (
+            <div className="tooltip tooltip-bottom z-50" data-tip={`${remainingCount} more ${title.toLowerCase()}`}>
+              <div className="avatar placeholder cursor-pointer">
+                <div className="w-8 rounded-full bg-neutral text-neutral-content ring ring-primary ring-offset-base-100 ring-offset-1">
+                  <span className="text-xs">+{remainingCount}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Count badge - only show on larger screens */}
+        <div className={`badge badge-xs ${badgeColor} text-white hidden sm:inline-flex`}>{users.length}</div>
+      </div>
+    )
+  }
   useEffect(() => {
     if (isSideBarButtonHovered) {
       animation.start('visible')
@@ -71,11 +129,14 @@ const Header = ({ page }: HeaderProp) => {
     },
   }
 
+  const invitedUsers = board?.data?.invitedUsers || []
+  const acceptedUsers = board?.data?.acceptedInviteUsers || []
+
   return (
     <header
       className={`fixed bg-primary w-full p-4 lg:p-10 z-10 ${
         isSidebarOpen && !onMobile ? 'pl-80' : 'pl-4'
-      } shadow-xl text-2xl text-black left-0 font-sans top-0 flex flex-col sm:flex-row items-center gap-2 lg:gap-12 sm:gap-0 justify-between`}
+      } shadow-xl text-2xl text-black left-0 font-sans top-0 flex flex-col sm:flex-row items-center gap-2 lg:gap-12 sm:gap-4 justify-between`}
     >
       <button
         onClick={() => setIsSidebarOpen(true)}
@@ -88,16 +149,35 @@ const Header = ({ page }: HeaderProp) => {
           {isSideBarButtonHovered ? 'Show Sidebar' : ''}
         </motion.span>
       </button>
-      {!isEditingBoard && isLoading ? (
-        <Spinner type="header" />
-      ) : !isEditingBoard ? (
-        <p onClick={() => setIsEditingBoard(true)} className="capitalize font-poppins text-sm sm:text-xl hover:outline px-12 outline-1">
-          {board?.data?.boardName}
-        </p>
-      ) : (
-        <FormRow setIsOptionsOpen={setIsOptionsOpen} isEditingBoard={isEditingBoard} setIsEditingBoard={setIsEditingBoard} type="text" name="board" />
+
+      {/* Left section - Board name */}
+      <div className="flex-1">
+        {!isEditingBoard && isLoading ? (
+          <Spinner type="header" />
+        ) : !isEditingBoard ? (
+          <p onClick={() => setIsEditingBoard(true)} className="capitalize font-poppins text-sm sm:text-xl hover:outline px-4 sm:px-12 outline-1">
+            {board?.data?.boardName}
+          </p>
+        ) : (
+          <FormRow setIsOptionsOpen={setIsOptionsOpen} isEditingBoard={isEditingBoard} setIsEditingBoard={setIsEditingBoard} type="text" name="board" />
+        )}
+      </div>
+
+      {/* Center section - Avatar Groups */}
+      {id && board?.data && (invitedUsers.length > 0 || acceptedUsers.length > 0) && (
+        <div className="flex items-center space-x-4 backdrop-blur-sm rounded-lg p-2">
+          {/* Accepted Users */}
+          {renderAvatarGroup(acceptedUsers, 'Members', <BiUserCheck className="text-success text-xl" />, 'badge-success')}
+
+          {/* Divider */}
+          {acceptedUsers.length > 0 && invitedUsers.length > 0 && <div className="divider divider-horizontal mx-1 w-px"></div>}
+
+          {/* Invited Users */}
+          {renderAvatarGroup(invitedUsers, 'Invited', <BiUserPlus className="text-info text-xl" />, 'badge-info')}
+        </div>
       )}
 
+      {/* Right section - Action buttons */}
       <div className="flex items-center gap-4">
         {id && board?.data?.tasks?.length === 0
           ? ''
@@ -126,9 +206,11 @@ const Header = ({ page }: HeaderProp) => {
           <Button setIsEditingBoard={setIsEditingBoard} isEditingBoard={isEditingBoard} type="option-menu" />
         )}
       </div>
+
       {showAddNewModal && createPortal(<AddTask />, document.body)}
       {showDeleteBoardModal && createPortal(<DeleteBoard />, document.body)}
     </header>
   )
 }
+
 export default Header

@@ -46,7 +46,7 @@ const Login = () => {
     !data?.data?.email && (
       <>
         <Header page="login" />
-        <div className="bg-neutral overflow-hidden h-screen flex justify-center items-center">
+        <div className="bg-blue-200 overflow-hidden h-screen flex justify-center items-center">
           <Form method="post" className="flex flex-col gap-2 rounded-lg w-screen transition-all border border-black shadow-sm duration-300 sm:w-fit mx-4 bg-primary p-14 sm:p-20 sm:mt-14">
             <h4 className="text-center text-3xl text-black font-bold">Log in</h4>
             <FormRow page="login" labelText="Email" type="text" name="email" />
