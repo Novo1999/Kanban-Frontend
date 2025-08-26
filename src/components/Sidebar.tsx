@@ -119,10 +119,11 @@ const Sidebar = () => {
           {boards?.data?.length === 0 && <p className="font-bold text-gray-500 left-16 top-60 bottom-2 right-0 absolute">No Board, Create One</p>}
           {boards?.data?.map((board) => {
             const { boardName, _id: id, createdBy } = board
+            console.log({ createdBy, user })
             return (
               <div key={id} className="relative">
                 <Board
-                  createdBy={user?._id !== createdBy?._id ? createdBy : undefined}
+                  createdBy={createdBy}
                   onClick={() => {
                     getBoard(id)
                     setSelectedBoard(id)

@@ -5,6 +5,7 @@ import { BiUserCheck, BiUserPlus } from 'react-icons/bi'
 import { FaPhoenixFramework } from 'react-icons/fa'
 import { IoIosArrowForward } from 'react-icons/io'
 import { useParams } from 'react-router'
+import { Tooltip } from 'react-tooltip'
 import { AddTask, Button, DeleteBoard, FormRow, Spinner } from '.'
 import useGetBoard from '../hooks/useGetBoard'
 import useWindowDimensions from '../hooks/useWindowDimension'
@@ -49,11 +50,11 @@ const Header = ({ page }: HeaderProp) => {
           <span className="text-xs font-medium hidden sm:block">{title}</span>
         </div>
 
-        {/* DaisyUI Avatar Group */}
+        {/* Avatar Group */}
         <div className="avatar-group -space-x-4 rtl:space-x-reverse">
           {displayUsers.map((user) => (
-            <div key={user._id} className="tooltip tooltip-bottom tooltip-open tooltip-primary z-50" data-tip={user.name || 'Unknown User'}>
-              <div className="avatar cursor-pointer">
+            <div key={user._id}>
+              <div className="avatar cursor-pointer" data-tooltip-id={`user-tooltip-${user._id}`} data-tooltip-content={user.name || 'Unknown User'}>
                 <div className="w-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
                   {user.avatarUrl ? (
                     <img src={user.avatarUrl} alt={user.name} />
@@ -62,17 +63,51 @@ const Header = ({ page }: HeaderProp) => {
                   )}
                 </div>
               </div>
+
+              {/* Individual user tooltip */}
+              <Tooltip
+                id={`user-tooltip-${user._id}`}
+                place="bottom"
+                style={{
+                  backgroundColor: '#333',
+                  color: '#fff',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  zIndex: 10000,
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                }}
+                delayShow={300}
+                delayHide={100}
+                offset={8}
+              />
             </div>
           ))}
 
-          {/* Counter for remaining users - DaisyUI placeholder avatar */}
+          {/* Counter for remaining users */}
           {remainingCount > 0 && (
-            <div className="tooltip tooltip-bottom z-50" data-tip={`${remainingCount} more ${title.toLowerCase()}`}>
-              <div className="avatar placeholder cursor-pointer">
+            <div>
+              <div className="avatar placeholder cursor-pointer" data-tooltip-id={`remaining-users-${title}`} data-tooltip-content={`${remainingCount} more ${title.toLowerCase()}`}>
                 <div className="w-8 rounded-full bg-neutral text-neutral-content ring ring-primary ring-offset-base-100 ring-offset-1">
                   <span className="text-xs">+{remainingCount}</span>
                 </div>
               </div>
+
+              {/* Remaining users tooltip */}
+              <Tooltip
+                id={`remaining-users-${title}`}
+                place="bottom"
+                style={{
+                  backgroundColor: '#333',
+                  color: '#fff',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  zIndex: 10000,
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                }}
+                delayShow={300}
+                delayHide={100}
+                offset={8}
+              />
             </div>
           )}
         </div>
@@ -82,6 +117,7 @@ const Header = ({ page }: HeaderProp) => {
       </div>
     )
   }
+
   useEffect(() => {
     if (isSideBarButtonHovered) {
       animation.start('visible')

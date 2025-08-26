@@ -23,7 +23,7 @@ const InvitePage = () => {
     error: boardError,
   } = useQuery({
     queryKey: ['board', boardId],
-    queryFn: async () => await customFetch.get(`/kanban/boards/${boardId}`),
+    queryFn: async () => await customFetch.get(`/kanban/invite/boards/${boardId}`),
     enabled: !!boardId,
   })
 
@@ -33,8 +33,8 @@ const InvitePage = () => {
 
   // Check if user is already invited or a member
   const userId = user?.data?._id
-  const isInvited = board?.data?.invitedUsers?.includes(userId)
-  const isMember = board?.data?.acceptedInviteUsers?.includes(userId)
+  const isInvited = board?.data?.invitedUsers?.map(user => user?._id)?.includes(userId)
+  const isMember = board?.data?.acceptedInviteUsers?.map(user => user?._id)?.includes(userId)
   const isCreator = boardCreator === userId
 
   const handleAcceptInvite = async () => {
