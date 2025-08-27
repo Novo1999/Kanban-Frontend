@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -30,7 +29,7 @@ const FormRow = ({
 }: FormRowProps) => {
   const [passwordHasValues, setPasswordHasValues] = useState(false)
   const queryClient = useQueryClient()
-  const { setCreateNewBoard, selectedBoard, isSidebarOpen } = useKanban()
+  const { setCreateNewBoard, selectedBoard } = useKanban()
   const { handleSubmit, onSubmit, register: createBoardRegister, errors, watch } = useCreateBoard()
 
   const createBoardInputHasValue = watch('boardName')?.length > 0
