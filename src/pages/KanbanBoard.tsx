@@ -23,6 +23,8 @@ type KanbanContextProp = {
   setSelectedTask: (id: string) => void
   showDeleteTaskModal: boolean
   setShowDeleteTaskModal: (showDeleteTaskModal: boolean) => void
+  joinBoard: boolean
+  setJoinBoard: (joinBoard: boolean) => void
 }
 
 const KanbanContext = createContext<KanbanContextProp>({
@@ -46,6 +48,8 @@ const KanbanContext = createContext<KanbanContextProp>({
   },
   showDeleteTaskModal: false,
   setShowDeleteTaskModal: () => {},
+  joinBoard: false,
+  setJoinBoard: () => {},
 })
 
 export const useKanban = () => useContext(KanbanContext)
@@ -57,6 +61,7 @@ function KanbanBoard() {
   const [showAddNewModal, setShowAddNewModal] = useState<boolean>(false)
   const [showDeleteBoardModal, setShowDeleteBoardModal] = useState<boolean>(false)
   const [createNewBoard, setCreateNewBoard] = useState<boolean>(false)
+  const [joinBoard, setJoinBoard] = useState<boolean>(false)
   const [selectedBoard, setSelectedBoard] = useState<string>('')
   const [isTaskDetailsOpen, setIsTaskDetailsOpen] = useState<boolean>(false)
   const [selectedTask, setSelectedTask] = useState<string>('')
@@ -98,6 +103,8 @@ function KanbanBoard() {
         setSelectedTask,
         showDeleteTaskModal,
         setShowDeleteTaskModal,
+        joinBoard,
+        setJoinBoard,
       }}
     >
       <div className="p-10 bg-primary w-full min-h-screen overflow-hidden">

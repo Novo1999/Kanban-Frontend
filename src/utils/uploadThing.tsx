@@ -1,12 +1,12 @@
 import { generateUploadDropzone } from '@uploadthing/react';
-import { URL, URL2 } from './customFetch';
 
 export const UploadDropzone = generateUploadDropzone({
-  url: `${import.meta.env.VITE_ENV === 'dev' ? URL2 : URL}/uploadthing`,
+  url: `${import.meta.env.VITE_ENV === 'dev' ? DEV_URL : PROD_URL}/uploadthing`,
 })
 
 import { generateUploadButton } from "@uploadthing/react";
+import { DEV_URL, PROD_URL } from './customFetch';
 
 export const UploadButton = generateUploadButton({
-  url: `${import.meta.env.VITE_ENV === 'dev' ? URL2 : URL}/uploadthing`,
+  url: `${import.meta.env.VITE_ENV === 'dev' ? DEV_URL : PROD_URL}/uploadthing`,
 });

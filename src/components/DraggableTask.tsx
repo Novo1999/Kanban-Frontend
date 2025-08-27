@@ -47,12 +47,28 @@ const DraggableTask = ({
   // Get priority configuration
   const priorityConfig = getPriorityConfig(priority)
 
-  // api patch request so the status of the tasks changes
   const changeTaskStatus = async (selectedTask: string, newStatus: string) => {
     const updatedStatus = { status: newStatus }
-    await editTaskStatus(selectedBoard, selectedTask, updatedStatus)
-    toast.success(`Moved to ${newStatus.slice(0, 1).toUpperCase() + newStatus.slice(1)}`)
-    queryClient.invalidateQueries({ queryKey: ['selected-board'] })
+
+    // Show loading toast with promise
+    const loadingPromise = toast.promise(
+      (async () => {
+        try {
+          await editTaskStatus(selectedBoard, selectedTask, updatedStatus)
+          queryClient.invalidateQueries({ queryKey: ['selected-board'] })
+          return `Moved to ${newStatus.slice(0, 1).toUpperCase() + newStatus.slice(1)}`
+        } catch (error) {
+          throw new Error('Something went wrong')
+        }
+      })(),
+      {
+        loading: 'Moving task...',
+        success: (message) => message,
+        error: 'Failed to move task',
+      }
+    )
+
+    return loadingPromise
   }
 
   // making the tasks draggable
@@ -84,6 +100,7 @@ const DraggableTask = ({
         updatedTasks[matchedTaskIndex].status = status
         return updatedTasks
       })
+
       changeTaskStatus(selectedTask, status)
     },
   }))
@@ -132,7 +149,7 @@ const DraggableTask = ({
             </span>
           </div>
 
-          <h4 className="text-black font-semibold drop-shadow-lg">{title}</h4>
+          <h4 className="text-white font-semibold drop-shadow-lg">{title}</h4>
           <p className={`${status === STATUS[2] ? 'text-gray-600' : 'text-gray-300'} font-medium drop-shadow-lg text-xs sm:text-sm`}>
             {`${subtasks.length} subtasks(${subtasks.filter((subtask) => subtask.status === 'done').length} completed) `}
           </p>
@@ -151,7 +168,7 @@ const DraggableTask = ({
                   setSelectedTask(id)
                   setShowDeleteTaskModal(true)
                 }}
-                className="btn btn-error text-black btn-sm mr-2"
+                className="btn btn-error text-white btn-sm mr-2"
               >
                 <FaTrash />
               </button>
@@ -162,7 +179,7 @@ const DraggableTask = ({
               </div>
             )}
           </div>
-          <div className="text-black mr-2 text-xs gap-2 justify-between flex items-center mt-2">
+          <div className="text-white mr-2 text-xs gap-2 justify-between flex items-center mt-2">
             <FaClock />
             {getFinalTime(timeTracked)}
           </div>

@@ -1,6 +1,7 @@
 import { SetStateAction } from 'react'
 import { BiHide } from 'react-icons/bi'
 import { BsArrowRightSquare, BsThreeDotsVertical } from 'react-icons/bs'
+import { CgBoard } from 'react-icons/cg'
 import { FiEdit3 } from 'react-icons/fi'
 import { RiDeleteBin2Line } from 'react-icons/ri'
 import { RxCross2 } from 'react-icons/rx'
@@ -23,7 +24,7 @@ const Button = ({ type, buttonText, setIsEditingBoard, onClick, setIsEditingTask
     case 'option-menu':
       return (
         <ul className="menu dropdown-content rounded-box z-[1] w-52 p-2 shadow absolute top-20 right-16">
-          <li className='mb-2'>
+          <li className="mb-2">
             <button onClick={() => setIsEditingBoard?.(true)} className="w-full flex justify-center items-center gap-1 btn-color hover:btn-color p-3 text-lg">
               <FiEdit3 />
               Edit
@@ -41,7 +42,7 @@ const Button = ({ type, buttonText, setIsEditingBoard, onClick, setIsEditingTask
     case 'task-option':
       return (
         <ul className="menu dropdown-content rounded-box z-[1] w-52 p-2 shadow absolute top-20 right-16">
-          <li className='mb-2'>
+          <li className="mb-2">
             <button
               onClick={() => {
                 setIsEditingTask!(true)
@@ -102,7 +103,7 @@ const Button = ({ type, buttonText, setIsEditingBoard, onClick, setIsEditingTask
         isSidebarOpen && (
           <button
             onClick={onClick}
-            className={`btn-color hover:scale-105 w-fit font-bold py-2 mt-6 ml-2 px-4 rounded-full mx-auto transition-all duration-300 flex gap-2 items-center board-input`}
+            className={`btn-color hover:scale-105 font-bold py-2 mt-6 px-4 rounded-full mx-auto w-full transition-all duration-300 flex gap-2 items-center board-input`}
             type="submit"
           >
             <TfiLayoutMediaRightAlt />
@@ -135,6 +136,13 @@ const Button = ({ type, buttonText, setIsEditingBoard, onClick, setIsEditingTask
     case 'createNew':
       return (
         <button type="submit" className="relative btn-color font-semibold transition-all capitalize text-md w-full p-3 rounded-3xl hover:scale-[1.02] duration-300">
+          {buttonText}
+        </button>
+      )
+    case 'joinBoard':
+      return (
+        <button onClick={onClick} type="submit" className="btn-color hover:scale-105 font-bold py-2 px-4 rounded-full mx-auto w-full transition-all duration-300 flex gap-2 items-center board-input">
+          <CgBoard />
           {buttonText}
         </button>
       )

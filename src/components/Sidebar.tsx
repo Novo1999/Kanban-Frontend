@@ -25,10 +25,9 @@ const Sidebar = () => {
   const navigate = useNavigate()
   const windowDimensions = useWindowDimensions()
   const onMobile = windowDimensions.width < 450
-  const { isSidebarOpen, setIsSidebarOpen, createNewBoard, setCreateNewBoard, selectedBoard, setSelectedBoard, setShowDeleteBoardModal } = useKanban()
+  const { isSidebarOpen, setIsSidebarOpen, createNewBoard, setCreateNewBoard, selectedBoard, setSelectedBoard, setShowDeleteBoardModal, joinBoard, setJoinBoard } = useKanban()
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
-
   const debounceSetSearch = useDebounce((val: string) => {
     setDebouncedSearch(val)
   }, 300)
@@ -72,7 +71,6 @@ const Sidebar = () => {
       },
     },
   }
-
   return (
     <motion.aside
       initial={{ width: 0, opacity: 0 }}
@@ -119,7 +117,6 @@ const Sidebar = () => {
           {boards?.data?.length === 0 && <p className="font-bold text-gray-500 left-16 top-60 bottom-2 right-0 absolute">No Board, Create One</p>}
           {boards?.data?.map((board) => {
             const { boardName, _id: id, createdBy } = board
-            console.log({ createdBy, user })
             return (
               <div key={id} className="relative">
                 <Board
@@ -159,7 +156,18 @@ const Sidebar = () => {
       </div>
 
       <div className="flex-shrink-0 p-4">
-        <div className="relative">{createNewBoard ? <FormRow type="text" name="board" /> : <Button onClick={() => setCreateNewBoard(true)} type="createBoard" buttonText="+ Create New Board" />}</div>
+        <div className="flex flex-col gap-2">
+          {createNewBoard ? (
+            <FormRow type="text" name="board" />
+          ) : joinBoard ? (
+            <FormRow type="text" name="join-board" placeholder='Invite Link' />
+          ) : (
+            <>
+              <Button onClick={() => setCreateNewBoard(true)} type="createBoard" buttonText=" Create New Board" />
+              <Button onClick={() => setJoinBoard(true)} type="joinBoard" buttonText="Join Board" />
+            </>
+          )}
+        </div>
         <div className="flex justify-between items-center mt-4">
           <div className="flex flex-col gap-2 items-center profile-options">
             <span className="text-black text-5xl relative cursor-pointer">

@@ -1,13 +1,17 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
+import { useLoaderData, useNavigate } from 'react-router'
 import { Button } from '.'
 import { STATUS } from '../constants'
 import { useCreateBoard } from '../hooks/useCreateBoard'
 import useGetBoard from '../hooks/useGetBoard'
 import { useGetTask } from '../hooks/useGetTask.js'
 import { useKanban } from '../pages/KanbanBoard'
+import customFetch from '../utils/customFetch.js'
 import { editBoardName } from '../utils/editBoardName'
+import { getBoard } from '../utils/getBoard.js'
 
 const FormRow = ({
   labelText,
@@ -29,9 +33,11 @@ const FormRow = ({
 }: FormRowProps) => {
   const [passwordHasValues, setPasswordHasValues] = useState(false)
   const queryClient = useQueryClient()
-  const { setCreateNewBoard, selectedBoard } = useKanban()
+  const { setCreateNewBoard, selectedBoard, setJoinBoard } = useKanban()
   const { handleSubmit, onSubmit, register: createBoardRegister, errors, watch } = useCreateBoard()
-
+  const navigate = useNavigate()
+  const [inviteCode, setInviteCode] = useState('')
+  const user = useLoaderData() as { name: string; email: string; avatarUrl: string; _id: string }
   const createBoardInputHasValue = watch('boardName')?.length > 0
 
   const { data: board } = useGetBoard()
@@ -135,6 +141,43 @@ const FormRow = ({
         )}
       </div>
     )
+  console.log(board)
+  const handleJoinBoard = async () => {
+    try {
+      const board = await getBoard(inviteCode)
+      if (board?.data?.createdBy === user?._id) {
+        toast.error('You are the board creator')
+        return
+      }
+      await customFetch.post(`/kanban/boards/${inviteCode}/invite-user`, {
+        userId: user?._id,
+      })
+      navigate(`/invite/${inviteCode}`)
+    } catch (error) {
+      toast.error('Failed')
+    }
+  }
+  if (name === 'join-board') {
+    return (
+      <div className="bg-white w-max right-4 p-4 shadow-lg relative bottom-8 md:bottom-12 2xl:bottom-2">
+        <div className={`flex items-center gap-2 pl-6 board-input relative`}>
+          <form onSubmit={handleJoinBoard}>
+            {errors.boardName?.message ? <p className={`text-sm text-red-600 bg-white ${errors && 'p-2'} absolute bottom-11`}>{errors.boardName?.message}</p> : ''}
+            <input onChange={(e) => setInviteCode(e.target.value)} autoFocus className="rounded h-10 pl-2 w-52 border border-black bg-white text-black" type={type} placeholder={placeholder} />
+          </form>
+          <Button
+            type="cross"
+            onClick={() => {
+              setJoinBoard(false)
+            }}
+          />
+        </div>
+        <button onClick={handleJoinBoard} className="font-thin btn-color px-4 p-2 rounded-3xl relative left-6 top-2 ">
+          Join
+        </button>
+      </div>
+    )
+  }
 
   if (isEditingBoard)
     return (

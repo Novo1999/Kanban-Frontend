@@ -2,6 +2,7 @@ import emailjs from '@emailjs/browser'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { BiUserCircle } from 'react-icons/bi'
+import { FaCheck, FaCopy } from 'react-icons/fa'
 import useGetBoard from '../hooks/useGetBoard'
 import customFetch from '../utils/customFetch'
 
@@ -22,6 +23,7 @@ const InviteUser = () => {
   const [inviteEmail, setInviteEmail] = useState('')
   const [isInviteLoading, setIsInviteLoading] = useState(false)
   const [inviteStatus, setInviteStatus] = useState('')
+  const [showCopySuccess, setShowCopySuccess] = useState(false)
 
   const handleInviteSubmit = async (e) => {
     e.preventDefault()
@@ -94,6 +96,31 @@ const InviteUser = () => {
     }
   }
 
+  const copyInviteLink = async () => {
+    const boardId = board?.data?._id
+
+    try {
+      await navigator.clipboard.writeText(boardId)
+      setShowCopySuccess(true)
+
+      // Reset the success state after 2 seconds
+      setTimeout(() => {
+        setShowCopySuccess(false)
+      }, 2000)
+    } catch (error) {
+      console.error('Failed to copy ID:', error)
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea')
+      textArea.value = boardId
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+      setShowCopySuccess(true)
+      setTimeout(() => setShowCopySuccess(false), 2000)
+    }
+  }
+
   const openInviteModal = () => {
     setShowInviteModal(true)
     setInviteStatus('')
@@ -142,6 +169,30 @@ const InviteUser = () => {
                 />
               </div>
 
+              {/* OR Divider */}
+              <div className="divider">OR</div>
+
+              {/* Copy Link Section */}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Share Invite Code</span>
+                </label>
+                <div className="flex gap-2">
+                  <input type="text" value={`${board?.data?._id}`} readOnly className="input input-bordered flex-1 text-sm" />
+                  <button type="button" onClick={copyInviteLink} className={`btn ${showCopySuccess ? 'btn-success' : 'btn-outline'}`} disabled={isInviteLoading}>
+                    {showCopySuccess ? (
+                      <>
+                        <FaCheck /> Copied!
+                      </>
+                    ) : (
+                      <>
+                        <FaCopy /> Copy
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
               {/* Status Message */}
               {inviteStatus && (
                 <div
@@ -163,7 +214,7 @@ const InviteUser = () => {
                   Cancel
                 </button>
                 <button type="submit" className={`btn btn-primary btn-color ${isInviteLoading ? 'loading' : ''}`} disabled={isInviteLoading}>
-                  {isInviteLoading ? 'Sending...' : 'Invite'}
+                  {isInviteLoading ? 'Sending...' : 'Send Invite'}
                 </button>
               </div>
             </form>
