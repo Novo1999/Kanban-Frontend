@@ -141,18 +141,18 @@ const FormRow = ({
         )}
       </div>
     )
-  console.log(board)
   const handleJoinBoard = async () => {
+    const cleanInviteCode = inviteCode.split('flowboard-inv-')?.[1] 
     try {
-      const board = await getBoard(inviteCode)
+      const board = await getBoard(cleanInviteCode)
       if (board?.data?.createdBy === user?._id) {
         toast.error('You are the board creator')
         return
       }
-      await customFetch.post(`/kanban/boards/${inviteCode}/invite-user`, {
+      await customFetch.post(`/kanban/boards/${cleanInviteCode}/invite-user`, {
         userId: user?._id,
       })
-      navigate(`/invite/${inviteCode}`)
+      navigate(`/invite/${cleanInviteCode}`)
     } catch (error) {
       toast.error('Failed')
     }

@@ -97,7 +97,7 @@ const InviteUser = () => {
   }
 
   const copyInviteLink = async () => {
-    const boardId = board?.data?._id
+    const boardId = `flowboard-inv-${board?.data?._id}`
 
     try {
       await navigator.clipboard.writeText(boardId)
@@ -138,7 +138,7 @@ const InviteUser = () => {
       {/* Invite User Button */}
       <div className="my-8 max-w-2xl overflow-hidden">
         {!isLoading && isUsersBoard && (
-          <button disabled={!isUsersBoard} onClick={openInviteModal} className="btn btn-primary text-white btn-color">
+          <button disabled={!isUsersBoard} onClick={openInviteModal} className="btn btn-primary text-white rounded-full btn-color">
             <BiUserCircle size={24} />
             Invite User
           </button>
@@ -148,14 +148,14 @@ const InviteUser = () => {
       {/* Invite User Modal */}
       {showInviteModal && (
         <div className="modal modal-open">
-          <div className="modal-box overflow-hidden">
-            <h3 className="font-bold text-lg mb-4">Invite User to "{boardName}"</h3>
+          <div className="modal-box overflow-hidden bg-white">
+            <h3 className="font-bold text-lg mb-4 text-black">Invite User to "{boardName}"</h3>
 
             <form onSubmit={handleInviteSubmit} className="space-y-4">
               {/* Email Input */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Email Address</span>
+                  <span className="label-text text-black">Email Address</span>
                 </label>
                 <input
                   autoFocus
@@ -163,23 +163,23 @@ const InviteUser = () => {
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   placeholder="Enter user's email address"
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full btn-color placeholder:text-white"
                   required
                   disabled={isInviteLoading}
                 />
               </div>
 
               {/* OR Divider */}
-              <div className="divider">OR</div>
+              <div className="divider text-black">OR</div>
 
               {/* Copy Link Section */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Share Invite Code</span>
+                  <span className="label-text text-black">Share Invite Code</span>
                 </label>
                 <div className="flex gap-2">
-                  <input type="text" value={`${board?.data?._id}`} readOnly className="input input-bordered flex-1 text-sm" />
-                  <button type="button" onClick={copyInviteLink} className={`btn ${showCopySuccess ? 'btn-success' : 'btn-outline'}`} disabled={isInviteLoading}>
+                  <input type="text" value={`flowboard-inv-${board?.data?._id}`} readOnly className="input input-bordered flex-1 text-sm btn-color placeholder:text-white" />
+                  <button type="button" onClick={copyInviteLink} className={`btn ${showCopySuccess ? 'btn-color' : 'btn-outline'} text-black hover:btn-color`} disabled={isInviteLoading}>
                     {showCopySuccess ? (
                       <>
                         <FaCheck /> Copied!
@@ -210,7 +210,7 @@ const InviteUser = () => {
 
               {/* Modal Actions */}
               <div className="modal-action">
-                <button type="button" onClick={closeInviteModal} className="btn" disabled={isInviteLoading}>
+                <button type="button" onClick={closeInviteModal} className="btn btn-ghost text-black" disabled={isInviteLoading}>
                   Cancel
                 </button>
                 <button type="submit" className={`btn btn-primary btn-color ${isInviteLoading ? 'loading' : ''}`} disabled={isInviteLoading}>

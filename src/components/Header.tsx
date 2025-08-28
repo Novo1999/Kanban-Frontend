@@ -1,19 +1,24 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { motion, useAnimation } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import toast from 'react-hot-toast'
 import { BiUserCheck, BiUserPlus } from 'react-icons/bi'
-import { FaPhoenixFramework } from 'react-icons/fa'
+import { FaPhoenixFramework, FaTrash } from 'react-icons/fa'
 import { IoIosArrowForward } from 'react-icons/io'
-import { useParams } from 'react-router'
+import { useLoaderData, useParams } from 'react-router'
 import { Tooltip } from 'react-tooltip'
 import { AddTask, Button, DeleteBoard, FormRow, Spinner } from '.'
 import useGetBoard from '../hooks/useGetBoard'
 import useWindowDimensions from '../hooks/useWindowDimension'
 import { useKanban } from '../pages/KanbanBoard'
+import customFetch from '../utils/customFetch'
 
 type HeaderProp = {
   page: string
 }
+
+type User = { name: string; email: string; avatarUrl: string; _id: string }
 
 const Header = ({ page }: HeaderProp) => {
   const windowDimensions = useWindowDimensions()
@@ -25,7 +30,36 @@ const Header = ({ page }: HeaderProp) => {
   const [isSideBarButtonHovered, setIsSideBarButtonHovered] = useState(false)
   const animation = useAnimation()
   const { data: board, isLoading } = useGetBoard()
+  const user = useLoaderData() as User
+  const [showMembersModal, setShowMembersModal] = useState(false)
+  const [isDeletingMember, setIsDeletingMember] = useState('')
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false)
+  const [userToDelete, setUserToDelete] = useState<User | null>(null)
+  const queryClient = useQueryClient()
 
+  // Update the delete function to only handle members
+  const handleRemoveMember = async (userId: string) => {
+    setIsDeletingMember(userId)
+    try {
+      await customFetch.patch(`/kanban/boards/${id}/remove-member`, {
+        userId,
+      })
+      toast.success('Member removed successfully')
+      queryClient.invalidateQueries({ queryKey: ['selected-board', id] })
+    } catch (error) {
+      console.error('Failed to remove member:', error)
+      toast.error('Failed to remove member')
+    } finally {
+      setIsDeletingMember('')
+      setShowConfirmDelete(false)
+      setShowMembersModal(false)
+    }
+  }
+  // Add function to initiate delete
+  const initiateDelete = (user: User) => {
+    setUserToDelete(user)
+    setShowConfirmDelete(true)
+  }
   // Helper function to get initials from name
   const getInitials = (name) => {
     if (!name) return '?'
@@ -35,22 +69,25 @@ const Header = ({ page }: HeaderProp) => {
     return firstInitial + lastInitial
   }
 
-  // Helper function to render avatar group with counter
   const renderAvatarGroup = (users, title, icon, badgeColor) => {
     if (users.length === 0) return null
 
-    const displayUsers = users.slice(0, 2) // Show max 2 avatars in header
+    const displayUsers = users.slice(0, 2)
     const remainingCount = users.length - 2
+    const isMembers = title === 'Members'
+    const isOwner = user?._id === board?.data?.createdBy
 
     return (
-      <div className="flex items-center space-x-2">
-        {/* Icon */}
+      <div
+        className={`flex items-center space-x-2 ${isMembers && isOwner ? 'cursor-pointer hover:bg-white hover:bg-opacity-20 rounded-lg p-1 transition-all duration-200' : ''}`}
+        onClick={isMembers && isOwner ? () => setShowMembersModal(true) : undefined}
+      >
+        {/* Rest of your existing code stays the same */}
         <div className="flex items-center space-x-1">
           {icon}
           <span className="text-xs font-medium hidden sm:block">{title}</span>
         </div>
 
-        {/* Avatar Group */}
         <div className="avatar-group -space-x-4 rtl:space-x-reverse">
           {displayUsers.map((user) => (
             <div key={user._id}>
@@ -64,7 +101,6 @@ const Header = ({ page }: HeaderProp) => {
                 </div>
               </div>
 
-              {/* Individual user tooltip */}
               <Tooltip
                 id={`user-tooltip-${user._id}`}
                 place="bottom"
@@ -83,7 +119,6 @@ const Header = ({ page }: HeaderProp) => {
             </div>
           ))}
 
-          {/* Counter for remaining users */}
           {remainingCount > 0 && (
             <div>
               <div className="avatar placeholder cursor-pointer" data-tooltip-id={`remaining-users-${title}`} data-tooltip-content={`${remainingCount} more ${title.toLowerCase()}`}>
@@ -92,7 +127,6 @@ const Header = ({ page }: HeaderProp) => {
                 </div>
               </div>
 
-              {/* Remaining users tooltip */}
               <Tooltip
                 id={`remaining-users-${title}`}
                 place="bottom"
@@ -112,7 +146,6 @@ const Header = ({ page }: HeaderProp) => {
           )}
         </div>
 
-        {/* Count badge - only show on larger screens */}
         <div className={`badge badge-xs ${badgeColor} text-white hidden sm:inline-flex`}>{users.length}</div>
       </div>
     )
@@ -245,6 +278,95 @@ const Header = ({ page }: HeaderProp) => {
 
       {showAddNewModal && createPortal(<AddTask />, document.body)}
       {showDeleteBoardModal && createPortal(<DeleteBoard />, document.body)}
+      {/* Invited Users Modal */}
+      {/* Members Modal */}
+      {/* Members Modal */}
+      {showMembersModal && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-white">
+            <h3 className="font-bold text-lg mb-4">Board Members</h3>
+
+            {acceptedUsers.length === 0 ? (
+              <p className="text-gray-500">No members yet</p>
+            ) : (
+              <div className="space-y-3">
+                {acceptedUsers.map((user) => (
+                  <div key={user._id} className="flex items-center justify-between p-3 bg-base-200 rounded-lg btn-color">
+                    <div className="flex items-center space-x-3">
+                      <div className="avatar">
+                        <div className="w-10 rounded-full">
+                          {user.avatarUrl ? (
+                            <img src={user.avatarUrl} alt={user.name} />
+                          ) : (
+                            <div className="bg-gradient-to-br from-purple-500 to-pink-500 w-full h-full flex items-center justify-center text-white text-sm font-semibold">
+                              {getInitials(user.name)}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-medium">{user.name}</p>
+                        <p className="text-sm text-black">{user.email}</p>
+                      </div>
+                    </div>
+
+                    <button onClick={() => initiateDelete(user)} disabled={isDeletingMember === user._id} className="btn btn-error btn-sm">
+                      {isDeletingMember === user._id ? <span className="loading loading-spinner loading-xs"></span> : <FaTrash />}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="modal-action">
+              <button className="btn btn-color border-0" onClick={() => setShowMembersModal(false)}>
+                Close
+              </button>
+            </div>
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button onClick={() => setShowMembersModal(false)}>close</button>
+          </form>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirmDelete && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-white">
+            <h3 className="font-bold text-lg mb-4">Confirm Removal</h3>
+            <p className="py-4">
+              Are you sure you want to remove <strong>{userToDelete?.name}</strong> from this board? This action cannot be undone.
+            </p>
+
+            <div className="modal-action">
+              <button
+                className="btn btn-ghost"
+                onClick={() => {
+                  setShowConfirmDelete(false)
+                  setUserToDelete(null)
+                }}
+                disabled={!!isDeletingMember}
+              >
+                Cancel
+              </button>
+              <button className="btn btn-error" onClick={() => handleRemoveMember(userToDelete?._id || '')} disabled={!!isDeletingMember}>
+                {isDeletingMember ? <span className="loading loading-spinner loading-xs"></span> : 'Remove Member'}
+              </button>
+            </div>
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button
+              onClick={() => {
+                setShowConfirmDelete(false)
+                setUserToDelete(null)
+              }}
+            >
+              close
+            </button>
+          </form>
+        </div>
+      )}
     </header>
   )
 }
