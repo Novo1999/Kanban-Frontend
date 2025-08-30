@@ -18,7 +18,7 @@ type HeaderProp = {
   page: string
 }
 
-type User = { name: string; email: string; avatarUrl: string; _id: string }
+export type User = { name: string; email: string; avatarUrl: string; _id: string }
 
 const Header = ({ page }: HeaderProp) => {
   const windowDimensions = useWindowDimensions()
@@ -279,7 +279,6 @@ const Header = ({ page }: HeaderProp) => {
       {showAddNewModal && createPortal(<AddTask />, document.body)}
       {showDeleteBoardModal && createPortal(<DeleteBoard />, document.body)}
       {/* Invited Users Modal */}
-      {/* Members Modal */}
       {/* Members Modal */}
       {showMembersModal && (
         <div className="modal modal-open">

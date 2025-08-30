@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import { User } from '../components/Header'
 import { useKanban } from '../pages/KanbanBoard'
 import customFetch from '../utils/customFetch'
 
@@ -12,6 +13,7 @@ interface IFormValues {
   priority?: string // Add priority field
   subtasks: Array<{ name: string; status: string }>
   timeTracked?: number
+  assigned?: { user: User; assignedBy: User }[]
 }
 
 export const useEditTask = () => {
@@ -28,6 +30,7 @@ export const useEditTask = () => {
       subtasks: data?.subtasks?.map((st) => ({ name: st.name, status: st.status })) || [],
       status: data.status,
       timeTracked: data.timeTracked,
+      assigned: data?.assigned,
     }
 
     try {

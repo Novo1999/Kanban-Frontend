@@ -46,6 +46,7 @@ const router = createBrowserRouter([
           {
             path: 'kanban-board/:id',
             element: <KanbanContent />,
+            loader: homeLoader,
           },
         ],
       },
