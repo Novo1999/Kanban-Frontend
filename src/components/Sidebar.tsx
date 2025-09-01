@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { ChangeEvent, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { CgProfile } from 'react-icons/cg'
-import { FaClock, FaPhoenixFramework, FaTrash } from 'react-icons/fa'
+import { FaClock, FaTrash } from 'react-icons/fa'
 import { RxCross1 } from 'react-icons/rx'
 import { Link, useLoaderData, useNavigate } from 'react-router-dom'
 import { Board, Button, FormRow } from '.'
@@ -83,8 +83,19 @@ const Sidebar = () => {
       <div className="flex flex-col flex-grow overflow-y-auto">
         <div className="pl-4">
           <div className="flex gap-2 font-rammetto items-center text-3xl text-black">
-            <FaPhoenixFramework />
-            <p className="ml-2">FlowBoard</p>
+            <motion.div className="flex items-center space-x-2 mb-4" whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2z"
+                  />
+                </svg>
+              </div>
+              <span className="text-xl font-bold text-gray-900">Flowboard</span>
+            </motion.div>
           </div>
 
           <div className="flex gap-2 items-center bg-gray-100 text-black w-fit px-4 rounded-full">
@@ -160,7 +171,7 @@ const Sidebar = () => {
           {createNewBoard ? (
             <FormRow type="text" name="board" />
           ) : joinBoard ? (
-            <FormRow type="text" name="join-board" placeholder='Invite Link' />
+            <FormRow type="text" name="join-board" placeholder="Invite Link" />
           ) : (
             <>
               <Button onClick={() => setCreateNewBoard(true)} type="createBoard" buttonText=" Create New Board" />

@@ -12,6 +12,7 @@ import { loader as loginLoader } from './pages/Login.tsx'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+import Home from './pages/Home.tsx'
 import InvitePage from './pages/InvitePage.tsx'
 import KanbanContent from './pages/KanbanContent.tsx'
 
@@ -24,8 +25,14 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
       {
-        index: true,
+        path: '/login',
         element: <Login />,
+        action: loginAction,
+        loader: loginLoader,
+      },
+      {
+        index: true,
+        element: <Home />,
         action: loginAction,
         loader: loginLoader,
       },

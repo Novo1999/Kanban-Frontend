@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import toast from 'react-hot-toast'
 import { BiUserCheck, BiUserPlus } from 'react-icons/bi'
-import { FaPhoenixFramework, FaTrash } from 'react-icons/fa'
+import { FaTrash } from 'react-icons/fa'
 import { IoIosArrowForward } from 'react-icons/io'
 import { useLoaderData, useParams } from 'react-router'
 import { Tooltip } from 'react-tooltip'
-import { AddTask, Button, DeleteBoard, FormRow, Spinner } from '.'
+import { AddTask, Button, DeleteBoard, Spinner } from '.'
 import useGetBoard from '../hooks/useGetBoard'
 import useWindowDimensions from '../hooks/useWindowDimension'
 import { useKanban } from '../pages/KanbanBoard'
@@ -35,7 +35,40 @@ const Header = ({ page }: HeaderProp) => {
   const [isDeletingMember, setIsDeletingMember] = useState('')
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
   const [userToDelete, setUserToDelete] = useState<User | null>(null)
+  const [boardName, setBoardName] = useState('')
+  const [isUpdatingBoard, setIsUpdatingBoard] = useState(false)
   const queryClient = useQueryClient()
+
+  // Initialize board name when board data loads
+  useEffect(() => {
+    if (board?.data?.boardName) {
+      setBoardName(board.data.boardName)
+    }
+  }, [board?.data?.boardName])
+
+  // Handle board name update
+  const handleUpdateBoardName = async () => {
+    if (!boardName.trim() || boardName === board?.data?.boardName) {
+      setIsEditingBoard(false)
+      return
+    }
+
+    setIsUpdatingBoard(true)
+    try {
+      await customFetch.patch(`/kanban/boards/${id}`, {
+        boardName: boardName.trim(),
+      })
+      toast.success('Board name updated successfully')
+      queryClient.invalidateQueries({ queryKey: ['selected-board', id] })
+      queryClient.invalidateQueries({ queryKey: ['boards'] })
+      setIsEditingBoard(false)
+    } catch (error) {
+      console.error('Failed to update board name:', error)
+      toast.error('Failed to update board name')
+    } finally {
+      setIsUpdatingBoard(false)
+    }
+  }
 
   // Update the delete function to only handle members
   const handleRemoveMember = async (userId: string) => {
@@ -82,7 +115,6 @@ const Header = ({ page }: HeaderProp) => {
         className={`flex items-center space-x-2 ${isMembers && isOwner ? 'cursor-pointer hover:bg-white hover:bg-opacity-20 rounded-lg p-1 transition-all duration-200' : ''}`}
         onClick={isMembers && isOwner ? () => setShowMembersModal(true) : undefined}
       >
-        {/* Rest of your existing code stays the same */}
         <div className="flex items-center space-x-1">
           {icon}
           <span className="text-xs font-medium hidden sm:block">{title}</span>
@@ -178,8 +210,19 @@ const Header = ({ page }: HeaderProp) => {
   if (page === 'login' || page === 'register')
     return (
       <header className="absolute bg-primary w-full flex justify-center p-10 shadow-md shrink-0 text-2xl sm:text-4xl transition-all duration-300 text-black font-rammetto m-auto">
-        <FaPhoenixFramework />
-        <p className="ml-2">FlowBoard</p>
+        <motion.div className="flex items-center space-x-2" whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2z"
+              />
+            </svg>
+          </div>
+          <span className="text-xl font-bold text-gray-900">Flowboard</span>
+        </motion.div>
       </header>
     )
 
@@ -219,17 +262,9 @@ const Header = ({ page }: HeaderProp) => {
         </motion.span>
       </button>
 
-      {/* Left section - Board name */}
+      {/* Left section - Board name (no longer editable inline) */}
       <div className="flex-1">
-        {!isEditingBoard && isLoading ? (
-          <Spinner type="header" />
-        ) : !isEditingBoard ? (
-          <p onClick={() => setIsEditingBoard(true)} className="capitalize font-poppins text-sm sm:text-xl hover:outline px-4 sm:px-12 outline-1">
-            {board?.data?.boardName}
-          </p>
-        ) : (
-          <FormRow setIsOptionsOpen={setIsOptionsOpen} isEditingBoard={isEditingBoard} setIsEditingBoard={setIsEditingBoard} type="text" name="board" />
-        )}
+        {isLoading ? <Spinner type="header" /> : <p className={`${isSidebarOpen ? 'ml-[17rem]' : ''} capitalize text-sm sm:text-xl px-4 sm:px-12 outline-1`}>{board?.data?.boardName}</p>}
       </div>
 
       {/* Center section - Avatar Groups */}
@@ -278,39 +313,43 @@ const Header = ({ page }: HeaderProp) => {
 
       {showAddNewModal && createPortal(<AddTask />, document.body)}
       {showDeleteBoardModal && createPortal(<DeleteBoard />, document.body)}
-      {/* Invited Users Modal */}
+
       {/* Members Modal */}
       {showMembersModal && (
         <div className="modal modal-open">
           <div className="modal-box bg-white">
-            <h3 className="font-bold text-lg mb-4">Board Members</h3>
+            <h3 className="font-bold text-lg mb-4 text-gray-900">Board Members</h3>
 
             {acceptedUsers.length === 0 ? (
               <p className="text-gray-500">No members yet</p>
             ) : (
               <div className="space-y-3">
-                {acceptedUsers.map((user) => (
-                  <div key={user._id} className="flex items-center justify-between p-3 bg-base-200 rounded-lg btn-color">
+                {acceptedUsers.map((member) => (
+                  <div key={member._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
                     <div className="flex items-center space-x-3">
                       <div className="avatar">
                         <div className="w-10 rounded-full">
-                          {user.avatarUrl ? (
-                            <img src={user.avatarUrl} alt={user.name} />
+                          {member.avatarUrl ? (
+                            <img src={member.avatarUrl} alt={member.name} />
                           ) : (
                             <div className="bg-gradient-to-br from-purple-500 to-pink-500 w-full h-full flex items-center justify-center text-white text-sm font-semibold">
-                              {getInitials(user.name)}
+                              {getInitials(member.name)}
                             </div>
                           )}
                         </div>
                       </div>
                       <div>
-                        <p className="font-medium">{user.name}</p>
-                        <p className="text-sm text-black">{user.email}</p>
+                        <p className="font-medium text-gray-900">{member.name}</p>
+                        <p className="text-sm text-gray-600">{member.email}</p>
                       </div>
                     </div>
 
-                    <button onClick={() => initiateDelete(user)} disabled={isDeletingMember === user._id} className="btn btn-error btn-sm">
-                      {isDeletingMember === user._id ? <span className="loading loading-spinner loading-xs"></span> : <FaTrash />}
+                    <button
+                      onClick={() => initiateDelete(member)}
+                      disabled={isDeletingMember === member._id}
+                      className="w-8 h-8 rounded-lg bg-white border border-gray-300 hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-500 flex items-center justify-center transition-colors"
+                    >
+                      {isDeletingMember === member._id ? <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin"></div> : <FaTrash className="w-3 h-3" />}
                     </button>
                   </div>
                 ))}
@@ -318,7 +357,7 @@ const Header = ({ page }: HeaderProp) => {
             )}
 
             <div className="modal-action">
-              <button className="btn btn-color border-0" onClick={() => setShowMembersModal(false)}>
+              <button className="btn bg-blue-600 text-white border-0 hover:bg-blue-700" onClick={() => setShowMembersModal(false)}>
                 Close
               </button>
             </div>
@@ -333,14 +372,14 @@ const Header = ({ page }: HeaderProp) => {
       {showConfirmDelete && (
         <div className="modal modal-open">
           <div className="modal-box bg-white">
-            <h3 className="font-bold text-lg mb-4">Confirm Removal</h3>
-            <p className="py-4">
+            <h3 className="font-bold text-lg mb-4 text-gray-900">Confirm Removal</h3>
+            <p className="py-4 text-gray-700">
               Are you sure you want to remove <strong>{userToDelete?.name}</strong> from this board? This action cannot be undone.
             </p>
 
             <div className="modal-action">
               <button
-                className="btn btn-ghost"
+                className="btn bg-gray-100 text-gray-700 border-0 hover:bg-gray-200"
                 onClick={() => {
                   setShowConfirmDelete(false)
                   setUserToDelete(null)
@@ -349,8 +388,15 @@ const Header = ({ page }: HeaderProp) => {
               >
                 Cancel
               </button>
-              <button className="btn btn-error" onClick={() => handleRemoveMember(userToDelete?._id || '')} disabled={!!isDeletingMember}>
-                {isDeletingMember ? <span className="loading loading-spinner loading-xs"></span> : 'Remove Member'}
+              <button className="btn bg-red-600 text-white border-0 hover:bg-red-700" onClick={() => handleRemoveMember(userToDelete?._id || '')} disabled={!!isDeletingMember}>
+                {isDeletingMember ? (
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Removing...
+                  </div>
+                ) : (
+                  'Remove Member'
+                )}
               </button>
             </div>
           </div>
@@ -359,6 +405,70 @@ const Header = ({ page }: HeaderProp) => {
               onClick={() => {
                 setShowConfirmDelete(false)
                 setUserToDelete(null)
+              }}
+            >
+              close
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Edit Board Modal */}
+      {isEditingBoard && (
+        <div className="modal modal-open">
+          <div className="modal-box bg-white max-w-md">
+            <h3 className="font-bold text-lg mb-4 text-gray-900">Edit Board Name</h3>
+
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="boardName" className="block text-sm font-semibold text-gray-900 mb-2">
+                  Board Name
+                </label>
+                <input
+                  type="text"
+                  id="boardName"
+                  value={boardName}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleUpdateBoardName()
+                    }
+                  }}
+                  onChange={(e) => setBoardName(e.target.value)}
+                  placeholder="Enter board name"
+                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
+                  autoFocus
+                />
+              </div>
+            </div>
+
+            <div className="modal-action">
+              <button
+                className="btn bg-gray-100 text-gray-700 border-0 hover:bg-gray-200"
+                onClick={() => {
+                  setIsEditingBoard(false)
+                  setBoardName(board?.data?.boardName || '')
+                }}
+                disabled={isUpdatingBoard}
+              >
+                Cancel
+              </button>
+              <button className="btn bg-blue-600 text-white border-0 hover:bg-blue-700" onClick={handleUpdateBoardName} disabled={isUpdatingBoard || !boardName.trim()}>
+                {isUpdatingBoard ? (
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Updating...
+                  </div>
+                ) : (
+                  'Update Board'
+                )}
+              </button>
+            </div>
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button
+              onClick={() => {
+                setIsEditingBoard(false)
+                setBoardName(board?.data?.boardName || '')
               }}
             >
               close

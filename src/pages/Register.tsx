@@ -40,7 +40,7 @@ const Register = () => {
             </p>
             <Link
               className='underline underline-offset-4 sm:text-lg text-black text-xs w-fit'
-              to="/"
+              to="/login"
             >
               Login now
             </Link>
