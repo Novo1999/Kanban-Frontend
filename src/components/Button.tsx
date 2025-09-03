@@ -16,9 +16,10 @@ type ButtonProp = {
   isEditingBoard?: boolean
   setIsEditingTask?: (arg: boolean) => boolean | void
   setShowDeleteTask?: (arg: boolean) => boolean | void
+  disabled?: boolean
 }
 
-const Button = ({ type, buttonText, setIsEditingBoard, onClick, setIsEditingTask, setShowDeleteTask }: ButtonProp) => {
+const Button = ({ type, buttonText, setIsEditingBoard, onClick, setIsEditingTask, setShowDeleteTask, disabled }: ButtonProp) => {
   const { setShowDeleteBoardModal, isSidebarOpen } = useKanban()
   switch (type) {
     case 'option-menu':
@@ -114,7 +115,7 @@ const Button = ({ type, buttonText, setIsEditingBoard, onClick, setIsEditingTask
 
     case 'submit':
       return (
-        <button onClick={onClick} className="btn-color flex justify-center font-bold py-3 px-16 rounded-full mt-6 w-24 mx-auto transition-all duration-300" type="submit">
+        <button disabled={disabled} onClick={onClick} className="btn-color flex justify-center font-bold py-3 px-16 rounded-full mt-6 mx-auto transition-all duration-300" type="submit">
           {buttonText}
         </button>
       )

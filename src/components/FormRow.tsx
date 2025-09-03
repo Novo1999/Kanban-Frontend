@@ -142,7 +142,7 @@ const FormRow = ({
       </div>
     )
   const handleJoinBoard = async () => {
-    const cleanInviteCode = inviteCode.split('flowboard-inv-')?.[1] 
+    const cleanInviteCode = inviteCode.split('flowboard-inv-')?.[1]
     try {
       const board = await getBoard(cleanInviteCode)
       if (board?.data?.createdBy === user?._id) {
@@ -208,7 +208,7 @@ const FormRow = ({
     )
 
   // login and register page inputs
-  if (name === 'name' || name === 'email' || name === 'password')
+  if (name === 'name' || name === 'email' || name === 'password' || name === 'confirmPassword')
     return (
       <>
         <div className="flex justify-between">
@@ -216,7 +216,7 @@ const FormRow = ({
             {labelText}
           </label>
           {/* if password has value, show the show password checkbox */}
-          {name === 'password' && passwordHasValues && (
+          {(name === 'password' || name === 'confirmPassword') && passwordHasValues && (
             <div className="text-xs sm:text-sm flex items-center text-black gap-2">
               <label className="font-thin" htmlFor="checkbox">
                 Show Password

@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { motion, Reorder } from 'framer-motion'
 import { ChangeEvent, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { CgProfile } from 'react-icons/cg'
@@ -9,6 +10,7 @@ import { Board, Button, FormRow } from '.'
 import useDebounce from '../hooks/useDebounce'
 import { useGetAllBoards } from '../hooks/useGetAllBoards'
 import useWindowDimensions from '../hooks/useWindowDimension'
+import BoardModule from '../Modules/BoardModule'
 import { useKanban } from '../pages/KanbanBoard'
 import { getBoard } from '../utils/getBoard'
 import { logOut } from '../utils/logOut'
@@ -18,6 +20,8 @@ type Board = {
   boardName: string
   tasks: []
   _id: string
+  createdBy: { avatarUrl: string; name: string; _id: string }
+  order: number
 }
 
 const Sidebar = () => {
@@ -31,6 +35,9 @@ const Sidebar = () => {
   const debounceSetSearch = useDebounce((val: string) => {
     setDebouncedSearch(val)
   }, 300)
+  const [boards, setBoards] = useState<Board[]>([])
+  const [tempBoards, setTempBoards] = useState<Board[]>([])
+  const [isDragging, setIsDragging] = useState(false)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -38,7 +45,54 @@ const Sidebar = () => {
     debounceSetSearch(value)
   }
 
-  const boards = useGetAllBoards(debouncedSearch)
+  const boardsData = useGetAllBoards(debouncedSearch)
+  const sortBoards = (boards: Board[]) => boards.sort((prevBoard, nextBoard) => prevBoard.order - nextBoard.order)
+
+  useEffect(() => {
+    if (!boardsData) return
+    const sortedBoards = sortBoards(boardsData?.data || [])
+    setBoards(sortedBoards)
+    setTempBoards(sortedBoards)
+  }, [boardsData])
+
+  const handleReorder = (newOrder: Board[]) => {
+    setTempBoards(newOrder)
+  }
+
+  const reorderBoardMutation = useMutation({
+    mutationFn: async (
+      changedOrder: {
+        boardId: string
+        order: number
+      }[]
+    ) => await BoardModule.reorderBoard(changedOrder),
+  })
+
+  const queryClient = useQueryClient()
+
+  const commitReorder = async () => {
+    setBoards(tempBoards)
+    setIsDragging(false)
+
+    // Create array of objects with boardId and new order
+    const reorderPayload = tempBoards.map((board, index) => ({
+      boardId: board._id,
+      order: index + 1,
+    }))
+
+    // Only send boards that actually changed order
+    const changedBoards = reorderPayload.filter((item, index) => {
+      const originalBoard = boards[index]
+      return originalBoard && originalBoard._id !== item.boardId
+    })
+
+    // Only make API call if there are actual changes
+    if (changedBoards.length > 0) {
+      reorderBoardMutation.mutate(reorderPayload, {
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['boards'] }),
+      })
+    }
+  }
 
   const [isProfileOptionsOpen, setIsProfileOptionsOpen] = useState(false)
 
@@ -56,7 +110,6 @@ const Sidebar = () => {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
   }
-
   const sideVariants = {
     closed: {
       transition: {
@@ -121,44 +174,48 @@ const Sidebar = () => {
             )}
           </div>
 
-          <p className="text-sm pl-2 pt-6 font-mono font-bold text-gray-700">ALL BOARDS ({boards?.data?.length})</p>
+          <p className="text-sm pl-2 pt-6 font-mono font-bold text-gray-700">ALL BOARDS ({boards?.length})</p>
         </div>
 
         <motion.div initial="closed" animate="open" variants={sideVariants} className="overflow-y-auto pl-4 text-black flex-grow relative">
-          {boards?.data?.length === 0 && <p className="font-bold text-gray-500 left-16 top-60 bottom-2 right-0 absolute">No Board, Create One</p>}
-          {boards?.data?.map((board) => {
-            const { boardName, _id: id, createdBy } = board
-            return (
-              <div key={id} className="relative">
-                <Board
-                  createdBy={createdBy}
-                  onClick={() => {
-                    getBoard(id)
-                    setSelectedBoard(id)
-                    onMobile && setIsSidebarOpen(false)
-                  }}
-                  boardName={boardName}
-                  boardId={id}
-                  selectedBoard={selectedBoard}
-                />
-                {/* dont show delete if its someone elses board */}
-                {user?._id === createdBy?._id && (
-                  <button
+          {boards?.length === 0 && <p className="font-bold text-gray-500 left-16 top-60 bottom-2 right-0 absolute">No Board, Create One</p>}
+          <Reorder.Group axis="y" values={tempBoards} onReorder={handleReorder}>
+            {tempBoards?.map((board) => {
+              const { boardName, _id: id, order, createdBy } = board
+              return (
+                <Reorder.Item onDragStart={() => setIsDragging(true)} onDragEnd={commitReorder} key={order} value={board} className="relative">
+                  <Board
+                    createdBy={createdBy}
                     onClick={() => {
+                      if (isDragging) return
+                      getBoard(id)
                       setSelectedBoard(id)
-                      setShowDeleteBoardModal(true)
+                      onMobile && setIsSidebarOpen(false)
+                      navigate(`/kanban/kanban-board/${id}`)
                     }}
-                    title="Delete"
-                    className="absolute btn right-6 z-50 top-3 bg-transparent border-0 outline-none shadow-none hover:bg-red-100 hover:text-red-600 btn-sm"
-                  >
-                    <FaTrash className="text-gray-600 hover:text-red-600" />
-                  </button>
-                )}
-              </div>
-            )
-          })}
+                    boardName={boardName}
+                    boardId={id}
+                    selectedBoard={selectedBoard}
+                  />
+                  {/* dont show delete if its someone elses board */}
+                  {user?._id === createdBy?._id && (
+                    <button
+                      onClick={() => {
+                        setSelectedBoard(id)
+                        setShowDeleteBoardModal(true)
+                      }}
+                      title="Delete"
+                      className="absolute btn right-6 z-50 top-3 bg-transparent border-0 outline-none shadow-none hover:bg-red-100 hover:text-red-600 btn-sm"
+                    >
+                      <FaTrash className="text-gray-600 hover:text-red-600" />
+                    </button>
+                  )}
+                </Reorder.Item>
+              )
+            })}
+          </Reorder.Group>
 
-          {search && boards?.data?.length === 0 && (
+          {search && boards?.length === 0 && (
             <p className="text-black">
               No Result for <span className="font-bold">{search}</span>
             </p>

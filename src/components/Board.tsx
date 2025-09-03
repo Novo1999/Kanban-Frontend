@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { TfiLayoutMediaRightAlt } from 'react-icons/tfi'
-import { Link, useLoaderData } from 'react-router-dom'
+import { useLoaderData } from 'react-router-dom'
 import { Tooltip } from 'react-tooltip'
 
 type BoardProp = {
@@ -22,13 +22,11 @@ const Board = ({ boardName, boardId, selectedBoard, onClick, createdBy }: BoardP
       opacity: 1,
     },
   }
-
   const tooltipId = `advanced-tooltip-${boardId}-${createdBy?._id}`
 
   return (
     <motion.div className="overflow-visible" initial="closed" animate="open" variants={itemVariants}>
-      <Link
-        to={`/kanban/kanban-board/${boardId}`}
+      <div
         onClick={onClick}
         className={`flex overflow-visible items-center gap-4 cursor-pointer pl-2 capitalize hover:btn-color hover:text-white transition-all break-all duration-200 ${
           selectedBoard === boardId ? 'btn-color translate-x-[-15px] text-white' : 'text-black'
@@ -65,7 +63,7 @@ const Board = ({ boardName, boardId, selectedBoard, onClick, createdBy }: BoardP
             </Tooltip>
           </>
         ) : null}
-      </Link>
+      </div>
     </motion.div>
   )
 }
