@@ -181,9 +181,9 @@ const Sidebar = () => {
           {boards?.length === 0 && <p className="font-bold text-gray-500 left-16 top-60 bottom-2 right-0 absolute">No Board, Create One</p>}
           <Reorder.Group axis="y" values={tempBoards} onReorder={handleReorder}>
             {tempBoards?.map((board) => {
-              const { boardName, _id: id, order, createdBy } = board
+              const { boardName, _id: id, createdBy } = board
               return (
-                <Reorder.Item onDragStart={() => setIsDragging(true)} onDragEnd={commitReorder} key={order} value={board} className="relative">
+                <Reorder.Item onDragStart={() => setIsDragging(true)} onDragEnd={commitReorder} key={id} value={board} className="relative">
                   <Board
                     createdBy={createdBy}
                     onClick={() => {

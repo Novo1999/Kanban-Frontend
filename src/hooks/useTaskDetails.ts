@@ -1,7 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
+import { useLoaderData } from 'react-router'
 import { getPriorityConfig } from '../components/CustomDragLayer.jsx'
 import { User } from '../components/Header.jsx'
+import { addToAssignedMembers, removeFromAssignedMembers } from '../firebase/assigned-members.ts'
 import { useKanban } from '../pages/KanbanBoard'
 import { editSubtaskStatus } from '../utils/editSubtaskStatus'
 import { editTaskStatus } from '../utils/editTaskStatus'
@@ -25,6 +27,7 @@ export type UseGetTask = {
       timeTracked: number
       deadline: string | null
       assigned?: { user: User; assignedBy: User; assignedAt: string; _id: string }[]
+      createdBy: string
     }
   }
   isLoading: boolean
@@ -45,12 +48,13 @@ export const useTaskDetails = () => {
   const [showTimeTracker, setShowTimeTracker] = useState(false)
   const [isAddingSubtask, setIsAddingSubtask] = useState(false)
   const [subtaskInput, setSubtaskInput] = useState('')
-  const intervalId = useRef<number | null>(null)
+  const intervalId = useRef<NodeJS.Timeout | null>(null)
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [isAssigning, setIsAssigning] = useState<User | null>(null)
   const { onSubmit } = useEditTask()
   const { data: boardData } = useGetBoard()
   const [isUnassigning, setIsUnassigning] = useState('')
+  const currentUser = useLoaderData() as User
 
   // Handle assigning user to task
   const handleAssignUser = async (user: User) => {
@@ -76,6 +80,8 @@ export const useTaskDetails = () => {
           },
         ],
       })
+
+      await addToAssignedMembers(boardData?.data?.createdBy, { name: user?.name, userId: user?._id, assignedBy: currentUser?.name })
       queryClient.invalidateQueries({ queryKey: ['selected-task'] })
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
       setShowAssignModal(false)
@@ -86,7 +92,7 @@ export const useTaskDetails = () => {
     }
   }
 
-  const handleUnassignUser = async (assignmentId: string) => {
+  const handleUnassignUser = async (userId: string, assignmentId: string) => {
     setIsUnassigning(assignmentId)
     try {
       const updatedAssigned = taskData?.data?.assigned?.filter((assignment) => assignment._id !== assignmentId) || []
@@ -94,6 +100,7 @@ export const useTaskDetails = () => {
         ...taskData?.data,
         assigned: updatedAssigned,
       })
+      await removeFromAssignedMembers(boardData?.data?.createdBy, userId)
       queryClient.invalidateQueries({ queryKey: ['selected-task', taskData?.data?._id] })
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
     } catch (error) {

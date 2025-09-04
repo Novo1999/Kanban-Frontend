@@ -90,8 +90,11 @@ const TaskDetails = () => {
       setIsEditingPriority(false)
     }
   }
+
+  console.log(taskData)
   const user = useLoaderData() as User
-  const isOwner = taskData?.data?.assigned?.some((ass) => ass.assignedBy?._id === user?._id)
+  const isOwner = taskData?.data?.createdBy === user?._id
+  console.log('🚀 ~ TaskDetails ~ isOwner:', isOwner)
 
   return (
     <Overlay operationsWhenOverlayClicked={[stopTimer]}>
@@ -256,9 +259,9 @@ const TaskDetails = () => {
                           </div>
                         </div>
 
-                        {user?._id === assignment._id && (
+                        {isOwner && (
                           <button
-                            onClick={() => handleUnassignUser(assignment._id)}
+                            onClick={() => handleUnassignUser(assignment.user._id, assignment._id)}
                             disabled={isUnassigning === assignment._id}
                             className="w-8 h-8 rounded-lg bg-white border border-gray-300 hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-500 flex items-center justify-center transition-colors"
                             title="Remove assignment"

@@ -60,7 +60,6 @@ const Header = ({ page }: HeaderProp) => {
       })
       toast.success('Board name updated successfully')
       queryClient.invalidateQueries({ queryKey: ['selected-board', id] })
-      queryClient.invalidateQueries({ queryKey: ['boards'] })
       setIsEditingBoard(false)
     } catch (error) {
       console.error('Failed to update board name:', error)
@@ -264,7 +263,13 @@ const Header = ({ page }: HeaderProp) => {
 
       {/* Left section - Board name (no longer editable inline) */}
       <div className="flex-1">
-        {isLoading ? <Spinner type="header" /> : <p className={`${isSidebarOpen ? 'ml-[17rem]' : ''} capitalize text-sm sm:text-xl px-4 sm:px-12 outline-1`}>{board?.data?.boardName}</p>}
+        {isLoading ? (
+          <Spinner type="header" />
+        ) : (
+          <p onClick={() => setIsEditingBoard(true)} className="capitalize font-poppins text-sm sm:text-xl hover:outline px-4 sm:px-12 outline-1 cursor-pointer">
+            {board?.data?.boardName}
+          </p>
+        )}
       </div>
 
       {/* Center section - Avatar Groups */}
@@ -428,14 +433,9 @@ const Header = ({ page }: HeaderProp) => {
                   type="text"
                   id="boardName"
                   value={boardName}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleUpdateBoardName()
-                    }
-                  }}
                   onChange={(e) => setBoardName(e.target.value)}
                   placeholder="Enter board name"
-                  className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
                   autoFocus
                 />
               </div>

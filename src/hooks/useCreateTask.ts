@@ -2,7 +2,8 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import { useParams } from 'react-router'
+import { useLoaderData, useParams } from 'react-router'
+import { User } from '../components/Header'
 import { useKanban } from '../pages/KanbanBoard'
 import customFetch from '../utils/customFetch'
 
@@ -18,6 +19,7 @@ export const useCreateTask = () => {
     formState: { errors },
   } = useForm<any>()
   const { setShowAddNewModal } = useKanban()
+  const user = useLoaderData() as User
 
   const { id } = useParams()
 
@@ -30,6 +32,7 @@ export const useCreateTask = () => {
       timeTracked: 0,
       deadline: data.deadline || null,
       priority: data.priority || null,
+      createdBy: user._id
     }
 
     try {
