@@ -2,9 +2,9 @@ import { get, ref, update } from 'firebase/database';
 import toast from 'react-hot-toast';
 import fireDB from './firebase';
 
-export const addToAssignedMembers = async (boardOwnerId: string, newMember: { userId: string; name: string, assignedBy: string }) => {
+export const addToAssignedMembers = async (boardId: string, newMember: { userId: string; name: string, assignedBy: string }) => {
   const db = fireDB
-  const taskRef = ref(db, 'task/' + boardOwnerId)
+  const taskRef = ref(db, 'task/' + boardId)
 
   // Get current assigned array
   const snapshot = await get(taskRef)
@@ -26,9 +26,9 @@ export const addToAssignedMembers = async (boardOwnerId: string, newMember: { us
   })
 }
 
-export const removeFromAssignedMembers = async (boardOwnerId: string, userIdToRemove: string) => {
+export const removeFromAssignedMembers = async (boardId: string, userIdToRemove: string) => {
   const db = fireDB
-  const taskRef = ref(db, 'task/' + boardOwnerId)
+  const taskRef = ref(db, 'task/' + boardId)
 
   // Get current assigned array
   const snapshot = await get(taskRef)
@@ -44,9 +44,9 @@ export const removeFromAssignedMembers = async (boardOwnerId: string, userIdToRe
     assigned: updatedAssigned,
   })
 }
-export const getAssignedMembers = async (boardOwnerId: string) => {
+export const getAssignedMembers = async (boardId: string) => {
   const db = fireDB
-  const taskRef = ref(db, 'task/' + boardOwnerId)
+  const taskRef = ref(db, 'task/' + boardId)
 
   // Get current assigned array
   const snapshot = await get(taskRef)

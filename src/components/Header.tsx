@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import toast from 'react-hot-toast'
 import { BiUserCheck, BiUserPlus } from 'react-icons/bi'
-import { FaTrash } from 'react-icons/fa'
+import { FaBell, FaTrash } from 'react-icons/fa'
 import { IoIosArrowForward } from 'react-icons/io'
 import { useLoaderData, useParams } from 'react-router'
 import { Tooltip } from 'react-tooltip'
@@ -271,7 +271,42 @@ const Header = ({ page }: HeaderProp) => {
           </p>
         )}
       </div>
+      {/* <div className="dropdown dropdown-end">
+        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle relative">
+          <FaBell className="text-xl" />
+          {notifications.some((n) => !n.read) && (
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
+              <span className="text-xs text-white font-bold">{notifications.filter((n) => !n.read).length}</span>
+            </div>
+          )}
+        </div>
+        <div tabIndex={0} className="dropdown-content menu bg-white rounded-box w-80 p-2 shadow-xl border border-gray-200 max-h-96 overflow-y-auto">
+          <div className="px-4 py-2 border-b border-gray-200">
+            <h3 className="font-semibold text-gray-900">Notifications</h3>
 
+            {notifications.length === 0 ? (
+              <div className="p-4 text-center text-gray-500">No notifications yet</div>
+            ) : (
+              <div className="py-2">
+                {notifications.map((notification) => (
+                  <div key={notification.id} className={`flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-color`}>
+                    <div className="flex-shrink-0 text-lg">{getNotificationIcon(notification.type)}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-sm ${!notification.read ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>{notification.message}</p>
+                      <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                    </div>
+                    {!notification.read && <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1"></div>}
+                  </div>
+                ))}
+
+                <div className="px-4 py-2 border-t border-gray-200 mt-2">
+                  <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">Mark all as read</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div> */}
       {/* Center section - Avatar Groups */}
       {id && board?.data && (invitedUsers.length > 0 || acceptedUsers.length > 0) && (
         <div className="flex items-center space-x-4 backdrop-blur-sm rounded-lg p-2">

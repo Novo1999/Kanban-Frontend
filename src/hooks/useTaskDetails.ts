@@ -81,7 +81,7 @@ export const useTaskDetails = () => {
         ],
       })
 
-      await addToAssignedMembers(boardData?.data?.createdBy, { name: user?.name, userId: user?._id, assignedBy: currentUser?.name })
+      await addToAssignedMembers(boardData?.data?._id, { name: user?.name, userId: user?._id, assignedBy: currentUser?.name })
       queryClient.invalidateQueries({ queryKey: ['selected-task'] })
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
       setShowAssignModal(false)
@@ -100,7 +100,7 @@ export const useTaskDetails = () => {
         ...taskData?.data,
         assigned: updatedAssigned,
       })
-      await removeFromAssignedMembers(boardData?.data?.createdBy, userId)
+      await removeFromAssignedMembers(boardData?.data?._id, userId)
       queryClient.invalidateQueries({ queryKey: ['selected-task', taskData?.data?._id] })
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
     } catch (error) {

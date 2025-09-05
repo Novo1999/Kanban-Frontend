@@ -36,7 +36,7 @@ const Settings = () => {
   const avatarUrl = data?.data?.avatarUrl
 
   useEffect(() => {
-    let timeoutId: number
+    let timeoutId: NodeJS.Timeout
     const checker = (email: string, count: number) => {
       if (!email) {
         if (count === 5) {
