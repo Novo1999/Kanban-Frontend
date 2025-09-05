@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useLoaderData } from 'react-router'
 import { getPriorityConfig } from '../components/CustomDragLayer.jsx'
 import { User } from '../components/Header.jsx'
-import { addToAssignedMembers, removeFromAssignedMembers } from '../firebase/assigned-members.ts'
+import { removeFromAssignedMembers } from '../firebase/assigned-members.ts'
+import { handleNotification } from '../firebase/notifications.ts'
 import { useKanban } from '../pages/KanbanBoard'
 import { editSubtaskStatus } from '../utils/editSubtaskStatus'
 import { editTaskStatus } from '../utils/editTaskStatus'
@@ -81,7 +82,7 @@ export const useTaskDetails = () => {
         ],
       })
 
-      await addToAssignedMembers(boardData?.data?._id, { name: user?.name, userId: user?._id, assignedBy: currentUser?.name })
+      await handleNotification({ actionBy: currentUser, type: 'assign', task: { id: taskData?.data?._id, name: taskData?.data?.title } }, user?._id)
       queryClient.invalidateQueries({ queryKey: ['selected-task'] })
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
       setShowAssignModal(false)

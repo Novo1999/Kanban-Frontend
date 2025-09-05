@@ -3,6 +3,7 @@ import { redirect } from 'react-router'
 import customFetch from '../utils/customFetch'
 
 export const action = async ({ request }: { request: Request }) => {
+  console.log("🚀 ~ action ~ request:", request)
   const formData = await request.formData()
   const data = Object.fromEntries(formData)
   try {

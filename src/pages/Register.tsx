@@ -84,17 +84,16 @@ const Register = () => {
     }
 
     setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    return Object.values(newErrors).every((error) => error === '')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     if (!validateForm()) {
       e.preventDefault()
     }
   }
-
+  console.log(errors)
   const isSubmitting = navigation.state === 'submitting'
-  const isFormValid = Object.keys(errors).length === 0 && formData.name && formData.email && formData.password && formData.confirmPassword
 
   return (
     <>
@@ -234,7 +233,7 @@ const Register = () => {
             {formData.confirmPassword && !errors.confirmPassword && formData.password === formData.confirmPassword && <p className="text-green-500 text-sm mt-1">✓ Passwords match</p>}
           </div>
 
-          <Button type="submit" disabled={!isFormValid || isSubmitting} buttonText={isSubmitting ? 'Creating Account...' : 'Create Account'} />
+          <Button type="submit" disabled={isSubmitting} buttonText={isSubmitting ? 'Creating Account...' : 'Create Account'} />
 
           <div className="text-center mt-6">
             <p className="text-gray-600 text-sm">
