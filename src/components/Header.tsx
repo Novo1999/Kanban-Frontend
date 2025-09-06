@@ -178,7 +178,6 @@ const Header = ({ page }: HeaderProp) => {
         </div>
 
         <div className={`badge badge-xs ${badgeColor} text-white hidden sm:inline-flex`}>{users.length}</div>
-        <Notifications />
       </div>
     )
   }
@@ -319,6 +318,7 @@ const Header = ({ page }: HeaderProp) => {
 
       {showAddNewModal && createPortal(<AddTask />, document.body)}
       {showDeleteBoardModal && createPortal(<DeleteBoard />, document.body)}
+      <Notifications />
 
       {/* Members Modal */}
       {showMembersModal && (

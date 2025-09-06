@@ -91,10 +91,8 @@ const TaskDetails = () => {
     }
   }
 
-  console.log(taskData)
   const user = useLoaderData() as User
   const isOwner = taskData?.data?.createdBy === user?._id
-  console.log('🚀 ~ TaskDetails ~ isOwner:', isOwner)
 
   return (
     <Overlay operationsWhenOverlayClicked={[stopTimer]}>

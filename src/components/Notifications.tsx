@@ -36,8 +36,6 @@ const Notifications = () => {
     }))
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
 
-  console.log(notificationArray)
-
   // const getNotificationIcon = (type: string) => {
   //   switch (type) {
   //     case 'assign':
@@ -56,7 +54,6 @@ const Notifications = () => {
     }
   }
   const formatTime = (timestamp: string) => {
-    console.log('🚀 ~ formatTime ~ timestamp:', timestamp)
     const date = new Date(timestamp)
     const now = new Date()
     const diffInMs = now.getTime() - date.getTime()
