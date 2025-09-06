@@ -1,10 +1,10 @@
-import { onValue, push, ref } from 'firebase/database'
+import { get, onValue, push, ref, update } from 'firebase/database'
 import toast from 'react-hot-toast'
 import { User } from '../components/Header'
 import fireDB from './firebase'
 
 type UserNotification = {
-  type: 'assign' | 'move' | 'status' | 'join'
+  type: 'assign' | 'move' | 'status' | 'join' | 'unassign'
   actionBy: User // user id
   board?: {
     id: string
@@ -25,19 +25,22 @@ export const handleNotification = async (payload: UserNotification, userId: stri
       actionBy: { email, __v, ...actionByData },
     } = payload ?? {}
 
+    const notificationData = {
+      id: crypto.randomUUID(),
+      actionBy: actionByData,
+      task: {
+        id: payload.task?.id,
+        name: payload.task?.name,
+      },
+      type: payload.type,
+      timestamp: new Date().toISOString(),
+      read: false,
+    }
     switch (payload.type) {
       case 'assign':
-        const notificationData = {
-          id: crypto.randomUUID(),
-          actionBy: actionByData,
-          task: {
-            id: payload.task?.id,
-            name: payload.task?.name,
-          },
-          type: payload.type,
-          timestamp: new Date().toISOString(),
-          read: false,
-        }
+        await push(notificationRef, notificationData)
+        break
+      case 'unassign':
         await push(notificationRef, notificationData)
         break
       default:
@@ -45,6 +48,28 @@ export const handleNotification = async (payload: UserNotification, userId: stri
     }
   } catch (error) {
     toast.error('Error sending notification')
+  }
+}
+
+export const markAllNotificationAsRead = async (userId: string) => {
+  try {
+    const db = fireDB
+    const notificationRef = ref(db, 'notification/' + userId)
+    const data = await get(notificationRef)
+    const snapshot: Record<string, Record<string, string | boolean>> = data.val()
+
+    const updatedArrayData = Object.entries(snapshot).map(([key, value]) => {
+      const updatedVal = { ...value }
+      updatedVal.read = true
+      return {
+        [key]: updatedVal,
+      }
+    })
+    const updatedSnapshot = updatedArrayData.reduce((acc, curr) => Object.assign(acc, curr), {})
+
+    await update(notificationRef, updatedSnapshot)
+  } catch (error) {
+    toast.error('Error marking as read')
   }
 }
 

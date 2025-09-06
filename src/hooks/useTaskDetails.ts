@@ -1,9 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
+import toast from 'react-hot-toast'
 import { useLoaderData } from 'react-router'
 import { getPriorityConfig } from '../components/CustomDragLayer.jsx'
 import { User } from '../components/Header.jsx'
-import { removeFromAssignedMembers } from '../firebase/assigned-members.ts'
 import { handleNotification } from '../firebase/notifications.ts'
 import { useKanban } from '../pages/KanbanBoard'
 import { editSubtaskStatus } from '../utils/editSubtaskStatus'
@@ -94,18 +94,17 @@ export const useTaskDetails = () => {
   }
 
   const handleUnassignUser = async (userId: string, assignmentId: string) => {
-    setIsUnassigning(assignmentId)
     try {
       const updatedAssigned = taskData?.data?.assigned?.filter((assignment) => assignment._id !== assignmentId) || []
       await onSubmit({
         ...taskData?.data,
         assigned: updatedAssigned,
       })
-      await removeFromAssignedMembers(boardData?.data?._id, userId)
       queryClient.invalidateQueries({ queryKey: ['selected-task', taskData?.data?._id] })
       queryClient.invalidateQueries({ queryKey: ['selected-board'] })
+      await handleNotification({ actionBy: currentUser, type: 'unassign', task: { id: taskData?.data?._id, name: taskData?.data?.title } }, userId)
     } catch (error) {
-      console.error('Error unassigning user:', error)
+      toast.error('Error unassigning user')
     } finally {
       setIsUnassigning('')
     }

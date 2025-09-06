@@ -1,7 +1,8 @@
+import { useMutation } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { FaBell } from 'react-icons/fa'
 import { useLoaderData } from 'react-router'
-import { getNotifications } from '../firebase/notifications'
+import { getNotifications, markAllNotificationAsRead } from '../firebase/notifications'
 import { User } from './Header'
 
 const Notifications = () => {
@@ -49,6 +50,8 @@ const Notifications = () => {
     switch (notification.type) {
       case 'assign':
         return `${notification.actionBy.name} assigned you to "${notification.task.name}"`
+      case 'unassign':
+        return `${notification.actionBy.name} unassigned you from "${notification.task.name}"`
       default:
         return 'New notification'
     }
@@ -66,12 +69,16 @@ const Notifications = () => {
     return date.toLocaleDateString()
   }
 
+  const markAllAsReadMutation = useMutation({
+    mutationFn: (userId: string) => markAllNotificationAsRead(userId),
+  })
+
   return (
     <div className="dropdown-end dropdown">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle relative">
         <FaBell className="text-xl" />
         {notificationArray.some((n) => !n.read) && (
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
+          <div className="absolute -top-1 -right-1 size-5 p-1 btn-color rounded-full flex items-center justify-center">
             <span className="text-xs text-white font-bold">{notificationArray.filter((n) => !n.read).length}</span>
           </div>
         )}
@@ -110,7 +117,9 @@ const Notifications = () => {
 
               {/* Footer - fixed */}
               <div className="px-4 py-3 border-t border-gray-200 bg-white">
-                <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">Mark all as read</button>
+                <button onClick={() => markAllAsReadMutation.mutate(user?._id)} className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                  {markAllAsReadMutation.isPending ? 'Loading...' : 'Mark all as read'}
+                </button>
               </div>
             </>
           )}
