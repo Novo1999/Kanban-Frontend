@@ -61,6 +61,7 @@ const Header = ({ page }: HeaderProp) => {
       })
       toast.success('Board name updated successfully')
       queryClient.invalidateQueries({ queryKey: ['selected-board', id] })
+      queryClient.invalidateQueries({ queryKey: ['boards'] })
       setIsEditingBoard(false)
     } catch (error) {
       console.error('Failed to update board name:', error)
